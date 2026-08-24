@@ -2,7 +2,9 @@ let products=[],cart=[];
 const rupiah=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n);
 async function load(){products=await (await fetch("/api/products")).json();render();}
 function render(){const card=p=>`<article class="card"><div class="thumb">${p.emoji}</div><span class="badge">${p.type==="go"?"OPEN GO":"READY STOCK"}</span><h3>${p.name}</h3><p><b>${rupiah(p.price)}</b></p><p>${p.type==="go"?`Deadline: ${p.deadline}<br>Kuota: ${p.quota}`:`Stok: ${p.stock}`}</p><button class="btn secondary" onclick="window.location.href='/detail.html?id=${p.id}'">Lihat Detail</button></article>`;document.getElementById("goGrid").innerHTML=products.filter(x=>x.type==="go").map(card).join("");document.getElementById("readyGrid").innerHTML=products.filter(x=>x.type==="ready").map(card).join("");}
-function detail(id){const p=products.find(x=>x.id===id),opts=p.options.split(","),m=document.getElementById("modalBody");m.innerHTML=`<span class="badge">${p.type==="go"?"OPEN GO":"READY STOCK"}</span><h2>${p.name}</h2><p><b>${rupiah(p.price)}</b></p><p>${p.type==="go"?`Deadline: ${p.deadline}`:`Stok tersedia: ${p.stock}`}</p><label>Pilih versi/member</label><div class="options" id="opts">${opts.map((x,i)=>`<button class="option ${i?"":"active"}" onclick="selectOpt(this)">${x}</button>`).join("")}</div><div class="qty"><span>Jumlah</span><button onclick="qty(-1)">−</button><b id="qty">1</b><button onclick="qty(1)">+</button></div>${p.dp_allowed?'<p class="eyebrow">Produk ini mendukung pembayaran DP 50%</p>':""}<button class="btn primary" onclick="add(${p.id})">Masukkan Keranjang</button>`;openModal();}
+function detail(id){
+  window.location.href = `detail.html?id=${id}`;
+}
 function selectOpt(e){document.querySelectorAll("#opts .option").forEach(x=>x.classList.remove("active"));e.classList.add("active")}
 function qty(n){let e=document.getElementById("qty"),v=Math.max(1,+e.textContent+n);e.textContent=v}
 function add(id){const p=products.find(x=>x.id===id);cart.push({product_id:id,name:p.name,price:p.price,qty:+document.getElementById("qty").textContent,selected_option:document.querySelector("#opts .active").textContent,dp_allowed:p.dp_allowed});document.getElementById("count").textContent=cart.reduce((a,b)=>a+b.qty,0);closeModal();alert("Masuk keranjang ♥")}
@@ -23,6 +25,15 @@ async function uploadProof(code){
  const r=await fetch("/api/payment-proof/"+encodeURIComponent(code),{method:"POST",body:fd});
  const j=await r.json();
  if(j.error){alert(j.error);return}
- alert(j.message);document.getElementById("trackCode").value=code;track();
+ alert(j.message);
+document.getElementById("trackCode").value = code;
+track();
 }
-function openModal(){document.getElementById("modal").classList.add("show")}function closeModal(){document.getElementById("modal").classList.remove("show")}load();
+
+function openModal(){
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
