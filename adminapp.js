@@ -1,40 +1,379 @@
-const $=q=>document.querySelector(q),fmt=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n);
+const $ = q => document.querySelector(q);
+
+const fmt = n =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(Number(n) || 0);
+
+
+// ===============================
+// KONFIGURASI SUPABASE
+// ===============================
+
+const SUPABASE_URL = "https://cwwzsbqfznzwfclajwnw.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
+
+
+// ===============================
+// HELPER SUPABASE
+// ===============================
+
+async function supabase(path, options = {}) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...options,
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+
+    console.error("Supabase Error:", error);
+
+    throw new Error(
+      `Gagal mengambil data (${response.status})`
+    );
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  return response.json();
+}
+
+
+// ===============================
+// LOGIN
+// ===============================
+
 function login() {
   const username = document.getElementById("u").value;
   const password = document.getElementById("p").value;
 
-  if (username === "admin" && password === "dear-nadiya-2026") {
-    document.getElementById("login").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
+  if (
+    username === "admin" &&
+    password === "dear-nadiya-2026"
+  ) {
+    document
+      .getElementById("login")
+      .classList.add("hidden");
+
+    document
+      .getElementById("app")
+      .classList.remove("hidden");
+
     page("dash");
+
   } else {
     alert("Username atau password salah");
   }
 }
-async function logout(){await fetch("/api/admin/logout",{method:"POST"});location.reload()}
-async function api(u,opt){let r=await fetch(u,opt);if(r.status===401){alert("Silakan login kembali");location.reload()}return r.json()}
-function page(p){({dash,products,orders,payments,recap}[p])()}
-async function dash(){$("#title").textContent="Dashboard";let s=await api("/api/admin/stats");$("#content").innerHTML=`<div class="cards"><div class="stat">🧾<p>Total Pesanan</p><h2>${s.total_orders}</h2></div><div class="stat">🛍️<p>GO Aktif</p><h2>${s.go}</h2></div><div class="stat">💳<p>Menunggu Pembayaran</p><h2>${s.pending}</h2></div><div class="stat">📦<p>Total Ready Stock</p><h2>${s.ready_stock}</h2></div></div><section class="panel"><h2>Pendapatan Terverifikasi</h2><h1 style="color:#e66f9f">${fmt(s.revenue)}</h1></section>`}
-async function products(){$("#title").textContent="Produk & GO";let ps=await api("/api/products");$("#content").innerHTML=`<section class="panel"><h2>Tambah Produk / GO</h2><form class="form" onsubmit="addProduct(event)"><select name="type"><option value="go">GO</option><option value="ready">Ready Stock</option></select><input name="name" placeholder="Nama produk" required><input name="price" type="number" placeholder="Harga" required><input name="stock" type="number" placeholder="Stok (Ready Stock)"><input name="deadline" placeholder="Deadline GO"><input name="quota" placeholder="Kuota GO"><input name="options" placeholder="Pilihan: Random,Member" value="Random"><select name="dp_allowed"><option value="0">Tidak ada DP</option><option value="1">DP diizinkan</option></select><button class="btn">Tambah Produk</button></form></section><section class="panel"><h2>Produk Aktif</h2>${ps.map(p=>`<div class="product"><h3>${p.emoji} ${p.name}</h3><p>${p.type} • ${fmt(p.price)} • ${p.type==="go"?p.deadline:"Stok: "+p.stock}</p><div class="actions"><button onclick="archive(${p.id})">Arsipkan</button></div></div>`).join("")}</section>`}
-async function addProduct(e){e.preventDefault();let d=Object.fromEntries(new FormData(e.target).entries());d.price=+d.price;d.stock=+d.stock;d.dp_allowed=+d.dp_allowed;await api("/api/admin/products",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});products()}
-async function archive(id){await api("/api/admin/products/"+id,{method:"DELETE"});products()}
-async function orders(){$("#title").textContent="Pesanan";let os=await api("/api/admin/orders");$("#content").innerHTML=`<section class="panel"><table><thead><tr><th>Order</th><th>Customer</th><th>Produk</th><th>Total</th><th>Pembayaran</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${os.map(o=>`<tr><td>${o.order_code}</td><td>${o.customer_name}</td><td>${o.items.map(i=>i.product_name+" ×"+i.qty).join("<br>")}</td><td>${fmt(o.total)}</td><td>${o.payment_status}</td><td>${o.order_status}</td><td><button onclick="setStatus(${o.id},'Pesanan Diproses')">Proses</button></td></tr>`).join("")}</tbody></table></section>`}
-async function setStatus(id,status){await api("/api/admin/orders/"+id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_status:status})});orders()}
-async function payments(){
- $("#title").textContent="Pembayaran";let os=await api("/api/admin/orders");
- $("#content").innerHTML=`<section class="panel"><h2>Verifikasi Bukti Pembayaran</h2><table><thead><tr><th>Order</th><th>Customer</th><th>Nominal</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${os.map(o=>`<tr><td>${o.order_code}</td><td>${o.customer_name}</td><td>${fmt(o.amount_due)}</td><td>${o.payment_proof_url?`<a href="${o.payment_proof_url}" target="_blank">Lihat Bukti</a>`:"Belum upload"}</td><td>${o.payment_status}</td><td>${o.payment_proof_url&&o.payment_status!=="Pembayaran Diterima"?`<button class="btn" onclick="verify(${o.id})">Verifikasi</button>`:"-"}</td></tr>`).join("")}</tbody></table></section>`}
-async function verify(id){await api("/api/admin/orders/"+id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({payment_status:"Pembayaran Diterima"})});payments()}
-async function recap(){
-    document.getElementById("title").textContent = "Rekap GO";
 
-    document.getElementById("content").innerHTML = `
-        <section class="panel">
-            <h2>📈 Rekap Group Order</h2>
-            <p>Rekap seluruh data pembelian GO Dear Nadiya.</p>
 
-            <button onclick="window.open('https://docs.google.com/spreadsheets/d/17iLspFRuewGhVZXLl6RaPD3orjSAdHB9BfkmamlXJeY/edit?usp=drivesdk', '_blank')">
-                📊 Buka Rekap GO
-            </button>
-        </section>
-    `;
+// ===============================
+// LOGOUT
+// ===============================
+
+function logout() {
+  document
+    .getElementById("app")
+    .classList.add("hidden");
+
+  document
+    .getElementById("login")
+    .classList.remove("hidden");
+
+  document.getElementById("u").value = "";
+  document.getElementById("p").value = "";
+
+  alert("Berhasil keluar");
 }
+
+
+// ===============================
+// NAVIGASI HALAMAN
+// ===============================
+
+function page(p) {
+  const pages = {
+    dash,
+    products,
+    orders,
+    payments,
+    recap
+  };
+
+  if (pages[p]) {
+    pages[p]();
+  }
+}
+
+
+// ===============================
+// DASHBOARD
+// ===============================
+
+async function dash() {
+  $("#title").textContent = "Dashboard";
+
+  $("#content").innerHTML =
+    `<p>Memuat dashboard...</p>`;
+
+  try {
+
+    const products = await supabase(
+      "products?select=*"
+    );
+
+    const orderList = await supabase(
+      "orders?select=*"
+    );
+
+    const totalOrders = orderList.length;
+
+    const go = products.filter(
+      p => p.type === "go"
+    ).length;
+
+    const readyStock = products.filter(
+      p => p.type === "ready"
+    ).length;
+
+    const pending = orderList.filter(
+      o =>
+        o.payment_status === "Menunggu Pembayaran" ||
+        o.payment_status === "Pending" ||
+        o.payment_status === "Belum Dibayar"
+    ).length;
+
+    const revenue = orderList
+      .filter(
+        o =>
+          o.payment_status ===
+          "Pembayaran Diterima"
+      )
+      .reduce(
+        (total, o) =>
+          total + (Number(o.total) || 0),
+        0
+      );
+
+    $("#content").innerHTML = `
+
+      <div class="cards">
+
+        <div class="stat">
+          🧾
+          <p>Total Pesanan</p>
+          <h2>${totalOrders}</h2>
+        </div>
+
+        <div class="stat">
+          🛍️
+          <p>GO Aktif</p>
+          <h2>${go}</h2>
+        </div>
+
+        <div class="stat">
+          💳
+          <p>Menunggu Pembayaran</p>
+          <h2>${pending}</h2>
+        </div>
+
+        <div class="stat">
+          📦
+          <p>Total Ready Stock</p>
+          <h2>${readyStock}</h2>
+        </div>
+
+      </div>
+
+      <section class="panel">
+        <h2>Pendapatan Terverifikasi</h2>
+
+        <h1 style="color:#e66f9f">
+          ${fmt(revenue)}
+        </h1>
+      </section>
+
+    `;
+
+  } catch (error) {
+
+    console.error(error);
+
+    $("#content").innerHTML =
+      `<p>Gagal memuat dashboard.</p>`;
+
+  }
+}
+
+
+// ===============================
+// PRODUK
+// ===============================
+
+async function products() {
+
+  $("#title").textContent =
+    "Produk & GO";
+
+  $("#content").innerHTML =
+    `<p>Memuat produk...</p>`;
+
+  try {
+
+    const ps = await supabase(
+      "products?select=*&order=id.desc"
+    );
+
+    $("#content").innerHTML = `
+
+      <section class="panel">
+
+        <h2>Tambah Produk / GO</h2>
+
+        <form
+          class="form"
+          onsubmit="addProduct(event)"
+        >
+
+          <select name="type">
+
+            <option value="go">
+              GO
+            </option>
+
+            <option value="ready">
+              Ready Stock
+            </option>
+
+          </select>
+
+
+          <input
+            name="emoji"
+            placeholder="Emoji contoh: 💿"
+            value="💿"
+          >
+
+
+          <input
+            name="name"
+            placeholder="Nama produk"
+            required
+          >
+
+
+          <input
+            name="price"
+            type="number"
+            placeholder="Harga"
+            required
+          >
+
+
+          <input
+            name="stock"
+            type="number"
+            placeholder="Stok Ready Stock"
+          >
+
+
+          <input
+            name="deadline"
+            placeholder="Deadline GO"
+          >
+
+
+          <input
+            name="quota"
+            type="number"
+            placeholder="Kuota GO"
+          >
+
+
+          <input
+            name="options"
+            placeholder="Pilihan: Random,Member"
+            value="Random"
+          >
+
+
+          <select name="dp_allowed">
+
+            <option value="false">
+              Tidak ada DP
+            </option>
+
+            <option value="true">
+              DP diizinkan
+            </option>
+
+          </select>
+
+
+          <button class="btn">
+            Tambah Produk
+          </button>
+
+        </form>
+
+      </section>
+
+
+      <section class="panel">
+
+        <h2>Produk Aktif</h2>
+
+        ${
+          ps.length
+            ? ps.map(p => `
+
+              <div class="product">
+
+                <h3>
+                  ${p.emoji || "📦"}
+                  ${p.name}
+                </h3>
+
+                <p>
+                  ${p.type === "go"
+                    ? "OPEN GO"
+                    : "READY STOCK"}
+                  •
+                  ${fmt(p.price)}
+                </p>
+
+                <p>
+
+                  ${
+                    p.type === "go"
+                      ? `Deadline: ${p.deadline || "-"}`
+                      : `Stok: ${p.stock || 0}`
+                  }
+
+                </p>
+
+                <div class="actions">
+
+                  <button
+                    onclick="archive(${p.id})"
+                  >
+                    Hapus Produk
+                  </button>
+
+                </div>
+
+              </div>
+
+            `).join("")
