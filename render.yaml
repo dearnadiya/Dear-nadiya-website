@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: dear-nadiya
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /var/data/dear_nadiya.db
+    disk:
+      name: dear-nadiya-data
+      mountPath: /var/data
+      sizeGB: 1
