@@ -1,5 +1,11 @@
 let products = [], cart = [];
 
+const rupiah = n => new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+}).format(n);
+
 const SUPABASE_URL = "https://cwwzsbqfznzwfclajwnw.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
 
