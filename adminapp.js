@@ -13,4 +13,17 @@ async function payments(){
  $("#title").textContent="Pembayaran";let os=await api("/api/admin/orders");
  $("#content").innerHTML=`<section class="panel"><h2>Verifikasi Bukti Pembayaran</h2><table><thead><tr><th>Order</th><th>Customer</th><th>Nominal</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${os.map(o=>`<tr><td>${o.order_code}</td><td>${o.customer_name}</td><td>${fmt(o.amount_due)}</td><td>${o.payment_proof_url?`<a href="${o.payment_proof_url}" target="_blank">Lihat Bukti</a>`:"Belum upload"}</td><td>${o.payment_status}</td><td>${o.payment_proof_url&&o.payment_status!=="Pembayaran Diterima"?`<button class="btn" onclick="verify(${o.id})">Verifikasi</button>`:"-"}</td></tr>`).join("")}</tbody></table></section>`}
 async function verify(id){await api("/api/admin/orders/"+id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({payment_status:"Pembayaran Diterima"})});payments()}
-async function recap(){$("#title").textContent="Rekap GO";let os=await api("/api/admin/orders"),map={};os.forEach(o=>o.items.forEach(i=>{let k=i.product_name+" — "+i.selected_option;map[k]=(map[k]||0)+i.qty}));$("#content").innerHTML=`<section class="panel"><h2>Rekap Semua Pesanan</h2><table><thead><tr><th>Produk / Pilihan</th><th>Jumlah</th></tr></thead><tbody>${Object.entries(map).map(([k,v])=>`<tr><td>${k}</td><td><b>${v}</b></td></tr>`).join("")}</tbody></table></section>`}
+async function recap(){
+    document.getElementById("title").textContent = "Rekap GO";
+
+    document.getElementById("content").innerHTML = `
+        <section class="panel">
+            <h2>📈 Rekap Group Order</h2>
+            <p>Rekap seluruh data pembelian GO Dear Nadiya.</p>
+
+            <button onclick="window.open('https://docs.google.com/spreadsheets/d/17iLspFRuewGhVZXLl6RaPD3orjSAdHB9BfkmamlXJeY/edit?usp=drivesdk', '_blank')">
+                📊 Buka Rekap GO
+            </button>
+        </section>
+    `;
+}
