@@ -68,9 +68,6 @@ function render(){
             .map(card)
             .join("");
 }
-function detail(id) {
-  window.location.href = "https://dearnadiya.github.io/Dear-nadiya-website/detail.html?id=1" + id;
-}
 function selectOpt(e){document.querySelectorAll("#opts .option").forEach(x=>x.classList.remove("active"));e.classList.add("active")}
 function qty(n){let e=document.getElementById("qty"),v=Math.max(1,+e.textContent+n);e.textContent=v}
 function add(id){const p=products.find(x=>x.id===id);cart.push({product_id:id,name:p.name,price:p.price,qty:+document.getElementById("qty").textContent,selected_option:document.querySelector("#opts .active").textContent,dp_allowed:p.dp_allowed});document.getElementById("count").textContent=cart.reduce((a,b)=>a+b.qty,0);closeModal();alert("Masuk keranjang ♥")}
