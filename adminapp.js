@@ -1,5 +1,16 @@
 const $=q=>document.querySelector(q),fmt=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n);
-async function login(){let r=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:$("#u").value,password:$("#p").value})});if(!r.ok){alert("Login gagal");return}$("#login").classList.add("hidden");$("#app").classList.remove("hidden");page("dash")}
+function login() {
+  const username = document.getElementById("u").value;
+  const password = document.getElementById("p").value;
+
+  if (username === "admin" && password === "dear-nadiya-2026") {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    page("dash");
+  } else {
+    alert("Username atau password salah");
+  }
+}
 async function logout(){await fetch("/api/admin/logout",{method:"POST"});location.reload()}
 async function api(u,opt){let r=await fetch(u,opt);if(r.status===401){alert("Silakan login kembali");location.reload()}return r.json()}
 function page(p){({dash,products,orders,payments,recap}[p])()}
