@@ -60,3 +60,4 @@ function openModal(){
 function closeModal(){
   document.getElementById("modal").classList.remove("show");
 }
+load();
