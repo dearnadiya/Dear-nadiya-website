@@ -4,15 +4,25 @@ const SUPABASE_URL = "https://cwwzsbqfznzwfclajwnw.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
 
 async function load(){
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, {
-        headers: {
-            apikey: SUPABASE_KEY,
-            Authorization: `Bearer ${SUPABASE_KEY}`
-        }
-    });
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, {
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`
+            }
+        });
 
-    products = await response.json();
-    render();
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}`);
+        }
+
+        products = await response.json();
+        console.log("Products:", products);
+        render();
+    } catch (error) {
+        console.error("Gagal memuat produk:", error);
+        alert("Produk gagal dimuat: " + error.message);
+    }
 }
 function render(){const card=p=>`<article class="card"><div class="thumb">${p.emoji}</div><span class="badge">${p.type==="go"?"OPEN GO":"READY STOCK"}</span><h3>${p.name}</h3><p><b>${rupiah(p.price)}</b></p><p>${p.type==="go"?`Deadline: ${p.deadline}<br>Kuota: ${p.quota}`:`Stok: ${p.stock}`}</p><button class="btn secondary" onclick="window.location.href='/detail.html?id=${p.id}'">Lihat Detail</button></article>`;document.getElementById("goGrid").innerHTML=products.filter(x=>x.type==="go").map(card).join("");document.getElementById("readyGrid").innerHTML=products.filter(x=>x.type==="ready").map(card).join("");}
 function detail(id){
