@@ -30,7 +30,44 @@ async function load(){
         alert("Produk gagal dimuat: " + error.message);
     }
 }
-function render(){const card=p=>`<article class="card"><div class="thumb">${p.emoji}</div><span class="badge">${p.type==="go"?"OPEN GO":"READY STOCK"}</span><h3>${p.name}</h3><p><b>${rupiah(p.price)}</b></p><p>${p.type==="go"?`Deadline: ${p.deadline}<br>Kuota: ${p.quota}`:`Stok: ${p.stock}`}</p><button class="btn secondary" onclick="window.location.href='/detail.html?id=${p.id}'">Lihat Detail</button></article>`;document.getElementById("goGrid").innerHTML=products.filter(x=>x.type==="go").map(card).join("");document.getElementById("readyGrid").innerHTML=products.filter(x=>x.type==="ready").map(card).join("");}
+function render(){
+    const card = p => `
+        <article class="card">
+            <div class="thumb">${p.emoji}</div>
+            <span class="badge">
+                ${p.type === "go" ? "OPEN GO" : "READY STOCK"}
+            </span>
+
+            <h3>${p.name}</h3>
+
+            <p><b>${rupiah(p.price)}</b></p>
+
+            <p>
+                ${p.type === "go"
+                    ? `Deadline: ${p.deadline}<br>Kuota: ${p.quota}`
+                    : `Stok: ${p.stock}`
+                }
+            </p>
+
+            <button class="btn secondary"
+                onclick="window.location.href='detail.html?id=${p.id}'">
+                Lihat Detail
+            </button>
+        </article>
+    `;
+
+    document.getElementById("goGrid").innerHTML =
+        products
+            .filter(x => x.type === "go")
+            .map(card)
+            .join("");
+
+    document.getElementById("readyGrid").innerHTML =
+        products
+            .filter(x => x.type === "ready")
+            .map(card)
+            .join("");
+}
 function detail(id) {
   window.location.href = "https://dearnadiya.github.io/Dear-nadiya-website/detail.html?id=1" + id;
 }
