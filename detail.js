@@ -9,10 +9,23 @@ async function loadDetail(){
     return;
   }
 
-  try{
-    const res = await fetch("/api/products");
-    const products = await res.json();
-    const p = products.find(x => String(x.id) === String(id));
+  try {
+  const SUPABASE_URL = "https://cwzsbgfznzwfclajww.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+
+  if (!res.ok) {
+    throw new Error(`Error ${res.status}`);
+  }
+
+  const products = await res.json();
+  const product = products.find(x => String(x.id) === String(id));
 
     if(!p){
       target.innerHTML = "<h2>Produk tidak ditemukan</h2><p>Produk mungkin sudah tidak aktif.</p>";
