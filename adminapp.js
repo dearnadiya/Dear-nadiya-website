@@ -1,3 +1,7 @@
+// ========================================
+// CONFIG SUPABASE
+// ========================================
+
 const $ = q => document.querySelector(q);
 
 const fmt = n =>
@@ -8,102 +12,250 @@ const fmt = n =>
   }).format(Number(n) || 0);
 
 
-// ===============================
-// KONFIGURASI SUPABASE
-// ===============================
-
-const SUPABASE_URL = "https://cwwzsbqfznzwfclajwnw.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
+// GANTI DENGAN DATA SUPABASE KAMU
+const SUPABASE_URL = "ISI_SUPABASE_URL_KAMU";
+const SUPABASE_KEY = "ISI_SUPABASE_ANON_KEY_KAMU";
 
 
-// ===============================
+// ========================================
 // HELPER SUPABASE
-// ===============================
+// ========================================
 
-async function supabase(path, options = {}) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    ...options,
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {})
+async function supabase() {
+  return {
+    from(table) {
+      const baseUrl =
+        `${SUPABASE_URL}/rest/v1/${table}`;
+
+      return {
+
+        async select(columns = "*") {
+          const response = await fetch(
+            `${baseUrl}?select=${encodeURIComponent(columns)}`,
+            {
+              headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`
+              }
+            }
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            console.error("Supabase error:", data);
+            throw new Error(data.message || "Gagal mengambil data");
+          }
+
+          return { data };
+        },
+
+
+        async insert(data) {
+          const response = await fetch(baseUrl, {
+            method: "POST",
+
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: `Bearer ${SUPABASE_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation"
+            },
+
+            body: JSON.stringify(data)
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            console.error("Supabase error:", result);
+            throw new Error(result.message || "Gagal menyimpan data");
+          }
+
+          return { data: result };
+        },
+
+
+        async update(data, id) {
+          const response = await fetch(
+            `${baseUrl}?id=eq.${id}`,
+            {
+              method: "PATCH",
+
+              headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`,
+                "Content-Type": "application/json",
+                Prefer: "return=representation"
+              },
+
+              body: JSON.stringify(data)
+            }
+          );
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            console.error("Supabase error:", result);
+            throw new Error(result.message || "Gagal memperbarui data");
+          }
+
+          return { data: result };
+        },
+
+
+        async delete(id) {
+          const response = await fetch(
+            `${baseUrl}?id=eq.${id}`,
+            {
+              method: "DELETE",
+
+              headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`
+              }
+            }
+          );
+
+          if (!response.ok) {
+            const result = await response.json();
+
+            console.error("Supabase error:", result);
+
+            throw new Error(
+              result.message || "Gagal menghapus data"
+            );
+          }
+
+          return true;
+        }
+      };
     }
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-
-    console.error("Supabase Error:", error);
-
-    throw new Error(
-      `Gagal mengambil data (${response.status})`
-    );
-  }
-
-  if (response.status === 204) {
-    return null;
-  }
-
-  return response.json();
+  };
 }
 
 
-// ===============================
+// ========================================
 // LOGIN
-// ===============================
+// ========================================
 
 function login() {
-  const username = document.getElementById("u").value;
-  const password = document.getElementById("p").value;
+
+  const username =
+    document.getElementById("u").value;
+
+  const password =
+    document.getElementById("p").value;
 
   if (
     username === "admin" &&
     password === "dear-nadiya-2026"
   ) {
+
     document
       .getElementById("login")
-      .classList.add("hidden");
+      .classList
+      .add("hidden");
+
 
     document
       .getElementById("app")
-      .classList.remove("hidden");
+      .classList
+      .remove("hidden");
+
+
+    localStorage.setItem(
+      "dearNadiyaAdmin",
+      "loggedin"
+    );
 
     page("dash");
 
   } else {
-    alert("Username atau password salah");
+
+    alert(
+      "Username atau password salah"
+    );
+
   }
+
 }
 
 
-// ===============================
+// ========================================
+// CEK LOGIN SAAT HALAMAN DIBUKA
+// ========================================
+
+window.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const loggedIn =
+      localStorage.getItem(
+        "dearNadiyaAdmin"
+      );
+
+    if (loggedIn === "loggedin") {
+
+      document
+        .getElementById("login")
+        .classList
+        .add("hidden");
+
+
+      document
+        .getElementById("app")
+        .classList
+        .remove("hidden");
+
+
+      page("dash");
+
+    }
+
+  }
+);
+
+
+// ========================================
 // LOGOUT
-// ===============================
+// ========================================
 
 function logout() {
+
+  localStorage.removeItem(
+    "dearNadiyaAdmin"
+  );
+
+
   document
     .getElementById("app")
-    .classList.add("hidden");
+    .classList
+    .add("hidden");
+
 
   document
     .getElementById("login")
-    .classList.remove("hidden");
+    .classList
+    .remove("hidden");
+
 
   document.getElementById("u").value = "";
+
   document.getElementById("p").value = "";
 
+
   alert("Berhasil keluar");
+
 }
 
 
-// ===============================
+// ========================================
 // NAVIGASI HALAMAN
-// ===============================
+// ========================================
 
 function page(p) {
+
   const pages = {
     dash,
     products,
@@ -115,17 +267,206 @@ function page(p) {
   if (pages[p]) {
     pages[p]();
   }
+
 }
 
 
-// ===============================
+// ========================================
 // DASHBOARD
-// ===============================
+// ========================================
 
 async function dash() {
-  $("#title").textContent = "Dashboard";
+
+  $("#title").textContent =
+    "Dashboard";
+
 
   $("#content").innerHTML =
+    "<p>Memuat dashboard...</p>";
+
+
+  try {
+
+    const db =
+      await supabase();
+
+
+    const { data: productList } =
+      await db
+        .from("products")
+        .select("*");
+
+
+    const { data: orderList } =
+      await db
+        .from("orders")
+        .select("*");
+
+
+    const products =
+      productList || [];
+
+
+    const orders =
+      orderList || [];
+
+
+    // TOTAL PESANAN
+
+    const totalOrders =
+      orders.length;
+
+
+    // TOTAL GO AKTIF
+
+    const go =
+      products.filter(
+        p => p.type === "go"
+      ).length;
+
+
+    // TOTAL READY STOCK
+
+    const readyStock =
+      products.filter(
+        p => p.type === "ready"
+      )
+      .reduce(
+        (total, p) =>
+          total +
+          (Number(p.stock) || 0),
+        0
+      );
+
+
+    // MENUNGGU PEMBAYARAN
+
+    const pending =
+      orders.filter(
+        o =>
+          o.payment_status ===
+            "Menunggu Pembayaran" ||
+
+          o.payment_status ===
+            "Pending" ||
+
+          o.payment_status ===
+            "Belum Dibayar"
+      ).length;
+
+
+    // PENDAPATAN
+
+    const revenue =
+      orders
+        .filter(
+          o =>
+            o.payment_status ===
+            "Pembayaran Diterima"
+        )
+        .reduce(
+          (total, o) =>
+            total +
+            (Number(o.total) || 0),
+          0
+        );
+
+
+    $("#content").innerHTML = `
+
+      <div class="cards">
+
+        <div class="stat">
+          🧾
+          <p>Total Pesanan</p>
+          <h2>${totalOrders}</h2>
+        </div>
+
+
+        <div class="stat">
+          🛍️
+          <p>GO Aktif</p>
+          <h2>${go}</h2>
+        </div>
+
+
+        <div class="stat">
+          💳
+          <p>Menunggu Pembayaran</p>
+          <h2>${pending}</h2>
+        </div>
+
+
+        <div class="stat">
+          📦
+          <p>Total Ready Stock</p>
+          <h2>${readyStock}</h2>
+        </div>
+
+      </div>
+
+
+      <section class="panel">
+
+        <h2>
+          Pendapatan Terverifikasi
+        </h2>
+
+        <h1 style="color:#e66f9f">
+          ${fmt(revenue)}
+        </h1>
+
+      </section>
+
+    `;
+
+  } catch (error) {
+
+    console.error(error);
+
+    $("#content").innerHTML =
+      `<p>Gagal memuat dashboard.</p>`;
+
+  }
+
+}
+
+
+// ========================================
+// PRODUK
+// ========================================
+
+async function products() {
+
+  $("#title").textContent =
+    "Produk & GO";
+
+
+  $("#content").innerHTML =
+    "<p>Memuat produk...</p>";
+
+
+  try {
+
+    const db =
+      await supabase();
+
+
+    const { data } =
+      await db
+        .from("products")
+        .select("*");
+
+
+    const ps =
+      data || [];
+
+
+    $("#content").innerHTML = `
+
+      <section class="panel">
+
+        <h  $("#content").innerHTML =
     `<p>Memuat dashboard...</p>`;
 
   try {
