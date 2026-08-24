@@ -1,10 +1,10 @@
 // ========================================
-// CONFIG SUPABASE
+// CONFIG
 // ========================================
 
-const $ = q => document.querySelector(q);
+const $ = (q) => document.querySelector(q);
 
-const fmt = n =>
+const fmt = (n) =>
   new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -12,126 +12,84 @@ const fmt = n =>
   }).format(Number(n) || 0);
 
 
-// GANTI DENGAN DATA SUPABASE KAMU
-const SUPABASE_URL = "ISI_SUPABASE_URL_KAMU";
-const SUPABASE_KEY = "ISI_SUPABASE_ANON_KEY_KAMU";
+// ========================================
+// SUPABASE
+// ========================================
+
+// URL PROJECT SUPABASE
+// JANGAN tambahkan /rest/v1 di sini
+const SUPABASE_URL = "https://cwwzsbqfznzwfclajwnw.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
+
+const SUPABASE_REST =
+  `${SUPABASE_URL}/rest/v1`;
 
 
 // ========================================
 // HELPER SUPABASE
 // ========================================
 
-async function supabase() {
-  return {
-    from(table) {
-      const baseUrl =
-        `${SUPABASE_URL}/rest/v1/${table}`;
+async function dbRequest(
+  table,
+  method = "GET",
+  query = "",
+  body = null
+) {
+  const url =
+    `${SUPABASE_REST}/${table}${query}`;
 
-      return {
-
-        async select(columns = "*") {
-          const response = await fetch(
-            `${baseUrl}?select=${encodeURIComponent(columns)}`,
-            {
-              headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`
-              }
-            }
-          );
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            console.error("Supabase error:", data);
-            throw new Error(data.message || "Gagal mengambil data");
-          }
-
-          return { data };
-        },
-
-
-        async insert(data) {
-          const response = await fetch(baseUrl, {
-            method: "POST",
-
-            headers: {
-              apikey: SUPABASE_KEY,
-              Authorization: `Bearer ${SUPABASE_KEY}`,
-              "Content-Type": "application/json",
-              Prefer: "return=representation"
-            },
-
-            body: JSON.stringify(data)
-          });
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            console.error("Supabase error:", result);
-            throw new Error(result.message || "Gagal menyimpan data");
-          }
-
-          return { data: result };
-        },
-
-
-        async update(data, id) {
-          const response = await fetch(
-            `${baseUrl}?id=eq.${id}`,
-            {
-              method: "PATCH",
-
-              headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`,
-                "Content-Type": "application/json",
-                Prefer: "return=representation"
-              },
-
-              body: JSON.stringify(data)
-            }
-          );
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            console.error("Supabase error:", result);
-            throw new Error(result.message || "Gagal memperbarui data");
-          }
-
-          return { data: result };
-        },
-
-
-        async delete(id) {
-          const response = await fetch(
-            `${baseUrl}?id=eq.${id}`,
-            {
-              method: "DELETE",
-
-              headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`
-              }
-            }
-          );
-
-          if (!response.ok) {
-            const result = await response.json();
-
-            console.error("Supabase error:", result);
-
-            throw new Error(
-              result.message || "Gagal menghapus data"
-            );
-          }
-
-          return true;
-        }
-      };
-    }
+  const headers = {
+    apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`
   };
+
+  if (body !== null) {
+    headers["Content-Type"] =
+      "application/json";
+
+    headers["Prefer"] =
+      "return=representation";
+  }
+
+  const response = await fetch(url, {
+    method,
+    headers,
+    body:
+      body !== null
+        ? JSON.stringify(body)
+        : undefined
+  });
+
+  const text =
+    await response.text();
+
+  let result = null;
+
+  if (text) {
+    try {
+      result = JSON.parse(text);
+    } catch {
+      result = text;
+    }
+  }
+
+  if (!response.ok) {
+    console.error(
+      "Supabase error:",
+      result
+    );
+
+    throw new Error(
+      result?.message ||
+      result?.hint ||
+      result?.details ||
+      "Terjadi kesalahan Supabase"
+    );
+  }
+
+  return result;
 }
 
 
@@ -139,18 +97,59 @@ async function supabase() {
 // LOGIN
 // ========================================
 
-function login() {
+async function login() {
 
   const username =
-    document.getElementById("u").value;
+    document
+      .getElementById("u")
+      .value
+      .trim();
 
   const password =
-    document.getElementById("p").value;
+    document
+      .getElementById("p")
+      .value;
 
-  if (
-    username === "admin" &&
-    password === "dear-nadiya-2026"
-  ) {
+
+  if (!username || !password) {
+
+    alert(
+      "Masukkan username dan password"
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const result =
+      await dbRequest(
+        "admin_users",
+        "GET",
+        `?username=eq.${encodeURIComponent(username)}` +
+        `&password=eq.${encodeURIComponent(password)}` +
+        "&select=*"
+      );
+
+
+    if (!result || result.length === 0) {
+
+      alert(
+        "Username atau password salah"
+      );
+
+      return;
+    }
+
+
+    // SIMPAN STATUS LOGIN
+
+    localStorage.setItem(
+      "adminLoggedIn",
+      "true"
+    );
+
 
     document
       .getElementById("login")
@@ -164,21 +163,20 @@ function login() {
       .remove("hidden");
 
 
-    localStorage.setItem(
-      "dearNadiyaAdmin",
-      "loggedin"
-    );
-
     page("dash");
 
-  } else {
+  } catch (error) {
 
-    alert(
-      "Username atau password salah"
+    console.error(
+      "Login error:",
+      error
     );
 
+    alert(
+      "Login gagal: " +
+      error.message
+    );
   }
-
 }
 
 
@@ -192,10 +190,11 @@ window.addEventListener(
 
     const loggedIn =
       localStorage.getItem(
-        "dearNadiyaAdmin"
+        "adminLoggedIn"
       );
 
-    if (loggedIn === "loggedin") {
+
+    if (loggedIn === "true") {
 
       document
         .getElementById("login")
@@ -224,7 +223,7 @@ window.addEventListener(
 function logout() {
 
   localStorage.removeItem(
-    "dearNadiyaAdmin"
+    "adminLoggedIn"
   );
 
 
@@ -240,18 +239,22 @@ function logout() {
     .remove("hidden");
 
 
-  document.getElementById("u").value = "";
+  document
+    .getElementById("u")
+    .value = "";
 
-  document.getElementById("p").value = "";
+
+  document
+    .getElementById("p")
+    .value = "";
 
 
   alert("Berhasil keluar");
-
 }
 
 
 // ========================================
-// NAVIGASI HALAMAN
+// NAVIGASI
 // ========================================
 
 function page(p) {
@@ -264,8 +267,11 @@ function page(p) {
     recap
   };
 
+
   if (pages[p]) {
+
     pages[p]();
+
   }
 
 }
@@ -287,20 +293,20 @@ async function dash() {
 
   try {
 
-    const db =
-      await supabase();
+    const productList =
+      await dbRequest(
+        "products",
+        "GET",
+        "?select=*"
+      );
 
 
-    const { data: productList } =
-      await db
-        .from("products")
-        .select("*");
-
-
-    const { data: orderList } =
-      await db
-        .from("orders")
-        .select("*");
+    const orderList =
+      await dbRequest(
+        "orders",
+        "GET",
+        "?select=*"
+      );
 
 
     const products =
@@ -311,13 +317,9 @@ async function dash() {
       orderList || [];
 
 
-    // TOTAL PESANAN
-
     const totalOrders =
       orders.length;
 
-
-    // TOTAL GO AKTIF
 
     const go =
       products.filter(
@@ -325,21 +327,18 @@ async function dash() {
       ).length;
 
 
-    // TOTAL READY STOCK
-
     const readyStock =
-      products.filter(
-        p => p.type === "ready"
-      )
-      .reduce(
-        (total, p) =>
-          total +
-          (Number(p.stock) || 0),
-        0
-      );
+      products
+        .filter(
+          p => p.type === "ready"
+        )
+        .reduce(
+          (total, p) =>
+            total +
+            (Number(p.stock) || 0),
+          0
+        );
 
-
-    // MENUNGGU PEMBAYARAN
 
     const pending =
       orders.filter(
@@ -354,8 +353,6 @@ async function dash() {
             "Belum Dibayar"
       ).length;
 
-
-    // PENDAPATAN
 
     const revenue =
       orders
@@ -382,20 +379,17 @@ async function dash() {
           <h2>${totalOrders}</h2>
         </div>
 
-
         <div class="stat">
           🛍️
           <p>GO Aktif</p>
           <h2>${go}</h2>
         </div>
 
-
         <div class="stat">
           💳
           <p>Menunggu Pembayaran</p>
           <h2>${pending}</h2>
         </div>
-
 
         <div class="stat">
           📦
@@ -404,7 +398,6 @@ async function dash() {
         </div>
 
       </div>
-
 
       <section class="panel">
 
@@ -425,7 +418,7 @@ async function dash() {
     console.error(error);
 
     $("#content").innerHTML =
-      `<p>Gagal memuat dashboard.</p>`;
+      `<p>Gagal memuat dashboard: ${error.message}</p>`;
 
   }
 
@@ -448,140 +441,21 @@ async function products() {
 
   try {
 
-    const db =
-      await supabase();
-
-
-    const { data } =
-      await db
-        .from("products")
-        .select("*");
-
-
     const ps =
-      data || [];
-
-
-    $("#content").innerHTML = `
-
-      <section class="panel">
-
-        <h  $("#content").innerHTML =
-    `<p>Memuat dashboard...</p>`;
-
-  try {
-
-    const products = await supabase(
-      "products?select=*"
-    );
-
-    const orderList = await supabase(
-      "orders?select=*"
-    );
-
-    const totalOrders = orderList.length;
-
-    const go = products.filter(
-      p => p.type === "go"
-    ).length;
-
-    const readyStock = products.filter(
-      p => p.type === "ready"
-    ).length;
-
-    const pending = orderList.filter(
-      o =>
-        o.payment_status === "Menunggu Pembayaran" ||
-        o.payment_status === "Pending" ||
-        o.payment_status === "Belum Dibayar"
-    ).length;
-
-    const revenue = orderList
-      .filter(
-        o =>
-          o.payment_status ===
-          "Pembayaran Diterima"
-      )
-      .reduce(
-        (total, o) =>
-          total + (Number(o.total) || 0),
-        0
+      await dbRequest(
+        "products",
+        "GET",
+        "?select=*&order=id.desc"
       );
 
-    $("#content").innerHTML = `
-
-      <div class="cards">
-
-        <div class="stat">
-          🧾
-          <p>Total Pesanan</p>
-          <h2>${totalOrders}</h2>
-        </div>
-
-        <div class="stat">
-          🛍️
-          <p>GO Aktif</p>
-          <h2>${go}</h2>
-        </div>
-
-        <div class="stat">
-          💳
-          <p>Menunggu Pembayaran</p>
-          <h2>${pending}</h2>
-        </div>
-
-        <div class="stat">
-          📦
-          <p>Total Ready Stock</p>
-          <h2>${readyStock}</h2>
-        </div>
-
-      </div>
-
-      <section class="panel">
-        <h2>Pendapatan Terverifikasi</h2>
-
-        <h1 style="color:#e66f9f">
-          ${fmt(revenue)}
-        </h1>
-      </section>
-
-    `;
-
-  } catch (error) {
-
-    console.error(error);
-
-    $("#content").innerHTML =
-      `<p>Gagal memuat dashboard.</p>`;
-
-  }
-}
-
-
-// ===============================
-// PRODUK
-// ===============================
-
-async function products() {
-
-  $("#title").textContent =
-    "Produk & GO";
-
-  $("#content").innerHTML =
-    `<p>Memuat produk...</p>`;
-
-  try {
-
-    const ps = await supabase(
-      "products?select=*&order=id.desc"
-    );
 
     $("#content").innerHTML = `
 
       <section class="panel">
 
-        <h2>Tambah Produk / GO</h2>
+        <h2>
+          Tambah Produk / GO
+        </h2>
 
         <form
           class="form"
@@ -603,7 +477,7 @@ async function products() {
 
           <input
             name="emoji"
-            placeholder="Emoji contoh: 💿"
+            placeholder="Emoji"
             value="💿"
           >
 
@@ -645,7 +519,7 @@ async function products() {
 
           <input
             name="options"
-            placeholder="Pilihan: Random,Member"
+            placeholder="Pilihan"
             value="Random"
           >
 
@@ -663,7 +537,10 @@ async function products() {
           </select>
 
 
-          <button class="btn">
+          <button
+            type="submit"
+            class="btn"
+          >
             Tambah Produk
           </button>
 
@@ -674,11 +551,14 @@ async function products() {
 
       <section class="panel">
 
-        <h2>Produk Aktif</h2>
+        <h2>
+          Produk Aktif
+        </h2>
 
-        ${
-          ps.length
-            ? ps.map(p => `
+        ${ps.length === 0
+          ? "<p>Belum ada produk.</p>"
+          : ps.map(
+              p => `
 
               <div class="product">
 
@@ -696,13 +576,10 @@ async function products() {
                 </p>
 
                 <p>
-
-                  ${
-                    p.type === "go"
-                      ? `Deadline: ${p.deadline || "-"}`
-                      : `Stok: ${p.stock || 0}`
+                  ${p.type === "go"
+                    ? `Deadline: ${p.deadline || "-"}`
+                    : `Stok: ${p.stock || 0}`
                   }
-
                 </p>
 
                 <div class="actions">
@@ -717,4 +594,502 @@ async function products() {
 
               </div>
 
-            `).join("")
+            `
+            ).join("")
+        }
+
+      </section>
+
+    `;
+
+  } catch (error) {
+
+    console.error(error);
+
+    $("#content").innerHTML =
+      `<p>Gagal memuat produk: ${error.message}</p>`;
+
+  }
+
+}
+
+
+// ========================================
+// TAMBAH PRODUK
+// ========================================
+
+async function addProduct(e) {
+
+  e.preventDefault();
+
+
+  const form =
+    e.target;
+
+
+  const formData =
+    new FormData(form);
+
+
+  const d =
+    Object.fromEntries(
+      formData.entries()
+    );
+
+
+  d.price =
+    Number(d.price) || 0;
+
+
+  d.stock =
+    Number(d.stock) || 0;
+
+
+  d.quota =
+    Number(d.quota) || 0;
+
+
+  d.dp_allowed =
+    d.dp_allowed === "true";
+
+
+  try {
+
+    await dbRequest(
+      "products",
+      "POST",
+      "",
+      d
+    );
+
+
+    alert(
+      "Produk berhasil ditambahkan"
+    );
+
+
+    form.reset();
+
+
+    products();
+
+  } catch (error) {
+
+    alert(
+      "Gagal menambahkan produk: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+// ========================================
+// HAPUS PRODUK
+// ========================================
+
+async function archive(id) {
+
+  const yakin =
+    confirm(
+      "Yakin ingin menghapus produk ini?"
+    );
+
+
+  if (!yakin) return;
+
+
+  try {
+
+    await dbRequest(
+      "products",
+      "DELETE",
+      `?id=eq.${id}`
+    );
+
+
+    alert(
+      "Produk berhasil dihapus"
+    );
+
+
+    products();
+
+  } catch (error) {
+
+    alert(
+      "Gagal menghapus produk: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+// ========================================
+// PESANAN
+// ========================================
+
+async function orders() {
+
+  $("#title").textContent =
+    "Pesanan";
+
+
+  $("#content").innerHTML =
+    "<p>Memuat pesanan...</p>";
+
+
+  try {
+
+    const os =
+      await dbRequest(
+        "orders",
+        "GET",
+        "?select=*&order=id.desc"
+      );
+
+
+    $("#content").innerHTML = `
+
+      <section class="panel">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Pembayaran</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            ${os.map(
+              o => `
+
+              <tr>
+
+                <td>
+                  ${o.order_code || "-"}
+                </td>
+
+                <td>
+                  ${o.customer_name || "-"}
+                </td>
+
+                <td>
+                  ${fmt(o.total)}
+                </td>
+
+                <td>
+                  ${o.payment_status || "-"}
+                </td>
+
+                <td>
+                  ${o.order_status || "-"}
+                </td>
+
+                <td>
+
+                  <button
+                    onclick="setStatus(
+                      ${o.id},
+                      'Pesanan Diproses'
+                    )"
+                  >
+                    Proses
+                  </button>
+
+                </td>
+
+              </tr>
+
+            `
+            ).join("")}
+
+          </tbody>
+
+        </table>
+
+      </section>
+
+    `;
+
+  } catch (error) {
+
+    console.error(error);
+
+    $("#content").innerHTML =
+      `<p>Gagal memuat pesanan: ${error.message}</p>`;
+
+  }
+
+}
+
+
+// ========================================
+// UBAH STATUS PESANAN
+// ========================================
+
+async function setStatus(
+  id,
+  status
+) {
+
+  try {
+
+    await dbRequest(
+      "orders",
+      "PATCH",
+      `?id=eq.${id}`,
+      {
+        order_status: status
+      }
+    );
+
+
+    orders();
+
+  } catch (error) {
+
+    alert(
+      "Gagal mengubah status: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+// ========================================
+// PEMBAYARAN
+// ========================================
+
+async function payments() {
+
+  $("#title").textContent =
+    "Pembayaran";
+
+
+  $("#content").innerHTML =
+    "<p>Memuat pembayaran...</p>";
+
+
+  try {
+
+    const os =
+      await dbRequest(
+        "orders",
+        "GET",
+        "?select=*&order=id.desc"
+      );
+
+
+    $("#content").innerHTML = `
+
+      <section class="panel">
+
+        <h2>
+          Verifikasi Bukti Pembayaran
+        </h2>
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Nominal</th>
+              <th>Bukti</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            ${os.map(
+              o => `
+
+              <tr>
+
+                <td>
+                  ${o.order_code || "-"}
+                </td>
+
+                <td>
+                  ${o.customer_name || "-"}
+                </td>
+
+                <td>
+                  ${fmt(
+                    o.amount_due || o.total
+                  )}
+                </td>
+
+                <td>
+
+                  ${o.payment_proof_url
+                    ? `
+                      <a
+                        href="${o.payment_proof_url}"
+                        target="_blank"
+                      >
+                        Lihat Bukti
+                      </a>
+                    `
+                    : "Belum upload"
+                  }
+
+                </td>
+
+                <td>
+                  ${o.payment_status || "-"}
+                </td>
+
+                <td>
+
+                  ${
+                    o.payment_proof_url &&
+                    o.payment_status !==
+                      "Pembayaran Diterima"
+
+                      ? `
+                        <button
+                          class="btn"
+                          onclick="verify(${o.id})"
+                        >
+                          Verifikasi
+                        </button>
+                      `
+
+                      : "-"
+                  }
+
+                </td>
+
+              </tr>
+
+            `
+            ).join("")}
+
+          </tbody>
+
+        </table>
+
+      </section>
+
+    `;
+
+  } catch (error) {
+
+    console.error(error);
+
+    $("#content").innerHTML =
+      `<p>Gagal memuat pembayaran: ${error.message}</p>`;
+
+  }
+
+}
+
+
+// ========================================
+// VERIFIKASI PEMBAYARAN
+// ========================================
+
+async function verify(id) {
+
+  const yakin =
+    confirm(
+      "Yakin ingin memverifikasi pembayaran ini?"
+    );
+
+
+  if (!yakin) return;
+
+
+  try {
+
+    await dbRequest(
+      "orders",
+      "PATCH",
+      `?id=eq.${id}`,
+      {
+        payment_status:
+          "Pembayaran Diterima"
+      }
+    );
+
+
+    alert(
+      "Pembayaran berhasil diverifikasi"
+    );
+
+
+    payments();
+
+  } catch (error) {
+
+    alert(
+      "Gagal memverifikasi pembayaran: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+// ========================================
+// REKAP GO
+// ========================================
+
+function recap() {
+
+  $("#title").textContent =
+    "Rekap GO";
+
+
+  $("#content").innerHTML = `
+
+    <section class="panel">
+
+      <h2>
+        📈 Rekap Group Order
+      </h2>
+
+      <p>
+        Rekap seluruh data pembelian
+        GO Dear Nadiya.
+      </p>
+
+
+      <button
+        class="btn"
+        onclick="window.open(
+          'https://docs.google.com/spreadsheets/d/17iLspFRuewGhVZXLl6RaPD3orjSAdHB9BfkmamlXJeY/edit?usp=drivesdk',
+          '_blank'
+        )"
+      >
+        📊 Buka Rekap GO
+      </button>
+
+    </section>
+
+  `;
+
+}
