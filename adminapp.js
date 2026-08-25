@@ -116,84 +116,96 @@ async function dbRequest(
 
 async function login() {
 
+  alert("LOGIN FUNCTION BERJALAN");
+
   const username =
-    document
-      .getElementById("u")
-      .value
-      .trim();
+    document.getElementById("u").value.trim();
 
   const password =
-    document
-      .getElementById("p")
-      .value;
+    document.getElementById("p").value;
 
 
-  if (!username || !password) {
-
-    alert(
-      "Masukkan username dan password"
-    );
-
-    return;
-  }
+  alert(
+    "Username: " + username +
+    "\nPassword: " + password
+  );
 
 
   try {
 
+    const url =
+      SUPABASE_REST +
+      "/admin_users" +
+      "?username=eq." +
+      encodeURIComponent(username) +
+      "&password=eq." +
+      encodeURIComponent(password) +
+      "&select=*";
+
+
+    const response =
+      await fetch(url, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization:
+            "Bearer " + SUPABASE_KEY
+        }
+      });
+
+
     const result =
-      await dbRequest(
-        "admin_users",
-        "GET",
-        `?username=eq.${encodeURIComponent(username)}` +
-        `&password=eq.${encodeURIComponent(password)}` +
-        "&select=*"
+      await response.json();
+
+
+    alert(
+      "HASIL DARI SUPABASE:\n" +
+      JSON.stringify(result)
+    );
+
+
+    if (
+      Array.isArray(result) &&
+      result.length > 0
+    ) {
+
+      alert("LOGIN BERHASIL");
+
+      localStorage.setItem(
+        "adminLoggedIn",
+        "true"
       );
 
+      document
+        .getElementById("login")
+        .classList
+        .add("hidden");
 
-    if (!result || result.length === 0) {
+      document
+        .getElementById("app")
+        .classList
+        .remove("hidden");
+
+      page("dash");
+
+    } else {
 
       alert(
         "Username atau password salah"
       );
 
-      return;
     }
-
-
-    // SIMPAN STATUS LOGIN
-
-    localStorage.setItem(
-      "adminLoggedIn",
-      "true"
-    );
-
-
-    document
-      .getElementById("login")
-      .classList
-      .add("hidden");
-
-
-    document
-      .getElementById("app")
-      .classList
-      .remove("hidden");
-
-
-    page("dash");
 
   } catch (error) {
 
-    console.error(
-      "Login error:",
-      error
-    );
-
     alert(
-      "Login gagal: " +
+      "ERROR LOGIN:\n" +
       error.message
     );
+
+    console.error(error);
+
   }
+
 }
 
 
