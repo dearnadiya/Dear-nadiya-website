@@ -99,68 +99,125 @@ async function dbRequest(
 // LOGIN
 // ========================================
 
-function login() {
+async function login() {
 
-  alert("LOGIN FUNCTION BERHASIL DIJALANKAN");
+  alert("1. LOGIN DIMULAI");
 
-  document
-    .getElementById("login")
-    .classList
-    .add("hidden");
+  try {
 
-  document
-    .getElementById("app")
-    .classList
-    .remove("hidden");
+    alert("2. MASUK TRY");
 
-  document
-    .getElementById("title")
-    .textContent = "Dashboard";
+    const usernameInput =
+      document.getElementById("u");
 
-  document
-    .getElementById("content")
-    .innerHTML = `
-      <h2>🎉 Berhasil Masuk Admin</h2>
-      <p>Login tombol sudah berfungsi dengan benar.</p>
-    `;
+    alert("3. CARI INPUT USERNAME");
 
-}
+    const passwordInput =
+      document.getElementById("p");
 
+    alert("4. CARI INPUT PASSWORD");
 
-// ========================================
-// CEK LOGIN SAAT HALAMAN DIBUKA
-// ========================================
+    if (!usernameInput) {
+      alert("ERROR: INPUT USERNAME TIDAK DITEMUKAN");
+      return;
+    }
 
-window.addEventListener(
-  "DOMContentLoaded",
-  () => {
+    if (!passwordInput) {
+      alert("ERROR: INPUT PASSWORD TIDAK DITEMUKAN");
+      return;
+    }
 
-    const loggedIn =
-      localStorage.getItem(
-        "adminLoggedIn"
+    alert("5. INPUT DITEMUKAN");
+
+    const username =
+      usernameInput.value.trim();
+
+    alert("6. USERNAME: " + username);
+
+    const password =
+      passwordInput.value;
+
+    alert("7. PASSWORD: " + password);
+
+    const url =
+      SUPABASE_REST +
+      "/admin_users" +
+      "?username=eq." +
+      encodeURIComponent(username) +
+      "&password=eq." +
+      encodeURIComponent(password) +
+      "&select=*";
+
+    alert("8. URL BERHASIL DIBUAT");
+
+    alert("9. MENGHUBUNGI SUPABASE");
+
+    const response =
+      await fetch(url, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization:
+            "Bearer " + SUPABASE_KEY
+        }
+      });
+
+    alert(
+      "10. RESPONSE STATUS: " +
+      response.status
+    );
+
+    const result =
+      await response.json();
+
+    alert(
+      "11. HASIL SUPABASE: " +
+      JSON.stringify(result)
+    );
+
+    if (
+      Array.isArray(result) &&
+      result.length > 0
+    ) {
+
+      alert("12. LOGIN BERHASIL");
+
+      localStorage.setItem(
+        "adminLoggedIn",
+        "true"
       );
-
-
-    if (loggedIn === "true") {
 
       document
         .getElementById("login")
         .classList
         .add("hidden");
 
-
       document
         .getElementById("app")
         .classList
         .remove("hidden");
 
-
       page("dash");
+
+    } else {
+
+      alert(
+        "USERNAME ATAU PASSWORD SALAH"
+      );
 
     }
 
+  } catch (error) {
+
+    alert(
+      "ERROR LOGIN: " +
+      error.message
+    );
+
+    console.error(error);
+
   }
-);
+
+}
 
 
 // ========================================
