@@ -214,13 +214,17 @@ appPage.classList.remove("hidden");
 
 alert("16. App ditampilkan");
 
-await page("dash");
+// TEST PAKSA TAMPILKAN APP
+loginPage.style.display = "none";
+appPage.style.display = "flex";
+appPage.style.visibility = "visible";
+appPage.style.opacity = "1";
 
-alert(
-  "17. CEK CLASS\n\n" +
-  "LOGIN: " + loginPage.className +
-  "\n\nAPP: " + appPage.className
-);
+alert("A. Login disembunyikan dan App dipaksa tampil");
+
+page("dash");
+
+alert("17. Dashboard dipanggil");
 
     }
 
