@@ -216,13 +216,11 @@ alert("16. App ditampilkan");
 
 await page("dash");
 
-alert("17. Dashboard dipanggil");
-
-    } else {
-
-      alert(
-        "USERNAME ATAU PASSWORD SALAH"
-      );
+alert(
+  "17. CEK CLASS\n\n" +
+  "LOGIN: " + loginPage.className +
+  "\n\nAPP: " + appPage.className
+);
 
     }
 
