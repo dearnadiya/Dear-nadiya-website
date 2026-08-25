@@ -307,15 +307,21 @@ function page(p) {
 
 async function dash() {
 
+  alert("A. FUNGSI DASH DIMULAI");
+
   $("#title").textContent =
     "Dashboard";
 
+  alert("B. TITLE BERHASIL");
 
   $("#content").innerHTML =
     "<p>Memuat dashboard...</p>";
 
+  alert("C. CONTENT BERHASIL");
 
   try {
+
+    alert("D. MULAI AMBIL PRODUCTS");
 
     const productList =
       await dbRequest(
@@ -324,6 +330,12 @@ async function dash() {
         "?select=*"
       );
 
+    alert(
+      "E. PRODUCTS BERHASIL:\n" +
+      JSON.stringify(productList)
+    );
+
+    alert("F. MULAI AMBIL ORDERS");
 
     const orderList =
       await dbRequest(
@@ -332,117 +344,22 @@ async function dash() {
         "?select=*"
       );
 
+    alert(
+      "G. ORDERS BERHASIL:\n" +
+      JSON.stringify(orderList)
+    );
 
-    const products =
-      productList || [];
-
-
-    const orders =
-      orderList || [];
-
-
-    const totalOrders =
-      orders.length;
-
-
-    const go =
-      products.filter(
-        p => p.type === "go"
-      ).length;
-
-
-    const readyStock =
-      products
-        .filter(
-          p => p.type === "ready"
-        )
-        .reduce(
-          (total, p) =>
-            total +
-            (Number(p.stock) || 0),
-          0
-        );
-
-
-    const pending =
-      orders.filter(
-        o =>
-          o.payment_status ===
-            "Menunggu Pembayaran" ||
-
-          o.payment_status ===
-            "Pending" ||
-
-          o.payment_status ===
-            "Belum Dibayar"
-      ).length;
-
-
-    const revenue =
-      orders
-        .filter(
-          o =>
-            o.payment_status ===
-            "Pembayaran Diterima"
-        )
-        .reduce(
-          (total, o) =>
-            total +
-            (Number(o.total) || 0),
-          0
-        );
-
-
-    $("#content").innerHTML = `
-
-      <div class="cards">
-
-        <div class="stat">
-          🧾
-          <p>Total Pesanan</p>
-          <h2>${totalOrders}</h2>
-        </div>
-
-        <div class="stat">
-          🛍️
-          <p>GO Aktif</p>
-          <h2>${go}</h2>
-        </div>
-
-        <div class="stat">
-          💳
-          <p>Menunggu Pembayaran</p>
-          <h2>${pending}</h2>
-        </div>
-
-        <div class="stat">
-          📦
-          <p>Total Ready Stock</p>
-          <h2>${readyStock}</h2>
-        </div>
-
-      </div>
-
-      <section class="panel">
-
-        <h2>
-          Pendapatan Terverifikasi
-        </h2>
-
-        <h1 style="color:#e66f9f">
-          ${fmt(revenue)}
-        </h1>
-
-      </section>
-
-    `;
+    $("#content").innerHTML =
+      "<h2>DASHBOARD BERHASIL DIMUAT</h2>";
 
   } catch (error) {
 
-    console.error(error);
+    alert(
+      "ERROR DASHBOARD:\n" +
+      error.message
+    );
 
-    $("#content").innerHTML =
-      `<p>Gagal memuat dashboard: ${error.message}</p>`;
+    console.error(error);
 
   }
 
