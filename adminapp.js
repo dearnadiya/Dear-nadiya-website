@@ -307,15 +307,30 @@ function page(p) {
 
 async function dash() {
 
-  alert("A. FUNGSI DASH DIMULAI");
+  alert("18. MASUK FUNGSI DASH");
 
-  $("#title").textContent =
-    "Dashboard";
+  const title = $("#title");
 
-  alert("B. TITLE BERHASIL");
+  alert(
+    "19. TITLE DITEMUKAN: " +
+    (title ? "YA" : "TIDAK")
+  );
 
-  $("#content").innerHTML =
+  const content = $("#content");
+
+  alert(
+    "20. CONTENT DITEMUKAN: " +
+    (content ? "YA" : "TIDAK")
+  );
+
+  title.textContent = "Dashboard";
+
+  alert("21. TITLE BERHASIL DIUBAH");
+
+  content.innerHTML =
     "<p>Memuat dashboard...</p>";
+
+  alert("22. CONTENT BERHASIL DIUBAH");
 
   alert("C. CONTENT BERHASIL");
 
