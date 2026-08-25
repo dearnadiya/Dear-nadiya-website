@@ -1,5 +1,3 @@
-alert("ADMINAPP.JS BERHASIL DIMUAT");
-
 // ========================================
 // PAKSA MULAI DARI HALAMAN LOGIN
 // ========================================
@@ -1026,27 +1024,35 @@ function recap() {
 
 window.addEventListener("DOMContentLoaded", () => {
 
-  const isLoggedIn =
-    localStorage.getItem("adminLoggedIn");
-
-  if (isLoggedIn === "true") {
+    const isLoggedIn =
+        localStorage.getItem("adminLoggedIn");
 
     const loginPage =
-      document.getElementById("login");
+        document.getElementById("login");
 
     const appPage =
-      document.getElementById("app");
+        document.getElementById("app");
 
-    if (loginPage && appPage) {
+    if (isLoggedIn === "true") {
 
-      loginPage.classList.add("hidden");
+        if (loginPage && appPage) {
+            loginPage.classList.add("hidden");
+            appPage.classList.remove("hidden");
 
-      appPage.classList.remove("hidden");
+            page("dash");
+        }
 
-      page("dash");
+    } else {
+
+        if (loginPage) {
+            loginPage.classList.remove("hidden");
+            loginPage.style.display = "block";
+        }
+
+        if (appPage) {
+            appPage.classList.add("hidden");
+        }
 
     }
-
-  }
 
 });
