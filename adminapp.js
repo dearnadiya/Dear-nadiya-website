@@ -1,3 +1,20 @@
+alert("ADMINAPP.JS BERHASIL DIMUAT");
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const loginButton =
+    document.getElementById("loginButton");
+
+  if (loginButton) {
+
+    loginButton.addEventListener(
+      "click",
+      login
+    );
+
+  }
+
+});
 // ========================================
 // CONFIG
 // ========================================
