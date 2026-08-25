@@ -1,8 +1,357 @@
-<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dear Nadiya | K-Pop GO & Shop</title><link rel="stylesheet" href="style.css"></head>
-<body><header><a class="brand" href="#"><img src="mascot.png"><div><b>Dear Nadiya ♥</b><small>K-POP GROUP ORDER & SHOP</small></div></a><nav><a href="#go">GO Aktif</a><a href="#ready">Ready Stock</a><a href="#track">Cek Pesanan</a><a href="./admin.html">Admin</a></nav><button class="cart" onclick="openCart()">🛒 <span id="count">0</span></button></header>
-<section class="hero"><div><p class="eyebrow">WELCOME TO</p><h1>OPEN <span>GROUP ORDER</span> K-POP</h1><p class="pill">Album • Merchandise • Photocard • Official Goods</p><p><a class="btn primary" href="#go">Lihat GO Aktif</a> <a class="btn secondary" href="#track">Cek Pesanan</a></p></div><img src="mascot.png"></section>
-<main><section id="go"><div class="heading"><div><p class="eyebrow">GROUP ORDER</p><h2>GO yang Sedang Aktif</h2></div></div><div class="grid" id="goGrid"></div></section>
-<section id="ready"><p class="eyebrow">AVAILABLE NOW</p><h2>Ready Stock</h2><div class="grid" id="readyGrid"></div></section>
-<section id="track" class="panel"><p class="eyebrow">ORDER TRACKING</p><h2>Cek Status Pesanan</h2><div class="track"><input id="trackCode" placeholder="Contoh: DN-2026-ABC123"><button class="btn primary" onclick="track()">Cek Pesanan</button></div><div id="trackResult"></div></section></main>
-<footer><div class="brand"><img src="mascot.png"><b>Dear Nadiya ♥</b></div><span>K-Pop Group Order & Ready Stock</span></footer>
-<div class="modal" id="modal"><div class="box"><button class="close" onclick="closeModal()">×</button><div id="modalBody"></div></div></div><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    Dear Nadiya | K-Pop GO & Shop
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body>
+
+
+  <!-- ================================= -->
+  <!-- HEADER -->
+  <!-- ================================= -->
+
+  <header>
+
+    <a
+      class="brand"
+      href="#"
+    >
+
+      <img
+        src="mascot.png"
+        alt="Dear Nadiya"
+      >
+
+      <div>
+
+        <b>
+          Dear Nadiya ♥
+        </b>
+
+        <small>
+          K-POP GROUP ORDER & SHOP
+        </small>
+
+      </div>
+
+    </a>
+
+
+    <!-- MENU CUSTOMER -->
+
+    <nav>
+
+      <a href="#go">
+        GO Aktif
+      </a>
+
+      <a href="#ready">
+        Ready Stock
+      </a>
+
+      <a href="#track">
+        Cek Pesanan
+      </a>
+
+    </nav>
+
+
+    <!-- KERANJANG -->
+
+    <button
+      class="cart"
+      type="button"
+      onclick="openCart()"
+    >
+
+      🛒
+
+      <span id="count">
+        0
+      </span>
+
+    </button>
+
+
+  </header>
+
+
+
+  <!-- ================================= -->
+  <!-- HERO -->
+  <!-- ================================= -->
+
+  <section class="hero">
+
+    <div>
+
+      <p class="eyebrow">
+        WELCOME TO
+      </p>
+
+
+      <h1>
+
+        OPEN
+
+        <span>
+          GROUP ORDER
+        </span>
+
+        K-POP
+
+      </h1>
+
+
+      <p class="pill">
+
+        Album • Merchandise • Photocard • Official Goods
+
+      </p>
+
+
+      <p>
+
+        <a
+          class="btn primary"
+          href="#go"
+        >
+
+          Lihat GO Aktif
+
+        </a>
+
+
+        <a
+          class="btn secondary"
+          href="#track"
+        >
+
+          Cek Pesanan
+
+        </a>
+
+      </p>
+
+    </div>
+
+
+    <img
+      src="mascot.png"
+      alt="Mascot Dear Nadiya"
+    >
+
+
+  </section>
+
+
+
+  <!-- ================================= -->
+  <!-- KONTEN UTAMA CUSTOMER -->
+  <!-- ================================= -->
+
+  <main>
+
+
+    <!-- GO AKTIF -->
+
+    <section id="go">
+
+      <div class="heading">
+
+        <div>
+
+          <p class="eyebrow">
+            GROUP ORDER
+          </p>
+
+
+          <h2>
+            GO yang Sedang Aktif
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="grid"
+        id="goGrid"
+      >
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- READY STOCK -->
+
+    <section id="ready">
+
+      <p class="eyebrow">
+        AVAILABLE NOW
+      </p>
+
+
+      <h2>
+        Ready Stock
+      </h2>
+
+
+      <div
+        class="grid"
+        id="readyGrid"
+      >
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- CEK PESANAN -->
+
+    <section
+      id="track"
+      class="panel"
+    >
+
+      <p class="eyebrow">
+        ORDER TRACKING
+      </p>
+
+
+      <h2>
+        Cek Status Pesanan
+      </h2>
+
+
+      <div class="track">
+
+        <input
+          id="trackCode"
+          placeholder="Contoh: DN-2026-ABC123"
+        >
+
+
+        <button
+          class="btn primary"
+          type="button"
+          onclick="track()"
+        >
+
+          Cek Pesanan
+
+        </button>
+
+
+      </div>
+
+
+      <div id="trackResult">
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- ================================= -->
+  <!-- FOOTER -->
+  <!-- ================================= -->
+
+  <footer>
+
+    <div class="brand">
+
+      <img
+        src="mascot.png"
+        alt="Dear Nadiya"
+      >
+
+
+      <b>
+        Dear Nadiya ♥
+      </b>
+
+    </div>
+
+
+    <span>
+      K-Pop Group Order & Ready Stock
+    </span>
+
+
+  </footer>
+
+
+
+  <!-- ================================= -->
+  <!-- MODAL / KERANJANG / CHECKOUT -->
+  <!-- ================================= -->
+
+  <div
+    class="modal"
+    id="modal"
+  >
+
+    <div class="box">
+
+      <button
+        class="close"
+        type="button"
+        onclick="closeModal()"
+      >
+        ×
+      </button>
+
+
+      <div id="modalBody">
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ================================= -->
+  <!-- JAVASCRIPT CUSTOMER -->
+  <!-- ================================= -->
+
+  <script src="app.js"></script>
+
+
+</body>
+
+</html>
