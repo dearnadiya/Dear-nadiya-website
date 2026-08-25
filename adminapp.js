@@ -214,7 +214,7 @@ appPage.classList.remove("hidden");
 
 alert("16. App ditampilkan");
 
-page("dash");
+await page("dash");
 
 alert("17. Dashboard dipanggil");
 
@@ -281,7 +281,7 @@ function logout() {
 // NAVIGASI
 // ========================================
 
-function page(p) {
+async function page(p) {
 
   const pages = {
     dash,
@@ -291,15 +291,13 @@ function page(p) {
     recap
   };
 
-
   if (pages[p]) {
 
-    pages[p]();
+    return await pages[p]();
 
   }
 
 }
-
 
 // ========================================
 // DASHBOARD
@@ -1009,7 +1007,6 @@ async function verify(id) {
 
 }
 
-
 // ========================================
 // REKAP GO
 // ========================================
@@ -1049,3 +1046,34 @@ function recap() {
   `;
 
 }
+
+// ========================================
+// CEK LOGIN SAAT HALAMAN DIBUKA
+// ========================================
+
+window.addEventListener("DOMContentLoaded", () => {
+
+  const isLoggedIn =
+    localStorage.getItem("adminLoggedIn");
+
+  if (isLoggedIn === "true") {
+
+    const loginPage =
+      document.getElementById("login");
+
+    const appPage =
+      document.getElementById("app");
+
+    if (loginPage && appPage) {
+
+      loginPage.classList.add("hidden");
+
+      appPage.classList.remove("hidden");
+
+      page("dash");
+
+    }
+
+  }
+
+});
