@@ -181,22 +181,42 @@ async function login() {
 
       alert("12. LOGIN BERHASIL");
 
-      localStorage.setItem(
-        "adminLoggedIn",
-        "true"
-      );
+localStorage.setItem(
+  "adminLoggedIn",
+  "true"
+);
 
-      document
-        .getElementById("login")
-        .classList
-        .add("hidden");
+alert("13. LocalStorage berhasil");
 
-      document
-        .getElementById("app")
-        .classList
-        .remove("hidden");
+const loginPage =
+  document.getElementById("login");
 
-      page("dash");
+const appPage =
+  document.getElementById("app");
+
+if (!loginPage) {
+  alert("ERROR: #login TIDAK DITEMUKAN");
+  return;
+}
+
+if (!appPage) {
+  alert("ERROR: #app TIDAK DITEMUKAN");
+  return;
+}
+
+alert("14. Elemen login dan app ditemukan");
+
+loginPage.classList.add("hidden");
+
+alert("15. Login disembunyikan");
+
+appPage.classList.remove("hidden");
+
+alert("16. App ditampilkan");
+
+page("dash");
+
+alert("17. Dashboard dipanggil");
 
     } else {
 
