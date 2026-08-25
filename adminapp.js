@@ -99,97 +99,30 @@ async function dbRequest(
 // LOGIN
 // ========================================
 
-async function login() {
+function login() {
 
-  alert("LOGIN FUNCTION BERJALAN");
+  alert("LOGIN FUNCTION BERHASIL DIJALANKAN");
 
-  const username =
-    document.getElementById("u").value.trim();
+  document
+    .getElementById("login")
+    .classList
+    .add("hidden");
 
-  const password =
-    document.getElementById("p").value;
+  document
+    .getElementById("app")
+    .classList
+    .remove("hidden");
 
+  document
+    .getElementById("title")
+    .textContent = "Dashboard";
 
-  alert(
-    "Username: " + username +
-    "\nPassword: " + password
-  );
-
-
-  try {
-
-    const url =
-      SUPABASE_REST +
-      "/admin_users" +
-      "?username=eq." +
-      encodeURIComponent(username) +
-      "&password=eq." +
-      encodeURIComponent(password) +
-      "&select=*";
-
-
-    const response =
-      await fetch(url, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization:
-            "Bearer " + SUPABASE_KEY
-        }
-      });
-
-
-    const result =
-      await response.json();
-
-
-    alert(
-      "HASIL DARI SUPABASE:\n" +
-      JSON.stringify(result)
-    );
-
-
-    if (
-      Array.isArray(result) &&
-      result.length > 0
-    ) {
-
-      alert("LOGIN BERHASIL");
-
-      localStorage.setItem(
-        "adminLoggedIn",
-        "true"
-      );
-
-      document
-        .getElementById("login")
-        .classList
-        .add("hidden");
-
-      document
-        .getElementById("app")
-        .classList
-        .remove("hidden");
-
-      page("dash");
-
-    } else {
-
-      alert(
-        "Username atau password salah"
-      );
-
-    }
-
-  } catch (error) {
-
-    alert(
-      "ERROR LOGIN:\n" +
-      error.message
-    );
-
-    console.error(error);
-
-  }
+  document
+    .getElementById("content")
+    .innerHTML = `
+      <h2>🎉 Berhasil Masuk Admin</h2>
+      <p>Login tombol sudah berfungsi dengan benar.</p>
+    `;
 
 }
 
