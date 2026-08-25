@@ -1,6 +1,27 @@
 alert("ADMINAPP.JS BERHASIL DIMUAT");
 
 // ========================================
+// PAKSA MULAI DARI HALAMAN LOGIN
+// ========================================
+
+window.addEventListener("DOMContentLoaded", function () {
+
+  const loginPage =
+    document.getElementById("login");
+
+  const appPage =
+    document.getElementById("app");
+
+  if (loginPage) {
+    loginPage.classList.remove("hidden");
+  }
+
+  if (appPage) {
+    appPage.classList.add("hidden");
+  }
+
+});
+// ========================================
 // CONFIG
 // ========================================
 
@@ -179,51 +200,6 @@ async function login() {
       result.length > 0
     ) {
 
-      alert("12. LOGIN BERHASIL");
-
-localStorage.setItem(
-  "adminLoggedIn",
-  "true"
-);
-
-alert("13. LocalStorage berhasil");
-
-const loginPage =
-  document.getElementById("login");
-
-const appPage =
-  document.getElementById("app");
-
-if (!loginPage) {
-  alert("ERROR: #login TIDAK DITEMUKAN");
-  return;
-}
-
-if (!appPage) {
-  alert("ERROR: #app TIDAK DITEMUKAN");
-  return;
-}
-
-alert("14. Elemen login dan app ditemukan");
-
-loginPage.classList.add("hidden");
-
-alert("15. Login disembunyikan");
-
-appPage.classList.remove("hidden");
-
-alert("16. App ditampilkan");
-
-// TEST PAKSA TAMPILKAN APP
-loginPage.style.display = "none";
-appPage.style.display = "flex";
-appPage.style.visibility = "visible";
-appPage.style.opacity = "1";
-
-alert("A. Login disembunyikan dan App dipaksa tampil");
-
-page("dash");
-
 alert("17. Dashboard dipanggil");
 
     }
@@ -247,11 +223,6 @@ alert("17. Dashboard dipanggil");
 // ========================================
 
 function logout() {
-
-  localStorage.removeItem(
-    "adminLoggedIn"
-  );
-
 
   document
     .getElementById("app")
