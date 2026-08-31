@@ -197,3 +197,665 @@
         <div class="info-card">
           <p>Data Terakhir</p>
           <h2 id="lastUpdate">-</
+
+            </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- REKAP GO -->
+
+    <section id="rekap" class="panel">
+
+      <p class="eyebrow">
+        GROUP ORDER
+      </p>
+
+      <h2>
+        Rekap Pesanan
+      </h2>
+
+      <p>
+        Rekap seluruh pesanan Group Order Dear Nadiya.
+      </p>
+
+
+      <div class="search-box">
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Cari kode produk, nama produk, customer, versi..."
+        >
+
+      </div>
+
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Kode Produk</th>
+              <th>Nama Produk</th>
+              <th>Customer</th>
+              <th>Versi</th>
+              <th>Harga</th>
+              <th>DP</th>
+              <th>Pelunasan</th>
+              <th>Status Barang</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="rekapBody">
+
+            <tr>
+              <td colspan="8" class="loading">
+                Memuat data rekap...
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- UPLOAD PEMBAYARAN -->
+
+    <section id="pembayaran" class="panel">
+
+      <p class="eyebrow">
+        PAYMENT
+      </p>
+
+      <h2>
+        Upload Bukti Pembayaran
+      </h2>
+
+      <p>
+        Tidak perlu login. Isi data sesuai pesanan kamu,
+        lalu kirim bukti pembayaran kepada admin Dear Nadiya.
+      </p>
+
+
+      <form id="paymentForm" class="form">
+
+        <label>
+          Nama Customer
+          <input
+            id="customerName"
+            type="text"
+            placeholder="Contoh: Euis"
+            required
+          >
+        </label>
+
+
+        <label>
+          4 Digit Terakhir WhatsApp
+          <input
+            id="whatsappLast4"
+            type="text"
+            inputmode="numeric"
+            maxlength="4"
+            placeholder="Contoh: 1234"
+            required
+          >
+        </label>
+
+
+        <label>
+          Kode Barang
+          <input
+            id="productCode"
+            type="text"
+            placeholder="Contoh: TR001"
+            required
+          >
+        </label>
+
+
+        <label>
+          Versi Barang
+          <input
+            id="productVersion"
+            type="text"
+            placeholder="Contoh: A"
+            required
+          >
+        </label>
+
+
+        <label>
+          Nominal Pembayaran
+          <input
+            id="paymentAmount"
+            type="number"
+            min="1"
+            placeholder="Contoh: 125000"
+            required
+          >
+        </label>
+
+
+        <label>
+          Tanggal Transfer
+          <input
+            id="paymentDate"
+            type="date"
+            required
+          >
+        </label>
+
+
+        <label>
+          Bukti Transfer
+          <input
+            id="paymentProof"
+            type="file"
+            accept="image/*,.pdf"
+            required
+          >
+        </label>
+
+
+        <button
+          class="btn primary"
+          type="submit"
+        >
+          📤 Kirim Bukti Pembayaran
+        </button>
+
+      </form>
+
+
+      <div id="paymentMessage"></div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="brand">
+
+      <img
+        src="mascot.png"
+        alt="Dear Nadiya"
+      >
+
+      <b>
+        Dear Nadiya ♥
+      </b>
+
+    </div>
+
+    <span>
+      Customer Portal • K-Pop Group Order
+    </span>
+
+  </footer>
+
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://cwwzsbqfznzwfclajwnw.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
+
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    let recapData = [];
+
+
+    function rupiah(value) {
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+        return "Rp0";
+      }
+
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(Number(value));
+
+    }
+
+
+    function display(value) {
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+        return "-";
+      }
+
+      return value;
+
+    }
+
+
+    function renderRecap(data) {
+
+      const body =
+        document.getElementById("rekapBody");
+
+
+      if (!data.length) {
+
+        body.innerHTML = `
+          <tr>
+            <td colspan="8" class="empty">
+              Belum ada data rekap.
+            </td>
+          </tr>
+        `;
+
+        return;
+
+      }
+
+
+      body.innerHTML = data.map(item => `
+
+        <tr>
+
+          <td>
+            ${display(item.product_code)}
+          </td>
+
+          <td>
+            <b>${display(item.product_name)}</b>
+          </td>
+
+          <td>
+            ${display(item.customer_name)}
+          </td>
+
+          <td>
+            ${display(item.product_version)}
+          </td>
+
+          <td>
+            ${rupiah(item.price)}
+          </td>
+
+          <td>
+            ${rupiah(item.dp)}
+          </td>
+
+          <td>
+            ${rupiah(item.pelunasan)}
+          </td>
+
+          <td>
+            ${display(item.item_status)}
+          </td>
+
+        </tr>
+
+      `).join("");
+
+    }
+
+
+    async function loadRecap() {
+
+      try {
+
+        const { data, error } =
+          await supabaseClient
+            .from("go_rekap_public")
+            .select("*");
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        recapData = data || [];
+
+
+        document.getElementById("totalOrder")
+          .textContent = recapData.length;
+
+
+        document.getElementById("totalProduct")
+          .textContent =
+          recapData.reduce(
+            (total, item) =>
+              total + Number(item.quantity || 1),
+            0
+          );
+
+
+        document.getElementById("lastUpdate")
+          .textContent =
+          recapData.length
+            ? "Tersedia"
+            : "-";
+
+
+        renderRecap(recapData);
+
+      } catch (error) {
+
+        console.error(
+          "Gagal memuat rekap:",
+          error
+        );
+
+
+        document.getElementById("rekapBody")
+          .innerHTML = `
+
+            <tr>
+
+              <td
+                colspan="8"
+                class="error"
+              >
+
+                Rekap belum dapat dimuat.
+
+                <br><br>
+
+                ${error.message}
+
+              </td>
+
+            </tr>
+
+          `;
+
+      }
+
+    }
+
+
+    /* SEARCH REKAP */
+
+    document
+      .getElementById("searchInput")
+      .addEventListener(
+        "input",
+        function () {
+
+          const keyword =
+            this.value
+              .toLowerCase()
+              .trim();
+
+
+          if (!keyword) {
+
+            renderRecap(recapData);
+
+            return;
+
+          }
+
+
+          const filtered =
+            recapData.filter(item => {
+
+              return [
+
+                item.product_code,
+                item.product_name,
+                item.customer_name,
+                item.product_version,
+                item.item_status
+
+              ]
+                .filter(Boolean)
+                .some(value =>
+                  String(value)
+                    .toLowerCase()
+                    .includes(keyword)
+                );
+
+            });
+
+
+          renderRecap(filtered);
+
+        }
+      );
+
+
+    /* UPLOAD PEMBAYARAN */
+
+    document
+      .getElementById("paymentForm")
+      .addEventListener(
+        "submit",
+        async function (event) {
+
+          event.preventDefault();
+
+
+          const message =
+            document.getElementById(
+              "paymentMessage"
+            );
+
+
+          message.innerHTML =
+            "<p>Mengirim bukti pembayaran...</p>";
+
+
+          const file =
+            document.getElementById(
+              "paymentProof"
+            ).files[0];
+
+
+          if (!file) {
+
+            message.innerHTML =
+              "<p>Pilih bukti pembayaran terlebih dahulu.</p>";
+
+            return;
+
+          }
+
+
+          const customerName =
+            document.getElementById(
+              "customerName"
+            ).value.trim();
+
+
+          const whatsappLast4 =
+            document.getElementById(
+              "whatsappLast4"
+            ).value.trim();
+
+
+          const productCode =
+            document.getElementById(
+              "productCode"
+            ).value.trim();
+
+
+          const productVersion =
+            document.getElementById(
+              "productVersion"
+            ).value.trim();
+
+
+          const paymentAmount =
+            Number(
+              document.getElementById(
+                "paymentAmount"
+              ).value
+            );
+
+
+          const paymentDate =
+            document.getElementById(
+              "paymentDate"
+            ).value;
+
+
+          try {
+
+            const fileName =
+              Date.now() +
+              "_" +
+              file.name.replace(
+                /[^a-zA-Z0-9._-]/g,
+                "_"
+              );
+
+
+            const filePath =
+              "payment-proofs/" +
+              fileName;
+
+
+            const upload =
+              await supabaseClient.storage
+                .from("payment-proofs")
+                .upload(
+                  filePath,
+                  file
+                );
+
+
+            if (upload.error) {
+              throw upload.error;
+            }
+
+
+            const { error } =
+              await supabaseClient
+                .from(
+                  "dn_payment_submissions"
+                )
+                .insert({
+
+                  customer_name:
+                    customerName,
+
+                  whatsapp_last4:
+                    whatsappLast4,
+
+                  product_code:
+                    productCode,
+
+                  product_version:
+                    productVersion,
+
+                  amount:
+                    paymentAmount,
+
+                  payment_date:
+                    paymentDate,
+
+                  proof_path:
+                    filePath,
+
+                  status:
+                    "pending"
+
+                });
+
+
+            if (error) {
+              throw error;
+            }
+
+
+            message.innerHTML = `
+
+              <div class="result">
+
+                <h3>
+                  ✅ Bukti pembayaran berhasil dikirim
+                </h3>
+
+                <p>
+                  Admin Dear Nadiya akan
+                  melakukan pengecekan pembayaran kamu.
+                </p>
+
+              </div>
+
+            `;
+
+
+            document
+              .getElementById(
+                "paymentForm"
+              )
+              .reset();
+
+
+          } catch (error) {
+
+            console.error(error);
+
+
+            message.innerHTML = `
+
+              <div class="error">
+
+                Gagal mengirim pembayaran.
+
+                <br><br>
+
+                ${error.message}
+
+              </div>
+
+            `;
+
+          }
+
+        }
+      );
+
+
+    /* LOAD DATA */
+
+    loadRecap();
+
+  </script>
+
+</body>
+
+</html>
