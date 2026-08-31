@@ -2,161 +2,639 @@
 <html lang="id">
 
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
 
   <title>Dear Nadiya | Customer Portal</title>
 
   <link rel="stylesheet" href="style.css">
 
   <style>
+
+    /* =========================
+       CUSTOMER PORTAL
+    ========================= */
+
     .portal {
       max-width: 1200px;
-      margin: auto;
-      padding: 40px 20px;
+      margin: 0 auto;
+      padding: 40px 20px 70px;
     }
+
+
+    /* =========================
+       HERO
+    ========================= */
 
     .hero {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 30px;
-      margin-bottom: 40px;
+      gap: 40px;
+
+      padding: 50px;
+
+      margin-bottom: 30px;
+
+      border-radius: 28px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #fff5fb,
+          #f8f4ff
+        );
     }
 
-    .hero img {
-      width: 180px;
-      max-width: 35%;
+
+    .hero-content {
+      flex: 1;
     }
+
+
+    .hero h1 {
+      margin: 10px 0 15px;
+
+      font-size: clamp(
+        36px,
+        5vw,
+        58px
+      );
+
+      line-height: 1.05;
+    }
+
+
+    .hero p {
+      max-width: 650px;
+
+      font-size: 16px;
+
+      line-height: 1.7;
+    }
+
+
+    .hero-mascot {
+      width: 180px;
+
+      max-width: 35%;
+
+      border-radius: 20px;
+    }
+
 
     .eyebrow {
-      letter-spacing: 2px;
+      margin: 0 0 8px;
+
       font-size: 12px;
-      font-weight: bold;
-      opacity: .7;
+
+      font-weight: 700;
+
+      letter-spacing: 2px;
+
+      opacity: .65;
     }
 
-    .search-box {
-      margin: 30px 0;
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    header {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      padding: 15px 25px;
     }
 
-    .search-box input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 16px 18px;
-      border-radius: 14px;
-      border: 1px solid #ddd;
-      font-size: 16px;
+
+    .brand {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      text-decoration: none;
     }
 
-    .table-wrap {
-      overflow-x: auto;
+
+    .brand img {
+      width: 45px;
+
+      height: 45px;
+
+      object-fit: contain;
+    }
+
+
+    .brand div {
+      display: flex;
+
+      flex-direction: column;
+    }
+
+
+    .brand b {
+      font-size: 18px;
+    }
+
+
+    .brand small {
+      font-size: 10px;
+
+      letter-spacing: 1px;
+
+      opacity: .6;
+    }
+
+
+    nav {
+      display: flex;
+
+      gap: 20px;
+
+      flex-wrap: wrap;
+    }
+
+
+    nav a {
+      text-decoration: none;
+
+      font-weight: 600;
+
+      font-size: 14px;
+    }
+
+
+    /* =========================
+       INFO CARDS
+    ========================= */
+
+    .info-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 15px;
+
+      margin: 25px 0 45px;
+    }
+
+
+    .info-card {
+      padding: 25px;
+
+      border-radius: 20px;
+
       background: white;
-      border-radius: 18px;
+
       border: 1px solid #eee;
     }
 
+
+    .info-card p {
+      margin: 0;
+
+      opacity: .65;
+    }
+
+
+    .info-card h2 {
+      margin: 10px 0 0;
+
+      font-size: 30px;
+    }
+
+
+    /* =========================
+       PANEL
+    ========================= */
+
+    .panel {
+      margin-top: 35px;
+
+      padding: 30px;
+
+      background: white;
+
+      border: 1px solid #eee;
+
+      border-radius: 24px;
+    }
+
+
+    .panel h2 {
+      margin: 5px 0 10px;
+
+      font-size: 28px;
+    }
+
+
+    .panel-description {
+      margin-bottom: 25px;
+
+      line-height: 1.6;
+    }
+
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    .search-box {
+      margin: 25px 0;
+    }
+
+
+    .search-box input {
+      width: 100%;
+
+      box-sizing: border-box;
+
+      padding: 15px 18px;
+
+      border-radius: 14px;
+
+      border: 1px solid #ddd;
+
+      font-size: 15px;
+
+      outline: none;
+    }
+
+
+    .search-box input:focus {
+      border-color: #b58acb;
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table-wrap {
+      width: 100%;
+
+      overflow-x: auto;
+
+      background: white;
+
+      border: 1px solid #eee;
+
+      border-radius: 18px;
+    }
+
+
     table {
       width: 100%;
+
+      min-width: 1000px;
+
       border-collapse: collapse;
-      min-width: 950px;
     }
+
 
     th,
     td {
       padding: 14px 12px;
+
       border-bottom: 1px solid #eee;
+
       text-align: left;
+
       white-space: nowrap;
     }
 
+
     th {
-      font-size: 13px;
       background: #fafafa;
+
+      font-size: 12px;
+
+      font-weight: 700;
     }
+
 
     td {
       font-size: 14px;
     }
 
+
+    tbody tr:hover {
+      background: #fcf9fd;
+    }
+
+
+    /* =========================
+       STATUS
+    ========================= */
+
     .status {
       display: inline-block;
+
       padding: 6px 10px;
+
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      background: #f3f3f3;
     }
+
+
+    /* =========================
+       PAYMENT FORM
+    ========================= */
+
+    .payment-form {
+      display: grid;
+
+      gap: 18px;
+
+      max-width: 700px;
+    }
+
+
+    .form-group {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 7px;
+    }
+
+
+    .form-group label {
+      font-size: 14px;
+
+      font-weight: 600;
+    }
+
+
+    .form-group input {
+      width: 100%;
+
+      box-sizing: border-box;
+
+      padding: 14px 15px;
+
+      border-radius: 12px;
+
+      border: 1px solid #ddd;
+
+      font-size: 15px;
+
+      outline: none;
+    }
+
+
+    .form-group input:focus {
+      border-color: #b58acb;
+    }
+
+
+    .file-help {
+      font-size: 12px;
+
+      opacity: .65;
+
+      line-height: 1.5;
+    }
+
+
+    .btn {
+      border: none;
+
+      border-radius: 12px;
+
+      padding: 14px 20px;
+
+      cursor: pointer;
+
+      font-size: 14px;
+
+      font-weight: 700;
+    }
+
+
+    .btn.primary {
+      background: #29234a;
+
+      color: white;
+    }
+
+
+    .btn:disabled {
+      opacity: .6;
+
+      cursor: not-allowed;
+    }
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    .result {
+      margin-top: 20px;
+
+      padding: 18px;
+
+      border-radius: 15px;
+
+      background: #f8f5ff;
+    }
+
+
+    .success {
+      color: #236b43;
+    }
+
+
+    .error {
+      color: #a83232;
+
+      padding: 18px;
+
+      border-radius: 15px;
+
+      background: #fff3f3;
+    }
+
 
     .loading,
-    .empty,
-    .error {
+    .empty {
       padding: 30px;
+
       text-align: center;
+
+      opacity: .7;
     }
 
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin: 25px 0;
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      padding: 30px 25px;
+
+      border-top: 1px solid #eee;
+
+      font-size: 13px;
+
+      opacity: .75;
     }
 
-    .info-card {
-      padding: 22px;
-      border-radius: 16px;
-      background: white;
-      border: 1px solid #eee;
-    }
 
-    .info-card h2 {
-      margin: 8px 0 0;
-    }
+    /* =========================
+       MOBILE
+    ========================= */
 
     @media (max-width: 700px) {
-      .hero {
+
+      header {
         flex-direction: column;
+
         align-items: flex-start;
       }
 
-      .hero img {
-        max-width: 150px;
+
+      nav {
+        width: 100%;
+
+        gap: 12px;
       }
+
+
+      .hero {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 30px;
+      }
+
+
+      .hero-mascot {
+        width: 140px;
+
+        max-width: 100%;
+      }
+
 
       .info-grid {
         grid-template-columns: 1fr;
       }
+
+
+      .panel {
+        padding: 20px;
+      }
+
+
+      footer {
+        flex-direction: column;
+
+        align-items: flex-start;
+      }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
+  <!-- =========================
+       HEADER
+  ========================= -->
+
   <header>
 
-    <a class="brand" href="#">
-      <img src="mascot.png" alt="Dear Nadiya">
+    <a
+      class="brand"
+      href="#dashboard"
+    >
+
+      <img
+        src="mascot.png"
+        alt="Dear Nadiya"
+      >
 
       <div>
-        <b>Dear Nadiya ♥</b>
-        <small>CUSTOMER PORTAL</small>
+
+        <b>
+          Dear Nadiya ♥
+        </b>
+
+        <small>
+          CUSTOMER PORTAL
+        </small>
+
       </div>
+
     </a>
 
+
     <nav>
-      <a href="#dashboard">Dashboard</a>
-      <a href="#rekap">Rekap GO</a>
+
+      <a href="#dashboard">
+        Dashboard
+      </a>
+
+      <a href="#rekap">
+        Rekap GO
+      </a>
+
+      <a href="#pembayaran">
+        Upload Pembayaran
+      </a>
+
     </nav>
 
   </header>
 
 
+
   <main class="portal">
 
-    <!-- DASHBOARD -->
 
-    <section class="hero" id="dashboard">
+    <!-- =========================
+         DASHBOARD
+    ========================= -->
 
-      <div>
+    <section
+      class="hero"
+      id="dashboard"
+    >
+
+      <div class="hero-content">
 
         <p class="eyebrow">
           DEAR NADIYA
@@ -167,47 +645,91 @@
         </h1>
 
         <p>
-          Pantau pesanan Group Order kamu melalui rekap
+          Pantau pesanan Group Order
+          Dear Nadiya melalui rekap
           yang tersedia di sini.
+        </p>
+
+        <p>
+          Tidak perlu login untuk melihat
+          rekap atau mengirim bukti pembayaran.
         </p>
 
       </div>
 
-      <img src="mascot.png" alt="Mascot Dear Nadiya">
+
+      <img
+        class="hero-mascot"
+        src="mascot.png"
+        alt="Mascot Dear Nadiya"
+      >
 
     </section>
 
 
-    <!-- RINGKASAN -->
+
+    <!-- =========================
+         RINGKASAN
+    ========================= -->
 
     <section>
 
       <div class="info-grid">
 
+
         <div class="info-card">
-          <p>Total Pesanan</p>
-          <h2 id="totalOrder">0</h2>
+
+          <p>
+            Total Pesanan
+          </p>
+
+          <h2 id="totalOrder">
+            0
+          </h2>
+
         </div>
 
+
         <div class="info-card">
-          <p>Total Produk</p>
-          <h2 id="totalProduct">0</h2>
+
+          <p>
+            Total Produk
+          </p>
+
+          <h2 id="totalProduct">
+            0
+          </h2>
+
         </div>
 
-        <div class="info-card">
-          <p>Data Terakhir</p>
-          <h2 id="lastUpdate">-</
 
-            </div>
+        <div class="info-card">
+
+          <p>
+            Data Terakhir
+          </p>
+
+          <h2 id="lastUpdate">
+            -
+          </h2>
+
+        </div>
+
 
       </div>
 
     </section>
 
 
-    <!-- REKAP GO -->
 
-    <section id="rekap" class="panel">
+    <!-- =========================
+         REKAP GO
+    ========================= -->
+
+    <section
+      id="rekap"
+      class="panel"
+    >
 
       <p class="eyebrow">
         GROUP ORDER
@@ -217,21 +739,27 @@
         Rekap Pesanan
       </h2>
 
-      <p>
-        Rekap seluruh pesanan Group Order Dear Nadiya.
+      <p class="panel-description">
+        Rekap seluruh pesanan Group Order
+        Dear Nadiya. Data dapat dilihat
+        oleh seluruh customer tanpa login.
       </p>
 
+
+      <!-- SEARCH -->
 
       <div class="search-box">
 
         <input
           id="searchInput"
           type="search"
-          placeholder="Cari kode produk, nama produk, customer, versi..."
+          placeholder="Cari kode produk, nama produk, customer, versi, atau status..."
         >
 
       </div>
 
+
+      <!-- TABLE -->
 
       <div class="table-wrap">
 
@@ -240,24 +768,55 @@
           <thead>
 
             <tr>
-              <th>Kode Produk</th>
-              <th>Nama Produk</th>
-              <th>Customer</th>
-              <th>Versi</th>
-              <th>Harga</th>
-              <th>DP</th>
-              <th>Pelunasan</th>
-              <th>Status Barang</th>
+
+              <th>
+                Kode Produk
+              </th>
+
+              <th>
+                Nama Produk
+              </th>
+
+              <th>
+                Customer
+              </th>
+
+              <th>
+                Versi
+              </th>
+
+              <th>
+                Harga
+              </th>
+
+              <th>
+                DP
+              </th>
+
+              <th>
+                Pelunasan
+              </th>
+
+              <th>
+                Status Barang
+              </th>
+
             </tr>
 
           </thead>
 
+
           <tbody id="rekapBody">
 
             <tr>
-              <td colspan="8" class="loading">
+
+              <td
+                colspan="8"
+                class="loading"
+              >
                 Memuat data rekap...
               </td>
+
             </tr>
 
           </tbody>
@@ -268,593 +827,1186 @@
 
     </section>
 
+    <!-- =========================
+     UPLOAD PEMBAYARAN
+========================= -->
 
-    <!-- UPLOAD PEMBAYARAN -->
+<section
+  id="pembayaran"
+  class="panel"
+>
 
-    <section id="pembayaran" class="panel">
+  <p class="eyebrow">
+    PAYMENT PROOF
+  </p>
 
-      <p class="eyebrow">
-        PAYMENT
-      </p>
+  <h2>
+    Upload Bukti Pembayaran
+  </h2>
 
-      <h2>
-        Upload Bukti Pembayaran
-      </h2>
-
-      <p>
-        Tidak perlu login. Isi data sesuai pesanan kamu,
-        lalu kirim bukti pembayaran kepada admin Dear Nadiya.
-      </p>
-
-
-      <form id="paymentForm" class="form">
-
-        <label>
-          Nama Customer
-          <input
-            id="customerName"
-            type="text"
-            placeholder="Contoh: Euis"
-            required
-          >
-        </label>
+  <p class="panel-description">
+    Tidak perlu login. Isi data sesuai pesanan kamu,
+    lalu kirim bukti pembayaran kepada Admin Dear Nadiya.
+  </p>
 
 
-        <label>
-          4 Digit Terakhir WhatsApp
-          <input
-            id="whatsappLast4"
-            type="text"
-            inputmode="numeric"
-            maxlength="4"
-            placeholder="Contoh: 1234"
-            required
-          >
-        </label>
+  <form
+    id="paymentForm"
+    class="payment-form"
+  >
 
 
-        <label>
-          Kode Barang
-          <input
-            id="productCode"
-            type="text"
-            placeholder="Contoh: TR001"
-            required
-          >
-        </label>
+    <!-- NAMA CUSTOMER -->
+
+    <div class="form-group">
+
+      <label for="paymentCustomerName">
+        Nama Customer
+      </label>
+
+      <input
+        id="paymentCustomerName"
+        type="text"
+        placeholder="Contoh: Nadiya"
+        required
+      >
+
+    </div>
 
 
-        <label>
-          Versi Barang
-          <input
-            id="productVersion"
-            type="text"
-            placeholder="Contoh: A"
-            required
-          >
-        </label>
+
+    <!-- 4 DIGIT WHATSAPP -->
+
+    <div class="form-group">
+
+      <label for="paymentWhatsappLast4">
+        4 Digit Terakhir WhatsApp
+      </label>
+
+      <input
+        id="paymentWhatsappLast4"
+        type="text"
+        placeholder="Contoh: 1234"
+        maxlength="4"
+        inputmode="numeric"
+        pattern="[0-9]{4}"
+        required
+      >
+
+    </div>
 
 
-        <label>
-          Nominal Pembayaran
-          <input
-            id="paymentAmount"
-            type="number"
-            min="1"
-            placeholder="Contoh: 125000"
-            required
-          >
-        </label>
+
+    <!-- KODE PRODUK -->
+
+    <div class="form-group">
+
+      <label for="paymentProductCode">
+        Kode Produk
+      </label>
+
+      <input
+        id="paymentProductCode"
+        type="text"
+        placeholder="Contoh: TRS-001"
+        required
+      >
+
+    </div>
 
 
-        <label>
-          Tanggal Transfer
-          <input
-            id="paymentDate"
-            type="date"
-            required
-          >
-        </label>
+
+    <!-- VERSI PRODUK -->
+
+    <div class="form-group">
+
+      <label for="paymentProductVersion">
+        Versi Barang
+      </label>
+
+      <input
+        id="paymentProductVersion"
+        type="text"
+        placeholder="Contoh: A / Random / Member"
+        required
+      >
+
+    </div>
 
 
-        <label>
-          Bukti Transfer
-          <input
-            id="paymentProof"
-            type="file"
-            accept="image/*,.pdf"
-            required
-          >
-        </label>
+
+    <!-- NOMINAL PEMBAYARAN -->
+
+    <div class="form-group">
+
+      <label for="paymentAmount">
+        Nominal Pembayaran
+      </label>
+
+      <input
+        id="paymentAmount"
+        type="number"
+        min="1"
+        placeholder="Contoh: 150000"
+        required
+      >
+
+    </div>
 
 
-        <button
-          class="btn primary"
-          type="submit"
-        >
-          📤 Kirim Bukti Pembayaran
-        </button>
 
-      </form>
+    <!-- TANGGAL TRANSFER -->
+
+    <div class="form-group">
+
+      <label for="paymentDate">
+        Tanggal Transfer
+      </label>
+
+      <input
+        id="paymentDate"
+        type="date"
+        required
+      >
+
+    </div>
 
 
-      <div id="paymentMessage"></div>
 
-    </section>
+    <!-- BUKTI TRANSFER -->
 
+    <div class="form-group">
+
+      <label for="paymentProof">
+        Bukti Transfer
+      </label>
+
+      <input
+        id="paymentProof"
+        type="file"
+        accept="image/jpeg,image/png,image/webp,application/pdf"
+        required
+      >
+
+      <span class="file-help">
+        Format: JPG, JPEG, PNG, WEBP atau PDF.
+        Maksimal 8 MB.
+      </span>
+
+    </div>
+
+
+
+    <!-- TOMBOL KIRIM -->
+
+    <button
+      class="btn primary"
+      type="submit"
+      id="paymentSubmitBtn"
+    >
+      Kirim Bukti Pembayaran
+    </button>
+
+
+  </form>
+
+
+
+  <!-- PESAN HASIL -->
+
+  <div
+    id="paymentMessage"
+    class="result"
+    style="display:none;"
+  ></div>
+
+
+</section>
 
   </main>
 
+    <!-- =========================
+     FOOTER
+========================= -->
 
-  <!-- FOOTER -->
+<footer>
 
-  <footer>
+  <div class="brand">
 
-    <div class="brand">
+    <img
+      src="mascot.png"
+      alt="Dear Nadiya"
+    >
 
-      <img
-        src="mascot.png"
-        alt="Dear Nadiya"
-      >
+    <div>
 
       <b>
         Dear Nadiya ♥
       </b>
 
+      <small>
+        CUSTOMER PORTAL
+      </small>
+
     </div>
 
-    <span>
-      Customer Portal • K-Pop Group Order
-    </span>
-
-  </footer>
+  </div>
 
 
-  <!-- SUPABASE -->
+  <span>
+    Customer Portal • K-Pop Group Order
+  </span>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-
-    const SUPABASE_URL =
-      "https://cwwzsbqfznzwfclajwnw.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
-
-    const supabaseClient =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
+</footer>
 
 
-    let recapData = [];
+
+<!-- =========================
+     SUPABASE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-    function rupiah(value) {
+<script>
 
-      if (
-        value === null ||
-        value === undefined ||
-        value === ""
-      ) {
-        return "Rp0";
-      }
+  /* =========================
+     SUPABASE CONFIG
+  ========================= */
 
-      return new Intl.NumberFormat("id-ID", {
+  const SUPABASE_URL =
+    "https://cwwzsbqfznzwfclajwnw.supabase.co";
+
+
+  const SUPABASE_KEY =
+    "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
+
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+
+  /* =========================
+     GLOBAL DATA
+  ========================= */
+
+  let recapData = [];
+
+
+
+  /* =========================
+     FORMAT RUPIAH
+  ========================= */
+
+  function rupiah(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return "Rp0";
+    }
+
+    return new Intl.NumberFormat(
+      "id-ID",
+      {
         style: "currency",
         currency: "IDR",
         maximumFractionDigits: 0
-      }).format(Number(value));
+      }
+    ).format(
+      Number(value)
+    );
+
+  }
+
+
+
+  /* =========================
+     SAFE DISPLAY
+  ========================= */
+
+  function display(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return "-";
+    }
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+
+  /* =========================
+     CUSTOMER DISPLAY
+  ========================= */
+
+  function customerDisplay(item) {
+
+    const name =
+      display(
+        item.customer_name
+      );
+
+    const last4 =
+      item.whatsapp_last4
+        ? display(
+            item.whatsapp_last4
+          )
+        : "";
+
+    if (last4) {
+
+      return `
+        ${name}
+        <small>
+          • ${last4}
+        </small>
+      `;
+
+    }
+
+    return name;
+
+  }
+
+
+
+  /* =========================
+     STATUS DISPLAY
+  ========================= */
+
+  function statusDisplay(status) {
+
+    if (
+      status === null ||
+      status === undefined ||
+      status === ""
+    ) {
+      return `
+        <span class="status">
+          -
+        </span>
+      `;
+    }
+
+    return `
+      <span class="status">
+        ${display(status)}
+      </span>
+    `;
+
+  }
+
+
+
+  /* =========================
+     RENDER RECAP
+  ========================= */
+
+  function renderRecap(data) {
+
+    const body =
+      document.getElementById(
+        "rekapBody"
+      );
+
+
+    if (!data || !data.length) {
+
+      body.innerHTML = `
+        <tr>
+
+          <td
+            colspan="8"
+            class="empty"
+          >
+            Belum ada data rekap.
+          </td>
+
+        </tr>
+      `;
+
+      return;
 
     }
 
 
-    function display(value) {
-
-      if (
-        value === null ||
-        value === undefined ||
-        value === ""
-      ) {
-        return "-";
-      }
-
-      return value;
-
-    }
-
-
-    function renderRecap(data) {
-
-      const body =
-        document.getElementById("rekapBody");
-
-
-      if (!data.length) {
-
-        body.innerHTML = `
-          <tr>
-            <td colspan="8" class="empty">
-              Belum ada data rekap.
-            </td>
-          </tr>
-        `;
-
-        return;
-
-      }
-
-
-      body.innerHTML = data.map(item => `
+    body.innerHTML =
+      data.map(item => `
 
         <tr>
 
           <td>
-            ${display(item.product_code)}
+            ${display(
+              item.product_code
+            )}
           </td>
 
-          <td>
-            <b>${display(item.product_name)}</b>
-          </td>
 
           <td>
-            ${display(item.customer_name)}
+            <b>
+              ${display(
+                item.product_name
+              )}
+            </b>
           </td>
 
-          <td>
-            ${display(item.product_version)}
-          </td>
 
           <td>
-            ${rupiah(item.price)}
+            ${customerDisplay(item)}
           </td>
 
-          <td>
-            ${rupiah(item.dp)}
-          </td>
 
           <td>
-            ${rupiah(item.pelunasan)}
+            ${display(
+              item.product_version
+            )}
           </td>
 
+
           <td>
-            ${display(item.item_status)}
+            ${rupiah(
+              item.price
+            )}
+          </td>
+
+
+          <td>
+            ${rupiah(
+              item.dp
+            )}
+          </td>
+
+
+          <td>
+            ${rupiah(
+              item.pelunasan
+            )}
+          </td>
+
+
+          <td>
+            ${statusDisplay(
+              item.item_status
+            )}
           </td>
 
         </tr>
 
       `).join("");
 
-    }
+  }
 
 
-    async function loadRecap() {
 
-      try {
+  /* =========================
+     LOAD RECAP
+  ========================= */
 
-        const { data, error } =
-          await supabaseClient
-            .from("go_rekap_public")
-            .select("*");
+  async function loadRecap() {
 
-
-        if (error) {
-          throw error;
-        }
+    const body =
+      document.getElementById(
+        "rekapBody"
+      );
 
 
-        recapData = data || [];
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from(
+            "go_rekap_public"
+          )
+          .select("*");
 
 
-        document.getElementById("totalOrder")
-          .textContent = recapData.length;
+      if (error) {
+        throw error;
+      }
 
 
-        document.getElementById("totalProduct")
-          .textContent =
-          recapData.reduce(
-            (total, item) =>
-              total + Number(item.quantity || 1),
-            0
-          );
+      recapData =
+        data || [];
 
 
-        document.getElementById("lastUpdate")
-          .textContent =
-          recapData.length
-            ? "Tersedia"
-            : "-";
+      /* TOTAL PESANAN */
+
+      document
+        .getElementById(
+          "totalOrder"
+        )
+        .textContent =
+        recapData.length;
 
 
-        renderRecap(recapData);
+      /* TOTAL PRODUK */
 
-      } catch (error) {
+      const totalProduct =
+        recapData.reduce(
+          (
+            total,
+            item
+          ) => {
 
-        console.error(
-          "Gagal memuat rekap:",
-          error
+            return (
+              total +
+              Number(
+                item.quantity || 1
+              )
+            );
+
+          },
+          0
         );
 
 
-        document.getElementById("rekapBody")
-          .innerHTML = `
+      document
+        .getElementById(
+          "totalProduct"
+        )
+        .textContent =
+        totalProduct;
 
-            <tr>
 
-              <td
-                colspan="8"
-                class="error"
-              >
+      /* DATA TERAKHIR */
 
-                Rekap belum dapat dimuat.
+      document
+        .getElementById(
+          "lastUpdate"
+        )
+        .textContent =
+        recapData.length
+          ? "Tersedia"
+          : "-";
 
-                <br><br>
 
-                ${error.message}
+      renderRecap(
+        recapData
+      );
 
-              </td>
 
-            </tr>
+    } catch (error) {
 
-          `;
+      console.error(
+        "Gagal memuat rekap:",
+        error
+      );
 
-      }
+
+      body.innerHTML = `
+
+        <tr>
+
+          <td
+            colspan="8"
+            class="error"
+          >
+
+            Rekap belum dapat dimuat.
+
+            <br><br>
+
+            ${display(
+              error.message
+            )}
+
+          </td>
+
+        </tr>
+
+      `;
 
     }
 
-
-    /* SEARCH REKAP */
-
-    document
-      .getElementById("searchInput")
-      .addEventListener(
-        "input",
-        function () {
-
-          const keyword =
-            this.value
-              .toLowerCase()
-              .trim();
+  }
 
 
-          if (!keyword) {
 
-            renderRecap(recapData);
+  /* =========================
+     SEARCH RECAP
+  ========================= */
 
-            return;
+  document
+    .getElementById(
+      "searchInput"
+    )
+    .addEventListener(
+      "input",
+      function () {
 
-          }
-
-
-          const filtered =
-            recapData.filter(item => {
-
-              return [
-
-                item.product_code,
-                item.product_name,
-                item.customer_name,
-                item.product_version,
-                item.item_status
-
-              ]
-                .filter(Boolean)
-                .some(value =>
-                  String(value)
-                    .toLowerCase()
-                    .includes(keyword)
-                );
-
-            });
+        const keyword =
+          this.value
+            .toLowerCase()
+            .trim();
 
 
-          renderRecap(filtered);
+        if (!keyword) {
+
+          renderRecap(
+            recapData
+          );
+
+          return;
 
         }
-      );
 
 
-    /* UPLOAD PEMBAYARAN */
+        const filtered =
+          recapData.filter(
+            item => {
 
-    document
-      .getElementById("paymentForm")
-      .addEventListener(
-        "submit",
-        async function (event) {
+              const values = [
 
-          event.preventDefault();
+                item.product_code,
 
+                item.product_name,
 
-          const message =
-            document.getElementById(
-              "paymentMessage"
-            );
+                item.customer_name,
 
+                item.whatsapp_last4,
 
-          message.innerHTML =
-            "<p>Mengirim bukti pembayaran...</p>";
+                item.product_version,
 
+                item.item_status
 
-          const file =
-            document.getElementById(
-              "paymentProof"
-            ).files[0];
+              ];
 
 
-          if (!file) {
+              return values
+                .filter(Boolean)
+                .some(
+                  value =>
+                    String(value)
+                      .toLowerCase()
+                      .includes(
+                        keyword
+                      )
+                );
 
-            message.innerHTML =
-              "<p>Pilih bukti pembayaran terlebih dahulu.</p>";
-
-            return;
-
-          }
-
-
-          const customerName =
-            document.getElementById(
-              "customerName"
-            ).value.trim();
-
-
-          const whatsappLast4 =
-            document.getElementById(
-              "whatsappLast4"
-            ).value.trim();
+            }
+          );
 
 
-          const productCode =
-            document.getElementById(
-              "productCode"
-            ).value.trim();
+        renderRecap(
+          filtered
+        );
+
+      }
+    );
 
 
-          const productVersion =
-            document.getElementById(
-              "productVersion"
-            ).value.trim();
+
+  /* =========================
+     PAYMENT FORM
+  ========================= */
+
+  document
+    .getElementById(
+      "paymentForm"
+    )
+    .addEventListener(
+      "submit",
+      async function (event) {
+
+        event.preventDefault();
 
 
-          const paymentAmount =
-            Number(
-              document.getElementById(
+        const message =
+          document.getElementById(
+            "paymentMessage"
+          );
+
+
+        const button =
+          document.getElementById(
+            "paymentSubmitBtn"
+          );
+
+
+        const file =
+          document.getElementById(
+            "paymentProof"
+          ).files[0];
+
+
+        const customerName =
+          document
+            .getElementById(
+              "paymentCustomerName"
+            )
+            .value
+            .trim();
+
+
+        const whatsappLast4 =
+          document
+            .getElementById(
+              "paymentWhatsappLast4"
+            )
+            .value
+            .trim();
+
+
+        const productCode =
+          document
+            .getElementById(
+              "paymentProductCode"
+            )
+            .value
+            .trim();
+
+
+        const productVersion =
+          document
+            .getElementById(
+              "paymentProductVersion"
+            )
+            .value
+            .trim();
+
+
+        const paymentAmount =
+          Number(
+            document
+              .getElementById(
                 "paymentAmount"
-              ).value
-            );
+              )
+              .value
+          );
 
 
-          const paymentDate =
-            document.getElementById(
+        const paymentDate =
+          document
+            .getElementById(
               "paymentDate"
-            ).value;
+            )
+            .value;
 
 
-          try {
 
-            const fileName =
-              Date.now() +
-              "_" +
-              file.name.replace(
-                /[^a-zA-Z0-9._-]/g,
-                "_"
+        /* =====================
+           VALIDASI FILE
+        ===================== */
+
+        if (!file) {
+
+          showPaymentMessage(
+            "Pilih bukti pembayaran terlebih dahulu.",
+            true
+          );
+
+          return;
+
+        }
+
+
+        /* =====================
+           VALIDASI WHATSAPP
+        ===================== */
+
+        if (
+          !/^[0-9]{4}$/
+            .test(
+              whatsappLast4
+            )
+        ) {
+
+          showPaymentMessage(
+            "Masukkan tepat 4 digit terakhir WhatsApp.",
+            true
+          );
+
+          return;
+
+        }
+
+
+        /* =====================
+           VALIDASI UKURAN
+        ===================== */
+
+        if (
+          file.size >
+          8 * 1024 * 1024
+        ) {
+
+          showPaymentMessage(
+            "Ukuran file maksimal 8 MB.",
+            true
+          );
+
+          return;
+
+        }
+
+
+        /* =====================
+           VALIDASI FORMAT
+        ===================== */
+
+        const allowedTypes = [
+
+          "image/jpeg",
+
+          "image/png",
+
+          "image/webp",
+
+          "application/pdf"
+
+        ];
+
+
+        if (
+          !allowedTypes.includes(
+            file.type
+          )
+        ) {
+
+          showPaymentMessage(
+            "Format file tidak didukung.",
+            true
+          );
+
+          return;
+
+        }
+
+
+
+        try {
+
+
+          button.disabled =
+            true;
+
+
+          button.textContent =
+            "Mengirim...";
+
+
+          showPaymentMessage(
+            "Mengirim bukti pembayaran..."
+          );
+
+
+
+          /* =====================
+             BUAT NAMA FILE
+          ===================== */
+
+          const extension =
+            file.name
+              .split(".")
+              .pop()
+              .toLowerCase();
+
+
+          const fileName =
+            Date.now() +
+            "-" +
+            Math.random()
+              .toString(36)
+              .substring(
+                2,
+                10
+              ) +
+            "." +
+            extension;
+
+
+          const filePath =
+            "payments/" +
+            fileName;
+
+
+
+          /* =====================
+             UPLOAD KE STORAGE
+          ===================== */
+
+          const upload =
+            await supabaseClient
+              .storage
+              .from(
+                "payment-proofs"
+              )
+              .upload(
+                filePath,
+                file,
+                {
+                  cacheControl:
+                    "3600",
+
+                  upsert:
+                    false
+                }
               );
 
 
-            const filePath =
-              "payment-proofs/" +
-              fileName;
+          if (
+            upload.error
+          ) {
 
-
-            const upload =
-              await supabaseClient.storage
-                .from("payment-proofs")
-                .upload(
-                  filePath,
-                  file
-                );
-
-
-            if (upload.error) {
-              throw upload.error;
-            }
-
-
-            const { error } =
-              await supabaseClient
-                .from(
-                  "dn_payment_submissions"
-                )
-                .insert({
-
-                  customer_name:
-                    customerName,
-
-                  whatsapp_last4:
-                    whatsappLast4,
-
-                  product_code:
-                    productCode,
-
-                  product_version:
-                    productVersion,
-
-                  amount:
-                    paymentAmount,
-
-                  payment_date:
-                    paymentDate,
-
-                  proof_path:
-                    filePath,
-
-                  status:
-                    "pending"
-
-                });
-
-
-            if (error) {
-              throw error;
-            }
-
-
-            message.innerHTML = `
-
-              <div class="result">
-
-                <h3>
-                  ✅ Bukti pembayaran berhasil dikirim
-                </h3>
-
-                <p>
-                  Admin Dear Nadiya akan
-                  melakukan pengecekan pembayaran kamu.
-                </p>
-
-              </div>
-
-            `;
-
-
-            document
-              .getElementById(
-                "paymentForm"
-              )
-              .reset();
-
-
-          } catch (error) {
-
-            console.error(error);
-
-
-            message.innerHTML = `
-
-              <div class="error">
-
-                Gagal mengirim pembayaran.
-
-                <br><br>
-
-                ${error.message}
-
-              </div>
-
-            `;
+            throw upload.error;
 
           }
 
+
+
+          /* =====================
+             SIMPAN DATA PEMBAYARAN
+          ===================== */
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from(
+                "dn_payment_submissions"
+              )
+              .insert({
+
+                customer_name:
+                  customerName,
+
+                whatsapp_last4:
+                  whatsappLast4,
+
+                product_code:
+                  productCode,
+
+                product_version:
+                  productVersion,
+
+                amount:
+                  paymentAmount,
+
+                payment_date:
+                  paymentDate,
+
+                proof_path:
+                  filePath,
+
+                status:
+                  "pending"
+
+              });
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+
+          /* =====================
+             SUCCESS
+          ===================== */
+
+          message.style.display =
+            "block";
+
+
+          message.className =
+            "result success";
+
+
+          message.innerHTML = `
+
+            <h3>
+              ✅ Bukti pembayaran berhasil dikirim
+            </h3>
+
+            <p>
+              Terima kasih,
+              <b>
+                ${display(
+                  customerName
+                )}
+              </b>.
+            </p>
+
+            <p>
+              Bukti pembayaran sudah
+              masuk ke sistem
+              Dear Nadiya.
+            </p>
+
+            <p>
+              Status:
+              <b>
+                Menunggu Verifikasi Admin
+              </b>
+            </p>
+
+          `;
+
+
+          document
+            .getElementById(
+              "paymentForm"
+            )
+            .reset();
+
+
+          setToday();
+
+
+        } catch (error) {
+
+
+          console.error(
+            "Payment error:",
+            error
+          );
+
+
+          showPaymentMessage(
+            "Gagal mengirim pembayaran: " +
+            error.message,
+            true
+          );
+
+
+        } finally {
+
+
+          button.disabled =
+            false;
+
+
+          button.textContent =
+            "Kirim Bukti Pembayaran";
+
+
         }
+
+      }
+    );
+
+
+
+  /* =========================
+     PAYMENT MESSAGE
+  ========================= */
+
+  function showPaymentMessage(
+    text,
+    isError = false
+  ) {
+
+    const message =
+      document.getElementById(
+        "paymentMessage"
       );
 
 
-    /* LOAD DATA */
+    message.style.display =
+      "block";
 
-    loadRecap();
 
-  </script>
+    if (isError) {
+
+      message.className =
+        "error";
+
+
+      message.innerHTML =
+        `<p>${display(text)}</p>`;
+
+    } else {
+
+      message.className =
+        "result";
+
+
+      message.innerHTML =
+        `<p>${display(text)}</p>`;
+
+    }
+
+  }
+
+
+
+  /* =========================
+     DEFAULT DATE
+  ========================= */
+
+  function setToday() {
+
+    const input =
+      document.getElementById(
+        "paymentDate"
+      );
+
+
+    const today =
+      new Date();
+
+
+    const year =
+      today.getFullYear();
+
+
+    const month =
+      String(
+        today.getMonth() + 1
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const day =
+      String(
+        today.getDate()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    input.value =
+      `${year}-${month}-${day}`;
+
+  }
+
+
+
+  /* =========================
+     START
+  ========================= */
+
+  setToday();
+
+  loadRecap();
+
+
+</script>
 
 </body>
 
