@@ -3,588 +3,197 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <title>Dear Nadiya | Customer Portal</title>
 
-  <title>Dear Nadiya | Member Portal</title>
+  <link rel="stylesheet" href="style.css">
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <style>
+    .portal {
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .hero img {
+      width: 180px;
+      max-width: 35%;
+    }
+
+    .eyebrow {
+      letter-spacing: 2px;
+      font-size: 12px;
+      font-weight: bold;
+      opacity: .7;
+    }
+
+    .search-box {
+      margin: 30px 0;
+    }
+
+    .search-box input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: white;
+      border-radius: 18px;
+      border: 1px solid #eee;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 950px;
+    }
+
+    th,
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      font-size: 13px;
+      background: #fafafa;
+    }
+
+    td {
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .loading,
+    .empty,
+    .error {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .info-card {
+      padding: 22px;
+      border-radius: 16px;
+      background: white;
+      border: 1px solid #eee;
+    }
+
+    .info-card h2 {
+      margin: 8px 0 0;
+    }
+
+    @media (max-width: 700px) {
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero img {
+        max-width: 150px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-
 
 <body>
 
-  <!-- HEADER -->
-
   <header>
 
-    <a
-      class="brand"
-      href="#dashboard"
-    >
-
-      <img
-        src="mascot.png"
-        alt="Dear Nadiya"
-      >
+    <a class="brand" href="#">
+      <img src="mascot.png" alt="Dear Nadiya">
 
       <div>
         <b>Dear Nadiya ♥</b>
-
-        <small>
-          MEMBER PORTAL
-        </small>
+        <small>CUSTOMER PORTAL</small>
       </div>
-
     </a>
 
-
-    <!-- MENU MEMBER -->
-
     <nav>
-
-      <a href="#dashboard">
-        Dashboard
-      </a>
-
-      <a href="#po">
-        PO Saya
-      </a>
-
-      <a href="#tagihan">
-        Tagihan
-      </a>
-
-      <a href="#rekap">
-        Rekap Barang
-      </a>
-
-      <a href="#pembayaran">
-        Upload Pembayaran
-      </a>
-
+      <a href="#dashboard">Dashboard</a>
+      <a href="#rekap">Rekap GO</a>
     </nav>
 
   </header>
 
 
+  <main class="portal">
 
-  <!-- HERO / WELCOME -->
+    <!-- DASHBOARD -->
 
-  <section
-    class="hero"
-    id="dashboard"
-  >
+    <section class="hero" id="dashboard">
 
-    <div>
+      <div>
 
-      <p class="eyebrow">
-        MEMBER PORTAL
-      </p>
+        <p class="eyebrow">
+          DEAR NADIYA
+        </p>
 
-      <h1>
-        Halo, Member
-        <span>Dear Nadiya ♥</span>
-      </h1>
+        <h1>
+          Customer Portal ♥
+        </h1>
 
-      <p class="pill">
-        Pantau PO, tagihan, pembayaran, dan barang kamu di sini.
-      </p>
+        <p>
+          Pantau pesanan Group Order kamu melalui rekap
+          yang tersedia di sini.
+        </p>
 
-    </div>
+      </div>
 
+      <img src="mascot.png" alt="Mascot Dear Nadiya">
 
-    <img
-      src="mascot.png"
-      alt="Mascot Dear Nadiya"
-    >
-
-  </section>
-
-
-
-  <!-- KONTEN UTAMA -->
-
-  <main>
+    </section>
 
 
     <!-- RINGKASAN -->
 
     <section>
 
-      <p class="eyebrow">
-        RINGKASAN
-      </p>
+      <div class="info-grid">
 
-      <h2>
-        Status Saya
-      </h2>
-
-
-      <div class="grid">
-
-        <div class="panel">
-
-          <p>
-            PO Aktif
-          </p>
-
-          <h2>
-            0
-          </h2>
-
+        <div class="info-card">
+          <p>Total Pesanan</p>
+          <h2 id="totalOrder">0</h2>
         </div>
 
-
-        <div class="panel">
-
-          <p>
-            Total Tagihan
-          </p>
-
-          <h2>
-            Rp0
-          </h2>
-
+        <div class="info-card">
+          <p>Total Produk</p>
+          <h2 id="totalProduct">0</h2>
         </div>
 
-
-        <div class="panel">
-
-          <p>
-            Sudah Dibayar
-          </p>
-
-          <h2>
-            Rp0
-          </h2>
-
-        </div>
-
-
-        <div class="panel">
-
-          <p>
-            Sisa Tagihan
-          </p>
-
-          <h2>
-            Rp0
-          </h2>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- PO SAYA -->
-
-    <section
-      id="po"
-      class="panel"
-    >
-
-      <p class="eyebrow">
-        GROUP ORDER
-      </p>
-
-      <h2>
-        PO Saya
-      </h2>
-
-      <p>
-        Daftar Pre-Order yang sedang kamu ikuti akan muncul di sini.
-      </p>
-
-
-      <div
-        id="poList"
-        class="grid"
-      >
-
-        <div class="panel">
-
-          <h3>
-            Belum ada PO
-          </h3>
-
-          <p>
-            Data PO akan muncul setelah tersedia.
-          </p>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- TAGIHAN -->
-
-    <section
-      id="tagihan"
-      class="panel"
-    >
-
-      <p class="eyebrow">
-        PAYMENT
-      </p>
-
-      <h2>
-        Tagihan Pembayaran
-      </h2>
-
-      <p>
-        Lihat DP, cicilan, pelunasan, dan sisa pembayaran kamu.
-      </p>
-
-
-      <div class="grid">
-
-        <div class="panel">
-
-          <p>
-            Total Tagihan
-          </p>
-
-          <h2>
-            Rp0
-          </h2>
-
-        </div>
-
-
-        <div class="panel">
-
-          <p>
-            Sudah Dibayar
-          </p>
-
-          <h2>
-            Rp0
-          </h2>
-
-        </div>
-
-
-        <div class="panel">
-
-          <p>
-            Sisa
-          </p>
-
-          <h2>
-            Rp0
-          </h2>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- REKAP BARANG -->
-
-    <section
-      id="rekap"
-      class="panel"
-    >
-
-      <p class="eyebrow">
-        ORDER SUMMARY
-      </p>
-
-      <h2>
-        Rekap Barang
-      </h2>
-
-      <p>
-        Semua barang yang kamu pesan akan ditampilkan di sini.
-      </p>
-
-
-      <div class="table-wrap">
-
-  <table id="rekapTable">
-
-    <thead>
-      <tr>
-        <th>Kode</th>
-        <th>Nama Produk</th>
-        <th>Customer</th>
-        <th>Versi</th>
-        <th>Harga</th>
-        <th>DP</th>
-        <th>Pelunasan</th>
-        <th>Status Barang</th>
-      </tr>
-    </thead>
-
-    <tbody id="rekapBody">
-
-      <tr>
-        <td colspan="8">
-          Memuat data...
-        </td>
-      </tr>
-
-    </tbody>
-
-  </table>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- UPLOAD PEMBAYARAN -->
-
-    <section
-      id="pembayaran"
-      class="panel"
-    >
-
-      <p class="eyebrow">
-        PAYMENT PROOF
-      </p>
-
-      <h2>
-        Upload Bukti Pembayaran
-      </h2>
-
-      <p>
-        Kirim bukti transfer untuk pembayaran PO kamu.
-      </p>
-
-
-      <form>
-
-        <label>
-          Pilih Tagihan
-        </label>
-
-        <select>
-
-          <option>
-            Belum ada tagihan
-          </option>
-
-        </select>
-
-
-        <br><br>
-
-
-        <label>
-          Nominal Pembayaran
-        </label>
-
-        <input
-          type="number"
-          placeholder="Contoh: 50000"
-        >
-
-
-        <br><br>
-
-
-        <label>
-          Tanggal Transfer
-        </label>
-
-        <input
-          type="date"
-        >
-
-
-        <br><br>
-
-
-        <label>
-          Bukti Transfer
-        </label>
-
-        <input
-          type="file"
-          accept="image/*,.pdf"
-        >
-
-
-        <br><br>
-
-
-        <button
-          class="btn primary"
-          type="button"
-        >
-          Kirim Bukti Pembayaran
-        </button>
-
-      </form>
-
-    </section>
-
-
-  </main>
-
-
-
-  <!-- FOOTER -->
-
-  <footer>
-
-    <div class="brand">
-
-      <img
-        src="mascot.png"
-        alt="Dear Nadiya"
-      >
-
-      <b>
-        Dear Nadiya ♥
-      </b>
-
-    </div>
-
-
-    <span>
-      Member Portal • K-Pop Group Order
-    </span>
-
-  </footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-const SUPABASE_URL = "https://cwwzsbqfznzwfclajwnw.supabase.co";
-const SUPABASE_KEY = "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-</script>
-
-  <script>
-
-const rupiah = n => new Intl.NumberFormat("id-ID", {
-  style: "currency",
-  currency: "IDR",
-  maximumFractionDigits: 0
-}).format(Number(n || 0));
-
-
-async function loadRekap() {
-
-  const body = document.getElementById("rekapBody");
-
-  body.innerHTML = `
-    <tr>
-      <td colspan="8">Memuat rekap...</td>
-    </tr>
-  `;
-
-  try {
-
-    const { data, error } = await supabaseClient
-      .from("go_rekap_public")
-      .select("*")
-      .order("kode_produk", { ascending: true });
-
-    if (error) {
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
-
-      body.innerHTML = `
-        <tr>
-          <td colspan="8">
-            Belum ada data rekap GO.
-          </td>
-        </tr>
-      `;
-
-      return;
-    }
-
-    body.innerHTML = data.map(item => `
-
-      <tr>
-
-        <td>
-          <b>${item.kode_produk || "-"}</b>
-        </td>
-
-        <td>
-          ${item.nama_produk || "-"}
-        </td>
-
-        <td>
-          ${item.customer || "-"}
-        </td>
-
-        <td>
-          ${item.versi || "-"}
-        </td>
-
-        <td>
-          ${rupiah(item.harga)}
-        </td>
-
-        <td>
-          ${rupiah(item.dp)}
-        </td>
-
-        <td>
-          ${rupiah(item.pelunasan)}
-        </td>
-
-        <td>
-          <span class="status">
-            ${item.status_barang || "On Process"}
-          </span>
-        </td>
-
-      </tr>
-
-    `).join("");
-
-  } catch (error) {
-
-    console.error("Gagal memuat rekap:", error);
-
-    body.innerHTML = `
-      <tr>
-        <td colspan="8">
-          Rekap gagal dimuat.
-        </td>
-      </tr>
-    `;
-
-  }
-
-}
-
-
-loadRekap();
-
-  </script>
-
-  <script src="app.js"></script>
-  
-</body>
-</html>
+        <div class="info-card">
+          <p>Data Terakhir</p>
+          <h2 id="lastUpdate">-</
