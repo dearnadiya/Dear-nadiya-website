@@ -315,15 +315,34 @@
       </p>
 
 
-      <div class="panel">
+      <div class="table-wrap">
 
-        <h3>
-          Belum ada data barang
-        </h3>
+  <table id="rekapTable">
 
-        <p>
-          Rekapan barang akan muncul setelah kamu mengikuti PO.
-        </p>
+    <thead>
+      <tr>
+        <th>Kode</th>
+        <th>Nama Produk</th>
+        <th>Customer</th>
+        <th>Versi</th>
+        <th>Harga</th>
+        <th>DP</th>
+        <th>Pelunasan</th>
+        <th>Status Barang</th>
+      </tr>
+    </thead>
+
+    <tbody id="rekapBody">
+
+      <tr>
+        <td colspan="8">
+          Memuat data...
+        </td>
+      </tr>
+
+    </tbody>
+
+  </table>
 
       </div>
 
@@ -458,6 +477,112 @@ const supabaseClient = supabase.createClient(
   SUPABASE_KEY
 );
 </script>
+
+  <script>
+
+const rupiah = n => new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0
+}).format(Number(n || 0));
+
+
+async function loadRekap() {
+
+  const body = document.getElementById("rekapBody");
+
+  body.innerHTML = `
+    <tr>
+      <td colspan="8">Memuat rekap...</td>
+    </tr>
+  `;
+
+  try {
+
+    const { data, error } = await supabaseClient
+      .from("go_rekap_public")
+      .select("*")
+      .order("kode_produk", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+
+      body.innerHTML = `
+        <tr>
+          <td colspan="8">
+            Belum ada data rekap GO.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    body.innerHTML = data.map(item => `
+
+      <tr>
+
+        <td>
+          <b>${item.kode_produk || "-"}</b>
+        </td>
+
+        <td>
+          ${item.nama_produk || "-"}
+        </td>
+
+        <td>
+          ${item.customer || "-"}
+        </td>
+
+        <td>
+          ${item.versi || "-"}
+        </td>
+
+        <td>
+          ${rupiah(item.harga)}
+        </td>
+
+        <td>
+          ${rupiah(item.dp)}
+        </td>
+
+        <td>
+          ${rupiah(item.pelunasan)}
+        </td>
+
+        <td>
+          <span class="status">
+            ${item.status_barang || "On Process"}
+          </span>
+        </td>
+
+      </tr>
+
+    `).join("");
+
+  } catch (error) {
+
+    console.error("Gagal memuat rekap:", error);
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="8">
+          Rekap gagal dimuat.
+        </td>
+      </tr>
+    `;
+
+  }
+
+}
+
+
+loadRekap();
+
+  </script>
 
   <script src="app.js"></script>
   
