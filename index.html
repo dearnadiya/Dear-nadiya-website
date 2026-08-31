@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-
 <html lang="id">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -11,30 +9,24 @@
     content="width=device-width, initial-scale=1"
   >
 
-  <title>
-    Dear Nadiya | K-Pop GO & Shop
-  </title>
+  <title>Dear Nadiya | Member Portal</title>
 
   <link
     rel="stylesheet"
     href="style.css"
   >
-
 </head>
 
 
 <body>
 
-
-  <!-- ================================= -->
   <!-- HEADER -->
-  <!-- ================================= -->
 
   <header>
 
     <a
       class="brand"
-      href="#"
+      href="#dashboard"
     >
 
       <img
@@ -43,114 +35,66 @@
       >
 
       <div>
-
-        <b>
-          Dear Nadiya ♥
-        </b>
+        <b>Dear Nadiya ♥</b>
 
         <small>
-          K-POP GROUP ORDER & SHOP
+          MEMBER PORTAL
         </small>
-
       </div>
 
     </a>
 
 
-    <!-- MENU CUSTOMER -->
+    <!-- MENU MEMBER -->
 
     <nav>
 
-      <a href="#go">
-        GO Aktif
+      <a href="#dashboard">
+        Dashboard
       </a>
 
-      <a href="#ready">
-        Ready Stock
+      <a href="#po">
+        PO Saya
       </a>
 
-      <a href="#track">
-        Cek Pesanan
+      <a href="#tagihan">
+        Tagihan
+      </a>
+
+      <a href="#rekap">
+        Rekap Barang
+      </a>
+
+      <a href="#pembayaran">
+        Upload Pembayaran
       </a>
 
     </nav>
-
-
-    <!-- KERANJANG -->
-
-    <button
-      class="cart"
-      type="button"
-      onclick="openCart()"
-    >
-
-      🛒
-
-      <span id="count">
-        0
-      </span>
-
-    </button>
-
 
   </header>
 
 
 
-  <!-- ================================= -->
-  <!-- HERO -->
-  <!-- ================================= -->
+  <!-- HERO / WELCOME -->
 
-  <section class="hero">
+  <section
+    class="hero"
+    id="dashboard"
+  >
 
     <div>
 
       <p class="eyebrow">
-        WELCOME TO
+        MEMBER PORTAL
       </p>
-
 
       <h1>
-
-        OPEN
-
-        <span>
-          GROUP ORDER
-        </span>
-
-        K-POP
-
+        Halo, Member
+        <span>Dear Nadiya ♥</span>
       </h1>
 
-
       <p class="pill">
-
-        Album • Merchandise • Photocard • Official Goods
-
-      </p>
-
-
-      <p>
-
-        <a
-          class="btn primary"
-          href="#go"
-        >
-
-          Lihat GO Aktif
-
-        </a>
-
-
-        <a
-          class="btn secondary"
-          href="#track"
-        >
-
-          Cek Pesanan
-
-        </a>
-
+        Pantau PO, tagihan, pembayaran, dan barang kamu di sini.
       </p>
 
     </div>
@@ -161,121 +105,316 @@
       alt="Mascot Dear Nadiya"
     >
 
-
   </section>
 
 
 
-  <!-- ================================= -->
-  <!-- KONTEN UTAMA CUSTOMER -->
-  <!-- ================================= -->
+  <!-- KONTEN UTAMA -->
 
   <main>
 
 
-    <!-- GO AKTIF -->
+    <!-- RINGKASAN -->
 
-    <section id="go">
+    <section>
 
-      <div class="heading">
+      <p class="eyebrow">
+        RINGKASAN
+      </p>
 
-        <div>
+      <h2>
+        Status Saya
+      </h2>
 
-          <p class="eyebrow">
-            GROUP ORDER
+
+      <div class="grid">
+
+        <div class="panel">
+
+          <p>
+            PO Aktif
           </p>
 
+          <h2>
+            0
+          </h2>
+
+        </div>
+
+
+        <div class="panel">
+
+          <p>
+            Total Tagihan
+          </p>
 
           <h2>
-            GO yang Sedang Aktif
+            Rp0
+          </h2>
+
+        </div>
+
+
+        <div class="panel">
+
+          <p>
+            Sudah Dibayar
+          </p>
+
+          <h2>
+            Rp0
+          </h2>
+
+        </div>
+
+
+        <div class="panel">
+
+          <p>
+            Sisa Tagihan
+          </p>
+
+          <h2>
+            Rp0
           </h2>
 
         </div>
 
       </div>
 
-
-      <div
-        class="grid"
-        id="goGrid"
-      >
-
-      </div>
-
-
     </section>
 
 
 
-    <!-- READY STOCK -->
-
-    <section id="ready">
-
-      <p class="eyebrow">
-        AVAILABLE NOW
-      </p>
-
-
-      <h2>
-        Ready Stock
-      </h2>
-
-
-      <div
-        class="grid"
-        id="readyGrid"
-      >
-
-      </div>
-
-
-    </section>
-
-
-
-    <!-- CEK PESANAN -->
+    <!-- PO SAYA -->
 
     <section
-      id="track"
+      id="po"
       class="panel"
     >
 
       <p class="eyebrow">
-        ORDER TRACKING
+        GROUP ORDER
+      </p>
+
+      <h2>
+        PO Saya
+      </h2>
+
+      <p>
+        Daftar Pre-Order yang sedang kamu ikuti akan muncul di sini.
       </p>
 
 
+      <div
+        id="poList"
+        class="grid"
+      >
+
+        <div class="panel">
+
+          <h3>
+            Belum ada PO
+          </h3>
+
+          <p>
+            Data PO akan muncul setelah tersedia.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- TAGIHAN -->
+
+    <section
+      id="tagihan"
+      class="panel"
+    >
+
+      <p class="eyebrow">
+        PAYMENT
+      </p>
+
       <h2>
-        Cek Status Pesanan
+        Tagihan Pembayaran
       </h2>
 
+      <p>
+        Lihat DP, cicilan, pelunasan, dan sisa pembayaran kamu.
+      </p>
 
-      <div class="track">
+
+      <div class="grid">
+
+        <div class="panel">
+
+          <p>
+            Total Tagihan
+          </p>
+
+          <h2>
+            Rp0
+          </h2>
+
+        </div>
+
+
+        <div class="panel">
+
+          <p>
+            Sudah Dibayar
+          </p>
+
+          <h2>
+            Rp0
+          </h2>
+
+        </div>
+
+
+        <div class="panel">
+
+          <p>
+            Sisa
+          </p>
+
+          <h2>
+            Rp0
+          </h2>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- REKAP BARANG -->
+
+    <section
+      id="rekap"
+      class="panel"
+    >
+
+      <p class="eyebrow">
+        ORDER SUMMARY
+      </p>
+
+      <h2>
+        Rekap Barang
+      </h2>
+
+      <p>
+        Semua barang yang kamu pesan akan ditampilkan di sini.
+      </p>
+
+
+      <div class="panel">
+
+        <h3>
+          Belum ada data barang
+        </h3>
+
+        <p>
+          Rekapan barang akan muncul setelah kamu mengikuti PO.
+        </p>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- UPLOAD PEMBAYARAN -->
+
+    <section
+      id="pembayaran"
+      class="panel"
+    >
+
+      <p class="eyebrow">
+        PAYMENT PROOF
+      </p>
+
+      <h2>
+        Upload Bukti Pembayaran
+      </h2>
+
+      <p>
+        Kirim bukti transfer untuk pembayaran PO kamu.
+      </p>
+
+
+      <form>
+
+        <label>
+          Pilih Tagihan
+        </label>
+
+        <select>
+
+          <option>
+            Belum ada tagihan
+          </option>
+
+        </select>
+
+
+        <br><br>
+
+
+        <label>
+          Nominal Pembayaran
+        </label>
 
         <input
-          id="trackCode"
-          placeholder="Contoh: DN-2026-ABC123"
+          type="number"
+          placeholder="Contoh: 50000"
         >
+
+
+        <br><br>
+
+
+        <label>
+          Tanggal Transfer
+        </label>
+
+        <input
+          type="date"
+        >
+
+
+        <br><br>
+
+
+        <label>
+          Bukti Transfer
+        </label>
+
+        <input
+          type="file"
+          accept="image/*,.pdf"
+        >
+
+
+        <br><br>
 
 
         <button
           class="btn primary"
           type="button"
-          onclick="track()"
         >
-
-          Cek Pesanan
-
+          Kirim Bukti Pembayaran
         </button>
 
-
-      </div>
-
-
-      <div id="trackResult">
-
-      </div>
-
+      </form>
 
     </section>
 
@@ -284,9 +423,7 @@
 
 
 
-  <!-- ================================= -->
   <!-- FOOTER -->
-  <!-- ================================= -->
 
   <footer>
 
@@ -297,7 +434,6 @@
         alt="Dear Nadiya"
       >
 
-
       <b>
         Dear Nadiya ♥
       </b>
@@ -306,50 +442,10 @@
 
 
     <span>
-      K-Pop Group Order & Ready Stock
+      Member Portal • K-Pop Group Order
     </span>
 
-
   </footer>
-
-
-
-  <!-- ================================= -->
-  <!-- MODAL / KERANJANG / CHECKOUT -->
-  <!-- ================================= -->
-
-  <div
-    class="modal"
-    id="modal"
-  >
-
-    <div class="box">
-
-      <button
-        class="close"
-        type="button"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
-
-
-      <div id="modalBody">
-
-      </div>
-
-
-    </div>
-
-  </div>
-
-
-
-  <!-- ================================= -->
-  <!-- JAVASCRIPT CUSTOMER -->
-  <!-- ================================= -->
-
-  <script src="app.js"></script>
 
 
 </body>
