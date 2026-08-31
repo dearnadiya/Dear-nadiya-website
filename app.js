@@ -30,7 +30,7 @@ async function loadMember() {
 
     if (!user) {
 
-      console.log("Belum ada user login.");
+      alert("User belum login ke Supabase.");
 
       return;
     }
