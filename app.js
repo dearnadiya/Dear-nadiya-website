@@ -1,103 +1,312 @@
-let products = [], cart = [];
+// ==========================================
+// DEAR NADIYA - MEMBER PORTAL
+// ==========================================
 
-const rupiah = n => new Intl.NumberFormat("id-ID", {
+const money = (value) => {
+  return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     maximumFractionDigits: 0
-}).format(n);
+  }).format(Number(value || 0));
+};
 
-const SUPABASE_URL = "https://cwwzsbqfznzwfclajwnw.supabase.co";
-const SUPABASE_KEY = "sb_publishable_ADa_gyMfyBZ1ZcdUO8FRfw_iELzOmbQ";
 
-async function load(){
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, {
-            headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`
-            }
-        });
+// ==========================================
+// LOAD MEMBER
+// ==========================================
 
-        if (!response.ok) {
-            throw new Error(`Error ${response.status}`);
-        }
+async function loadMember() {
 
-        products = await response.json();
-        console.log("Products:", products);
-        render();
-    } catch (error) {
-        console.error("Gagal memuat produk:", error);
-        alert("Produk gagal dimuat: " + error.message);
+  try {
+
+    const {
+      data: { user },
+      error: authError
+    } = await supabaseClient.auth.getUser();
+
+    if (authError) {
+      throw authError;
     }
+
+    if (!user) {
+
+      console.log("Belum ada user login.");
+
+      return;
+    }
+
+
+    console.log("USER LOGIN:", user.id);
+
+
+    // Cari member berdasarkan ID Auth
+    const { data: member, error } =
+      await supabaseClient
+        .from("dn_members")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    console.log("MEMBER:", member);
+
+
+    // Ubah sapaan
+    const heroTitle =
+      document.querySelector(".hero h1");
+
+    if (heroTitle) {
+
+      heroTitle.innerHTML =
+        `Halo, ${member.name || "Member"} <span>Dear Nadiya ♥</span>`;
+
+    }
+
+
+    // Ambil PO member
+    await loadMyPO(member.id);
+
+  } catch (error) {
+
+    console.error("Gagal memuat member:", error);
+
+  }
+
 }
-function render(){
-    const card = p => `
-        <article class="card">
-            <div class="thumb">${p.emoji}</div>
-            <span class="badge">
-                ${p.type === "go" ? "OPEN GO" : "READY STOCK"}
-            </span>
 
-            <h3>${p.name}</h3>
 
-            <p><b>${rupiah(p.price)}</b></p>
+
+// ==========================================
+// LOAD PO MEMBER
+// ==========================================
+
+async function loadMyPO(memberId) {
+
+  try {
+
+    const { data, error } =
+      await supabaseClient
+        .from("dn_po_members")
+        .select(`
+          po_id,
+          joined_at,
+          dn_pos (
+            id,
+            name,
+            description,
+            image_url,
+            open_date,
+            close_date,
+            last_dp,
+            status,
+            created_at
+          )
+        `)
+        .eq("member_id", memberId);
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    console.log("PO MEMBER:", data);
+
+
+    const poList =
+      document.getElementById("poList");
+
+
+    if (!data || data.length === 0) {
+
+      poList.innerHTML = `
+        <div class="panel">
+
+          <h3>Belum ada PO</h3>
+
+          <p>
+            Kamu belum mengikuti Pre-Order apa pun.
+          </p>
+
+        </div>
+      `;
+
+      updateSummary([]);
+
+      return;
+    }
+
+
+    // Tampilkan PO
+    poList.innerHTML = data.map(item => {
+
+      const po = item.dn_pos;
+
+      return `
+
+        <div class="panel po-card">
+
+          ${
+            po.image_url
+              ? `
+                <img
+                  src="${po.image_url}"
+                  alt="${po.name}"
+                  style="
+                    width:100%;
+                    max-height:220px;
+                    object-fit:cover;
+                    border-radius:16px;
+                    margin-bottom:15px;
+                  "
+                >
+              `
+              : ""
+          }
+
+
+          <p class="eyebrow">
+            GROUP ORDER
+          </p>
+
+
+          <h3>
+            ${po.name || "-"}
+          </h3>
+
+
+          <p>
+            ${po.description || ""}
+          </p>
+
+
+          <div class="po-info">
 
             <p>
-                ${p.type === "go"
-                    ? `Deadline: ${p.deadline}<br>Kuota: ${p.quota}`
-                    : `Stok: ${p.stock}`
-                }
+              <b>Open PO</b><br>
+              ${formatDate(po.open_date)}
             </p>
 
-            <button class="btn secondary"
-                onclick="window.location.href='detail.html?id=${p.id}'">
-                Lihat Detail
-            </button>
-        </article>
+
+            <p>
+              <b>Close PO</b><br>
+              ${formatDate(po.close_date)}
+            </p>
+
+
+            <p>
+              <b>Last DP</b><br>
+              ${formatDate(po.last_dp)}
+            </p>
+
+
+            <p>
+              <b>Status</b><br>
+              <span class="badge">
+                ${po.status || "OPEN"}
+              </span>
+            </p>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+
+    updateSummary(data);
+
+  } catch (error) {
+
+    console.error("Gagal memuat PO:", error);
+
+    document.getElementById("poList").innerHTML = `
+      <div class="panel">
+
+        <h3>Gagal memuat PO</h3>
+
+        <p>
+          ${error.message}
+        </p>
+
+      </div>
     `;
 
-    document.getElementById("goGrid").innerHTML =
-        products
-            .filter(x => x.type === "go")
-            .map(card)
-            .join("");
+  }
 
-    document.getElementById("readyGrid").innerHTML =
-        products
-            .filter(x => x.type === "ready")
-            .map(card)
-            .join("");
-}
-function selectOpt(e){document.querySelectorAll("#opts .option").forEach(x=>x.classList.remove("active"));e.classList.add("active")}
-function qty(n){let e=document.getElementById("qty"),v=Math.max(1,+e.textContent+n);e.textContent=v}
-function add(id){const p=products.find(x=>x.id===id);cart.push({product_id:id,name:p.name,price:p.price,qty:+document.getElementById("qty").textContent,selected_option:document.querySelector("#opts .active").textContent,dp_allowed:p.dp_allowed});document.getElementById("count").textContent=cart.reduce((a,b)=>a+b.qty,0);closeModal();alert("Masuk keranjang ♥")}
-function openCart(){if(!cart.length){alert("Keranjang masih kosong.");return}let total=cart.reduce((a,b)=>a+b.price*b.qty,0);document.getElementById("modalBody").innerHTML=`<h2>Keranjang</h2>${cart.map((x,i)=>`<div class="cartline"><span><b>${x.name}</b><br>${x.selected_option} × ${x.qty}</span><b>${rupiah(x.price*x.qty)}</b></div>`).join("")}<h3>Total: ${rupiah(total)}</h3><button class="btn primary" onclick="checkout()">Checkout</button>`;openModal()}
-function checkout(){document.getElementById("modalBody").innerHTML=`<h2>Checkout</h2><form class="form" onsubmit="submitOrder(event)"><label>Nama lengkap<input required name="customer_name"></label><label>WhatsApp<input required name="whatsapp"></label><label>Instagram<input name="instagram"></label><label>Alamat lengkap<textarea required name="address"></textarea></label><label>Pembayaran</label><div class="pay"><label><input type="radio" name="payment_type" value="dp" checked> DP 50% (jika tersedia)</label><label><input type="radio" name="payment_type" value="full"> Lunas</label></div><button class="btn primary">Buat Pesanan</button></form>`}
-async function submitOrder(e){e.preventDefault();let f=new FormData(e.target),d=Object.fromEntries(f.entries());d.items=cart;let r=await fetch("/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}),j=await r.json();if(j.error){alert(j.error);return}cart=[];document.getElementById("count").textContent=0;document.getElementById("modalBody").innerHTML=`<div class="result"><h3>Pesanan berhasil dibuat ♥</h3><p>Nomor pesanan: <b>${j.order_code}</b></p><p>Total pembayaran saat ini: <b>${rupiah(j.amount_due)}</b></p><p>Silakan transfer sesuai rekening yang ditentukan admin, lalu lakukan upload bukti pembayaran pada versi lanjutan.</p></div>`}
-async function track(){
- let c=document.getElementById("trackCode").value.trim(),r=await fetch("/api/track/"+encodeURIComponent(c)),j=await r.json(),out=document.getElementById("trackResult");
- if(j.error){out.innerHTML=`<p>${j.error}</p>`;return}
- const canUpload=!j.order.payment_proof;
- out.innerHTML=`<div class="result"><b>${j.order.order_code}</b><br>Pembayaran: ${j.order.payment_status}<br>Status: ${j.order.order_status}<br>Total: ${rupiah(j.order.total)}<br>Yang perlu dibayar: <b>${rupiah(j.order.amount_due)}</b>${j.order.payment_proof?`<br><br>📎 Bukti pembayaran sudah diterima dan ${j.order.payment_status.toLowerCase()}.`:``}</div>
- ${canUpload?`<div class="uploadbox"><h3>Upload Bukti Pembayaran</h3><p>Format: JPG, JPEG, PNG, WEBP, atau PDF. Maks. 8 MB.</p><input id="proofFile" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,image/*,application/pdf"><button class="btn primary" onclick="uploadProof('${j.order.order_code}')">Upload Bukti Pembayaran</button></div>`:``}`;
-}
-async function uploadProof(code){
- const f=document.getElementById("proofFile").files[0];
- if(!f){alert("Pilih file bukti pembayaran terlebih dahulu.");return}
- const fd=new FormData();fd.append("proof",f);
- const r=await fetch("/api/payment-proof/"+encodeURIComponent(code),{method:"POST",body:fd});
- const j=await r.json();
- if(j.error){alert(j.error);return}
- alert(j.message);
-document.getElementById("trackCode").value = code;
-track();
 }
 
-function openModal(){
-  document.getElementById("modal").classList.add("show");
+
+
+// ==========================================
+// SUMMARY
+// ==========================================
+
+function updateSummary(data) {
+
+  const activePO = data.length;
+
+
+  const panels =
+    document.querySelectorAll("main > section:first-child .panel h2");
+
+
+  if (panels.length >= 1) {
+
+    panels[0].textContent =
+      activePO;
+
+  }
+
 }
 
-function closeModal(){
-  document.getElementById("modal").classList.remove("show");
+
+
+// ==========================================
+// FORMAT TANGGAL
+// ==========================================
+
+function formatDate(date) {
+
+  if (!date) {
+    return "-";
+  }
+
+
+  const d = new Date(date);
+
+
+  if (isNaN(d.getTime())) {
+    return date;
+  }
+
+
+  return d.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
 }
-load();
+
+
+
+// ==========================================
+// START
+// ==========================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    loadMember();
+
+  }
+);
