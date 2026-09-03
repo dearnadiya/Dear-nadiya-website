@@ -790,72 +790,28 @@
       </div>
 
 
-      <!-- TABLE -->
+      <!-- REKAP CAROUSEL -->
 
-      <div class="table-wrap">
+<div class="recap-carousel">
 
-        <table>
+  <div
+    id="recapCarouselTrack"
+    class="recap-carousel-track"
+  >
 
-          <thead>
+    <div class="loading">
+      Memuat rekap...
+    </div>
 
-            <tr>
+  </div>
 
-              <th>
-                Kode Produk
-              </th>
+</div>
 
-              <th>
-                Nama Produk
-              </th>
-
-              <th>
-                Customer
-              </th>
-
-              <th>
-                Versi
-              </th>
-
-              <th>
-                Harga
-              </th>
-
-              <th>
-                DP
-              </th>
-
-              <th>
-                Pelunasan
-              </th>
-
-              <th>
-                Status Barang
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody id="rekapBody">
-
-            <tr>
-
-              <td
-                colspan="8"
-                class="loading"
-              >
-                Memuat data rekap...
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
+<div
+  id="recapCarouselHint"
+  class="recap-carousel-hint"
+></div>
+      
     </section>
 
     <!-- =========================
@@ -1247,105 +1203,130 @@
 
 
   /* =========================
-     RENDER RECAP
-  ========================= */
+   RENDER RECAP CAROUSEL
+========================= */
 
-  function renderRecap(data) {
+function renderRecap(data) {
 
-    const body =
-      document.getElementById(
-        "rekapBody"
-      );
+  const track =
+    document.getElementById(
+      "recapCarouselTrack"
+    );
 
-
-    if (!data || !data.length) {
-
-      body.innerHTML = `
-        <tr>
-
-          <td
-            colspan="8"
-            class="empty"
-          >
-            Belum ada data rekap.
-          </td>
-
-        </tr>
-      `;
-
-      return;
-
-    }
+  const hint =
+    document.getElementById(
+      "recapCarouselHint"
+    );
 
 
-    body.innerHTML =
-      data.map(item => `
-
-        <tr>
-
-          <td>
-            ${display(
-              item.product_code
-            )}
-          </td>
-
-
-          <td>
-            <b>
-              ${display(
-                item.product_name
-              )}
-            </b>
-          </td>
-
-
-          <td>
-            ${customerDisplay(item)}
-          </td>
-
-
-          <td>
-            ${display(
-              item.product_version
-            )}
-          </td>
-
-
-          <td>
-            ${rupiah(
-              item.price
-            )}
-          </td>
-
-
-          <td>
-            ${rupiah(
-              item.dp
-            )}
-          </td>
-
-
-          <td>
-            ${rupiah(
-              item.pelunasan
-            )}
-          </td>
-
-
-          <td>
-            ${statusDisplay(
-              item.item_status
-            )}
-          </td>
-
-        </tr>
-
-      `).join("");
-
+  if (!track) {
+    return;
   }
 
 
+  if (!data || !data.length) {
 
+    track.innerHTML = `
+      <div class="empty">
+        Belum ada data rekap.
+      </div>
+    `;
+
+    if (hint) {
+      hint.textContent = "";
+    }
+
+    return;
+  }
+
+
+  /* =========================
+     KELOMPOKKAN BERDASARKAN
+     KODE PRODUK
+  ========================= */
+
+  const grouped = {};
+
+
+  data.forEach(item => {
+
+    const code =
+      item.product_code ||
+      "Tanpa Kode";
+
+
+    if (!grouped[code]) {
+
+      grouped[code] = {
+        code: code,
+        name:
+          item.product_name ||
+          "Tanpa Nama",
+        status:
+          item.item_status ||
+          ""
+      };
+
+    }
+
+  });
+
+
+  const products =
+    Object.values(grouped);
+
+
+  /* =========================
+     TAMPILKAN CARD
+  ========================= */
+
+  track.innerHTML = products
+    .map(item => `
+
+      <article
+        class="recap-mini-card"
+        onclick="showRecapDetail('${display(item.code)}')"
+      >
+
+        <div class="recap-mini-code">
+          ${display(item.code)}
+        </div>
+
+        <h3>
+          ${display(item.name)}
+        </h3>
+
+        ${
+          item.status
+            ? `
+              <div class="recap-mini-status">
+                📦 ${display(item.status)}
+              </div>
+            `
+            : `
+              <div class="recap-mini-status">
+                📦 -
+              </div>
+            `
+        }
+
+      </article>
+
+    `)
+    .join("");
+
+
+  if (hint) {
+
+    hint.textContent =
+      products.length > 1
+        ? "Geser untuk melihat rekap lainnya"
+        : "";
+
+  }
+
+}
+  
   /* =========================
      LOAD RECAP
   ========================= */
