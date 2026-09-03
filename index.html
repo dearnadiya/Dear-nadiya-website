@@ -1345,8 +1345,8 @@ function renderRecap(data) {
           item.status
             ? `
               <div class="recap-mini-status">
-                📦 ${display(item.status)}
-              </div>
+  ${getTrackingDisplay(item.status)}
+</div>
             `
             : `
               <div class="recap-mini-status">
