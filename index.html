@@ -2036,6 +2036,195 @@
 
   loadRecap();
 
+    /* =========================
+     LOAD PO BERJALAN
+  ========================= */
+
+  async function loadPOCustomer() {
+
+    const container =
+      document.getElementById("poCustomerList");
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("po_posts")
+          .select(`
+            id,
+            title,
+            image_url,
+            po_type,
+            price_text,
+            dp_text,
+            close_date,
+            last_dp_date,
+            description,
+            status
+          `)
+          .eq("status", "active")
+          .order("created_at", {
+            ascending: false
+          });
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      if (!data || !data.length) {
+
+        container.innerHTML = `
+          <div class="empty">
+            Belum ada PO yang sedang berjalan.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      container.innerHTML =
+        data.map(po => `
+
+          <article class="po-card">
+
+            ${
+              po.image_url
+                ? `
+                  <img
+                    src="${display(po.image_url)}"
+                    alt="${display(po.title)}"
+                    class="po-image"
+                  >
+                `
+                : ""
+            }
+
+
+            <div class="po-content">
+
+              <p class="eyebrow">
+                ${display(po.po_type)}
+              </p>
+
+              <h3>
+                ${display(po.title)}
+              </h3>
+
+
+              ${
+                po.price_text
+                  ? `
+                    <p>
+                      <b>Harga:</b>
+                      ${display(po.price_text)}
+                    </p>
+                  `
+                  : ""
+              }
+
+
+              ${
+                po.dp_text
+                  ? `
+                    <p>
+                      <b>DP:</b>
+                      ${display(po.dp_text)}
+                    </p>
+                  `
+                  : ""
+              }
+
+
+              ${
+                po.close_date
+                  ? `
+                    <p>
+                      <b>Deadline PO:</b>
+                      ${new Date(
+                        po.close_date
+                      ).toLocaleString(
+                        "id-ID",
+                        {
+                          dateStyle: "long",
+                          timeStyle: "short"
+                        }
+                      )}
+                    </p>
+                  `
+                  : ""
+              }
+
+
+              ${
+                po.last_dp_date
+                  ? `
+                    <p>
+                      <b>Deadline DP:</b>
+                      ${new Date(
+                        po.last_dp_date
+                      ).toLocaleString(
+                        "id-ID",
+                        {
+                          dateStyle: "long",
+                          timeStyle: "short"
+                        }
+                      )}
+                    </p>
+                  `
+                  : ""
+              }
+
+
+              ${
+                po.description
+                  ? `
+                    <div class="po-description">
+                      ${display(po.description)}
+                    </div>
+                  `
+                  : ""
+              }
+
+
+              <p class="po-info">
+                Untuk melakukan pemesanan,
+                silakan hubungi Admin melalui WhatsApp.
+              </p>
+
+            </div>
+
+          </article>
+
+        `).join("");
+
+
+    } catch (error) {
+
+      console.error(
+        "Gagal memuat PO:",
+        error
+      );
+
+      container.innerHTML = `
+        <div class="error">
+          PO belum dapat dimuat.
+          <br><br>
+          ${display(error.message)}
+        </div>
+      `;
+
+    }
+
+  }
+
+
+  loadPOCustomer();
 
 </script>
 
