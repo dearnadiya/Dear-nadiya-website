@@ -1403,6 +1403,11 @@ function showRecapDetail(productCode) {
       "recapDetailSubtitle"
     );
 
+  const searchInput =
+    document.getElementById(
+      "recapCustomerSearch"
+    );
+
 
   if (
     !detailSection ||
@@ -1413,7 +1418,7 @@ function showRecapDetail(productCode) {
 
 
   /* =========================
-     CARI DATA PRODUK
+     CARI BATCH
   ========================= */
 
   const items =
@@ -1445,7 +1450,7 @@ function showRecapDetail(productCode) {
 
 
   /* =========================
-     JUDUL
+     JUDUL BATCH
   ========================= */
 
   if (detailTitle) {
@@ -1466,108 +1471,49 @@ function showRecapDetail(productCode) {
 
 
   /* =========================
-     TAMPILKAN DETAIL
+     SIMPAN BATCH AKTIF
   ========================= */
 
-  detailContent.innerHTML =
-    items.map(
-      item => `
-
-        <div class="recap-detail-card">
-
-          <div class="recap-detail-customer">
-
-            <strong>
-              ${display(
-                item.customer_name ||
-                "Customer"
-              )}
-            </strong>
-
-          </div>
+  window.activeRecapProductCode =
+    productCode;
 
 
-          <div class="recap-detail-info">
+  /* =========================
+     RESET SEARCH
+  ========================= */
 
-            <div>
-              <span>Versi</span>
-              <strong>
-                ${display(
-                  item.product_version ||
-                  "-"
-                )}
-              </strong>
-            </div>
+  if (searchInput) {
+
+    searchInput.value = "";
+
+  }
 
 
-            <div>
-              <span>Qty</span>
-              <strong>
-                ${display(
-                  item.quantity ||
-                  1
-                )}
-              </strong>
-            </div>
+  /* =========================
+     JANGAN TAMPILKAN
+     SEMUA CUSTOMER
+  ========================= */
 
+  detailContent.innerHTML = `
 
-            <div>
-              <span>Harga</span>
-              <strong>
-                ${rupiah(
-                  item.price || 0
-                )}
-              </strong>
-            </div>
+    <div class="recap-search-empty">
 
+      <div class="recap-search-icon">
+        🔎
+      </div>
 
-            <div>
-              <span>DP</span>
-              <strong>
-                ${rupiah(
-                  item.dp || 0
-                )}
-              </strong>
-            </div>
+      <strong>
+        Cari nama customer
+      </strong>
 
+      <p>
+        Ketik nama customer untuk
+        melihat detail pesanan.
+      </p>
 
-            <div>
-              <span>Pelunasan</span>
-              <strong>
-                ${rupiah(
-                  item.pelunasan || 0
-                )}
-              </strong>
-            </div>
+    </div>
 
-          </div>
-
-
-          <div class="recap-detail-status">
-
-            📦
-            ${display(
-              item.item_status ||
-              "-"
-            )}
-
-          </div>
-
-
-          <div class="recap-customer-status">
-
-            ${display(
-              item.customer_status ||
-              "Belum Checkout Shopee"
-            )}
-
-          </div>
-
-        </div>
-
-      `
-    )
-    .join("");
+  `;
 
 
   /* =========================
@@ -1678,24 +1624,18 @@ if (recapCustomerSearch) {
       }
 
 
-      /* =========================
-         DATA DETAIL SAAT INI
-      ========================= */
-
       const productCode =
-        document
-          .getElementById(
-            "recapDetailSubtitle"
-          )
-          ?.textContent
-          ?.split("•")[0]
-          ?.trim();
+        window.activeRecapProductCode;
 
 
       if (!productCode) {
         return;
       }
 
+
+      /* =========================
+         DATA CUSTOMER
+      ========================= */
 
       const items =
         recapData.filter(
@@ -1708,40 +1648,97 @@ if (recapCustomerSearch) {
         );
 
 
-      const filtered =
-        !keyword
-          ? items
-          : items.filter(
-              item => {
+      /* =========================
+         BELUM MENGETIK
+      ========================= */
 
-                const customer =
-                  String(
-                    item.customer_name ||
-                    ""
-                  )
-                    .toLowerCase();
-
-
-                return customer.includes(
-                  keyword
-                );
-
-              }
-            );
-
-
-      if (!filtered.length) {
+      if (!keyword) {
 
         content.innerHTML = `
-          <div class="empty">
-            Customer tidak ditemukan.
+
+          <div class="recap-search-empty">
+
+            <div class="recap-search-icon">
+              🔎
+            </div>
+
+            <strong>
+              Cari nama customer
+            </strong>
+
+            <p>
+              Ketik nama customer untuk
+              melihat detail pesanan.
+            </p>
+
           </div>
+
         `;
 
         return;
 
       }
 
+
+      /* =========================
+         FILTER CUSTOMER
+      ========================= */
+
+      const filtered =
+        items.filter(
+          item => {
+
+            const customer =
+              String(
+                item.customer_name ||
+                ""
+              )
+                .toLowerCase();
+
+
+            return customer.includes(
+              keyword
+            );
+
+          }
+        );
+
+
+      /* =========================
+         CUSTOMER TIDAK DITEMUKAN
+      ========================= */
+
+      if (!filtered.length) {
+
+        content.innerHTML = `
+
+          <div class="recap-search-empty">
+
+            <div class="recap-search-icon">
+              🔎
+            </div>
+
+            <strong>
+              Customer tidak ditemukan
+            </strong>
+
+            <p>
+              Periksa kembali nama customer
+              yang Anda masukkan.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /* =========================
+         TAMPILKAN CUSTOMER
+      ========================= */
 
       content.innerHTML =
         filtered.map(
