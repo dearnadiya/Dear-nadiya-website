@@ -1592,6 +1592,76 @@ function closeRecapDetail() {
 }
 
   /* =========================
+   STATUS DISPLAY
+========================= */
+
+function getCustomerStatusDisplay(status) {
+
+  switch (status) {
+
+    case "Belum Checkout Shopee":
+      return "⏳ Belum Checkout Shopee";
+
+    case "Sudah Checkout Shopee":
+      return "🛒 Sudah Checkout Shopee";
+
+    case "Sudah Menerima Barang":
+      return "📦 Sudah Menerima Barang";
+
+    default:
+      return status || "Belum Checkout Shopee";
+
+  }
+
+}
+
+
+function getTrackingDisplay(status) {
+
+  if (!status) {
+    return "📦 -";
+  }
+
+  switch (status) {
+
+    case "Co Web / Seller":
+      return "🛍️ Co Web / Seller";
+
+    case "Co Seller":
+      return "🛍️ Co Seller";
+
+    case "Arrived WH KR":
+      return "📦 Arrived WH KR";
+
+    case "Arrived WH JP":
+      return "📦 Arrived WH JP";
+
+    case "Arrived WH CH":
+      return "📦 Arrived WH CH";
+
+    case "Arrived WH Thai":
+      return "📦 Arrived WH Thai";
+
+    case "Shipping INA":
+      return "🚚 Shipping INA";
+
+    case "Arrived WH INA":
+      return "📦 Arrived WH INA";
+
+    case "Arrived Admin":
+      return "🏠 Arrived Admin";
+
+    case "Goods Arrive at Customer":
+      return "🏡 Goods Arrive at Customer";
+
+    default:
+      return `📦 ${status}`;
+
+  }
+
+}
+
+  /* =========================
    SEARCH CUSTOMER IN RECAP
 ========================= */
 
@@ -1816,24 +1886,20 @@ if (recapCustomerSearch) {
 
               <div class="recap-detail-status">
 
-                📦
-                ${display(
-                  item.item_status ||
-                  "-"
-                )}
+  ${getTrackingDisplay(
+    item.item_status
+  )}
 
-              </div>
+</div>
 
 
-              <div class="recap-customer-status">
+<div class="recap-customer-status">
 
-                ${display(
-                  item.customer_status ||
-                  "Belum Checkout Shopee"
-                )}
+  ${getCustomerStatusDisplay(
+    item.customer_status
+  )}
 
-              </div>
-
+</div>
             </div>
 
           `
