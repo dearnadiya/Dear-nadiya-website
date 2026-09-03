@@ -557,3 +557,25 @@
   }
 
 }
+
+/* =========================
+   WHATSAPP PO BUTTON
+========================= */
+
+.po-whatsapp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.po-whatsapp-button:active {
+  transform: scale(0.98);
+}
