@@ -309,3 +309,251 @@
   }
 
 }
+
+/* =========================
+   DETAIL PO - REFINEMENT
+========================= */
+
+.po-detail-container {
+  margin-top: 18px;
+}
+
+.po-detail-card {
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+}
+
+.po-back-button {
+  margin: 14px 15px 5px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #f5f5f5;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.po-detail-image {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+.po-detail-content {
+  padding: 17px;
+}
+
+.po-detail-status {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-bottom: 5px;
+}
+
+.po-detail-content h2 {
+  margin: 4px 0 17px;
+  font-size: 21px;
+  line-height: 1.3;
+}
+
+
+/* =========================
+   INFORMASI PO
+========================= */
+
+.po-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
+}
+
+.po-info-row span {
+  color: #888;
+}
+
+.po-info-row strong {
+  text-align: right;
+  font-size: 12px;
+  max-width: 65%;
+}
+
+
+/* =========================
+   DESKRIPSI
+========================= */
+
+.po-detail-description {
+  margin-top: 17px;
+  padding: 13px 14px;
+  background: #f8f8f8;
+  border-radius: 13px;
+  font-size: 12px;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+
+/* =========================
+   MEMBER / BARANG
+========================= */
+
+.po-members {
+  margin-top: 22px;
+}
+
+.po-members h3 {
+  margin: 0 0 11px;
+  font-size: 15px;
+}
+
+.po-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+/* CARD MEMBER */
+
+.po-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  background: #fafafa;
+  border: 1px solid #eeeeee;
+  border-radius: 13px;
+}
+
+
+/* NAMA MEMBER / BARANG */
+
+.po-item-main {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.po-item-main strong {
+  font-size: 13px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.po-item-main span {
+  font-size: 10px;
+  line-height: 1.4;
+  color: #888;
+}
+
+
+/* CUSTOMER + QTY */
+
+.po-item-info {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-size: 10px;
+}
+
+.po-item-info span:first-child {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+
+.po-item-info span:last-child {
+  color: #888;
+}
+
+
+/* =========================
+   STATUS TERSEDIA
+========================= */
+
+.po-available {
+  display: inline-block;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 3px 7px;
+  border-radius: 20px;
+  background: #f0f0f0;
+  color: #555 !important;
+}
+
+
+/* =========================
+   INFO PEMESANAN
+========================= */
+
+.po-order-info {
+  margin-top: 18px;
+  padding: 13px 14px;
+  border-radius: 13px;
+  background: #f7f7f7;
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .po-detail-card {
+    border-radius: 17px;
+  }
+
+  .po-detail-image {
+    max-height: 230px;
+  }
+
+  .po-detail-content {
+    padding: 15px;
+  }
+
+  .po-detail-content h2 {
+    font-size: 19px;
+  }
+
+  .po-info-row {
+    font-size: 11px;
+  }
+
+  .po-info-row strong {
+    font-size: 11px;
+  }
+
+  .po-item-card {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .po-item-main strong {
+    font-size: 12px;
+  }
+
+  .po-item-info span:first-child {
+    max-width: 110px;
+  }
+
+}
