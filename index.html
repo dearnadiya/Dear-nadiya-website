@@ -1592,6 +1592,261 @@ function showRecapDetail(productCode) {
   });
 
 }
+
+  /* =========================
+   CLOSE RECAP DETAIL
+========================= */
+
+function closeRecapDetail() {
+
+  const detailSection =
+    document.getElementById(
+      "rekapDetail"
+    );
+
+  const dashboardSection =
+    document.getElementById(
+      "rekap"
+    );
+
+  const searchInput =
+    document.getElementById(
+      "recapCustomerSearch"
+    );
+
+
+  if (detailSection) {
+
+    detailSection.style.display =
+      "none";
+
+  }
+
+
+  if (dashboardSection) {
+
+    dashboardSection.style.display =
+      "block";
+
+  }
+
+
+  if (searchInput) {
+
+    searchInput.value = "";
+
+  }
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+  /* =========================
+   SEARCH CUSTOMER IN RECAP
+========================= */
+
+const recapCustomerSearch =
+  document.getElementById(
+    "recapCustomerSearch"
+  );
+
+
+if (recapCustomerSearch) {
+
+  recapCustomerSearch.addEventListener(
+    "input",
+    function () {
+
+      const keyword =
+        this.value
+          .toLowerCase()
+          .trim();
+
+
+      const content =
+        document.getElementById(
+          "recapDetailContent"
+        );
+
+
+      if (!content) {
+        return;
+      }
+
+
+      /* =========================
+         DATA DETAIL SAAT INI
+      ========================= */
+
+      const productCode =
+        document
+          .getElementById(
+            "recapDetailSubtitle"
+          )
+          ?.textContent
+          ?.split("•")[0]
+          ?.trim();
+
+
+      if (!productCode) {
+        return;
+      }
+
+
+      const items =
+        recapData.filter(
+          item =>
+            String(
+              item.product_code
+            ) === String(
+              productCode
+            )
+        );
+
+
+      const filtered =
+        !keyword
+          ? items
+          : items.filter(
+              item => {
+
+                const customer =
+                  String(
+                    item.customer_name ||
+                    ""
+                  )
+                    .toLowerCase();
+
+
+                return customer.includes(
+                  keyword
+                );
+
+              }
+            );
+
+
+      if (!filtered.length) {
+
+        content.innerHTML = `
+          <div class="empty">
+            Customer tidak ditemukan.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      content.innerHTML =
+        filtered.map(
+          item => `
+
+            <div class="recap-detail-card">
+
+              <div class="recap-detail-customer">
+
+                <strong>
+                  ${display(
+                    item.customer_name ||
+                    "Customer"
+                  )}
+                </strong>
+
+              </div>
+
+
+              <div class="recap-detail-info">
+
+                <div>
+                  <span>Versi</span>
+                  <strong>
+                    ${display(
+                      item.product_version ||
+                      "-"
+                    )}
+                  </strong>
+                </div>
+
+
+                <div>
+                  <span>Qty</span>
+                  <strong>
+                    ${display(
+                      item.quantity ||
+                      1
+                    )}
+                  </strong>
+                </div>
+
+
+                <div>
+                  <span>Harga</span>
+                  <strong>
+                    ${rupiah(
+                      item.price || 0
+                    )}
+                  </strong>
+                </div>
+
+
+                <div>
+                  <span>DP</span>
+                  <strong>
+                    ${rupiah(
+                      item.dp || 0
+                    )}
+                  </strong>
+                </div>
+
+
+                <div>
+                  <span>Pelunasan</span>
+                  <strong>
+                    ${rupiah(
+                      item.pelunasan || 0
+                    )}
+                  </strong>
+                </div>
+
+              </div>
+
+
+              <div class="recap-detail-status">
+
+                📦
+                ${display(
+                  item.item_status ||
+                  "-"
+                )}
+
+              </div>
+
+
+              <div class="recap-customer-status">
+
+                ${display(
+                  item.customer_status ||
+                  "Belum Checkout Shopee"
+                )}
+
+              </div>
+
+            </div>
+
+          `
+        )
+        .join("");
+
+    }
+  );
+
+}
   
   /* =========================
      LOAD RECAP
