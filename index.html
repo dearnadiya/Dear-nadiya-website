@@ -2037,60 +2037,182 @@
   loadRecap();
 
     /* =========================
-     LOAD PO BERJALAN
-  ========================= */
+   LOAD PO BERJALAN
+========================= */
 
-  async function loadPOCustomer() {
+async function loadPOCustomer() {
 
-    const container =
-      document.getElementById("poCustomerList");
+  const container =
+    document.getElementById("poCustomerList");
 
-    try {
+  try {
 
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("po_posts")
-          .select(`
-            id,
-            title,
-            image_url,
-            po_type,
-            price_text,
-            dp_text,
-            close_date,
-            last_dp_date,
-            description,
-            list_data,
-            status
-          `)
-          .eq("status", "active")
-          .order("created_at", {
-            ascending: false
-          });
-
-
-      if (error) {
-        throw error;
-      }
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("po_posts")
+        .select(`
+          id,
+          title,
+          image_url,
+          po_type,
+          price_text,
+          dp_text,
+          close_date,
+          last_dp_date,
+          description,
+          list_data,
+          status
+        `)
+        .eq("status", "active")
+        .order("created_at", {
+          ascending: false
+        });
 
 
-      if (!data || !data.length) {
-
-        container.innerHTML = `
-          <div class="empty">
-            Belum ada PO yang sedang berjalan.
-          </div>
-        `;
-
-        return;
-      }
+    if (error) {
+      throw error;
+    }
 
 
-      container.innerHTML =
-        data.map(po => `
+    if (!data || !data.length) {
+
+      container.innerHTML = `
+        <div class="empty">
+          Belum ada PO yang sedang berjalan.
+        </div>
+      `;
+
+      return;
+    }
+
+
+    container.innerHTML =
+      data.map(po => {
+
+        /* =========================
+           DATA LIST PO
+        ========================= */
+
+        let rows = [];
+
+        if (Array.isArray(po.list_data)) {
+
+          rows = po.list_data;
+
+        } else if (po.list_data) {
+
+          try {
+
+            rows =
+              typeof po.list_data === "string"
+                ? JSON.parse(po.list_data)
+                : [];
+
+          } catch (error) {
+
+            rows = [];
+
+          }
+
+        }
+
+
+        /* =========================
+           TABEL MEMBER / BARANG
+        ========================= */
+
+        let listHTML = "";
+
+        if (rows.length) {
+
+          listHTML = `
+            <div class="table-wrap">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Batch</th>
+                    <th>Member / Barang</th>
+                    <th>Customer</th>
+                    <th>Qty</th>
+                    <th>Catatan</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  ${
+                    rows.map(row => {
+
+                      const customer =
+                        row.customer &&
+                        String(row.customer).trim()
+                          ? display(row.customer)
+                          : `
+                              <span class="po-available">
+                                Tersedia
+                              </span>
+                            `;
+
+
+                      return `
+                        <tr>
+
+                          <td>
+                            ${display(row.batch || "—")}
+                          </td>
+
+                          <td>
+                            <strong>
+                              ${display(row.member || "—")}
+                            </strong>
+                          </td>
+
+                          <td>
+                            ${customer}
+                          </td>
+
+                          <td>
+                            ${display(row.quantity || 1)}
+                          </td>
+
+                          <td>
+                            ${display(row.note || "—")}
+                          </td>
+
+                        </tr>
+                      `;
+
+                    }).join("")
+                  }
+
+                </tbody>
+
+              </table>
+
+            </div>
+          `;
+
+        } else {
+
+          listHTML = `
+            <div class="empty">
+              Belum ada daftar member / barang.
+            </div>
+          `;
+
+        }
+
+
+        /* =========================
+           CARD PO
+        ========================= */
+
+        return `
 
           <article class="po-card">
 
@@ -2112,6 +2234,7 @@
               <p class="eyebrow">
                 ${display(po.po_type)}
               </p>
+
 
               <h3>
                 ${display(po.title)}
@@ -2193,6 +2316,17 @@
               }
 
 
+              <div class="po-list">
+
+                <h4>
+                  Daftar Member / Barang
+                </h4>
+
+                ${listHTML}
+
+              </div>
+
+
               <p class="po-info">
                 Untuk melakukan pemesanan,
                 silakan hubungi Admin melalui WhatsApp.
@@ -2202,28 +2336,29 @@
 
           </article>
 
-        `).join("");
+        `;
+
+      }).join("");
 
 
-    } catch (error) {
+  } catch (error) {
 
-      console.error(
-        "Gagal memuat PO:",
-        error
-      );
+    console.error(
+      "Gagal memuat PO:",
+      error
+    );
 
-      container.innerHTML = `
-        <div class="error">
-          PO belum dapat dimuat.
-          <br><br>
-          ${display(error.message)}
-        </div>
-      `;
-
-    }
+    container.innerHTML = `
+      <div class="error">
+        PO belum dapat dimuat.
+        <br><br>
+        ${display(error.message)}
+      </div>
+    `;
 
   }
 
+}
 
   loadPOCustomer();
 
