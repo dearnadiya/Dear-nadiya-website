@@ -1333,13 +1333,7 @@ function renderRecap(data) {
 
   async function loadRecap() {
 
-    const body =
-      document.getElementById(
-        "rekapBody"
-      );
-
-
-    try {
+        try {
 
       const {
         data,
@@ -1419,115 +1413,118 @@ function renderRecap(data) {
 
     } catch (error) {
 
-      console.error(
-        "Gagal memuat rekap:",
-        error
-      );
+  console.error(
+    "Gagal memuat rekap:",
+    error
+  );
 
+  const track =
+    document.getElementById(
+      "recapCarouselTrack"
+    );
 
-      body.innerHTML = `
+  if (track) {
 
-        <tr>
+    track.innerHTML = `
 
-          <td
-            colspan="8"
-            class="error"
-          >
+      <div class="error">
 
-            Rekap belum dapat dimuat.
+        Rekap belum dapat dimuat.
 
-            <br><br>
+        <br><br>
 
-            ${display(
-              error.message
-            )}
+        ${display(
+          error.message
+        )}
 
-          </td>
+      </div>
 
-        </tr>
-
-      `;
-
-    }
+    `;
 
   }
 
+}
 
-
+}
+    
   /* =========================
-     SEARCH RECAP
-  ========================= */
+   SEARCH RECAP
+========================= */
 
-  document
-    .getElementById(
-      "searchInput"
-    )
-    .addEventListener(
-      "input",
-      function () {
-
-        const keyword =
-          this.value
-            .toLowerCase()
-            .trim();
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
 
 
-        if (!keyword) {
+if (searchInput) {
 
-          renderRecap(
-            recapData
-          );
+  searchInput.addEventListener(
+    "input",
+    function () {
 
-          return;
-
-        }
-
-
-        const filtered =
-          recapData.filter(
-            item => {
-
-              const values = [
-
-                item.product_code,
-
-                item.product_name,
-
-                item.customer_name,
-
-                item.whatsapp_last4,
-
-                item.product_version,
-
-                item.item_status
-
-              ];
+      const keyword =
+        this.value
+          .toLowerCase()
+          .trim();
 
 
-              return values
-                .filter(Boolean)
-                .some(
-                  value =>
-                    String(value)
-                      .toLowerCase()
-                      .includes(
-                        keyword
-                      )
-                );
-
-            }
-          );
-
+      if (!keyword) {
 
         renderRecap(
-          filtered
+          recapData
         );
 
+        return;
+
       }
-    );
 
 
+      const filtered =
+        recapData.filter(
+          item => {
 
+            const values = [
+
+              item.product_code,
+
+              item.product_name,
+
+              item.customer_name,
+
+              item.whatsapp_last4,
+
+              item.product_version,
+
+              item.item_status
+
+            ];
+
+
+            return values
+              .filter(Boolean)
+              .some(
+                value =>
+                  String(value)
+                    .toLowerCase()
+                    .includes(
+                      keyword
+                    )
+              );
+
+          }
+        );
+
+
+      renderRecap(
+        filtered
+      );
+
+    }
+  );
+
+}
+    
   /* =========================
      PAYMENT FORM
   ========================= */
