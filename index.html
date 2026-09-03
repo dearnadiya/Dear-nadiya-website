@@ -751,8 +751,6 @@
 
     </section>
 
-
-
     <!-- =========================
          REKAP GO
     ========================= -->
@@ -775,20 +773,6 @@
         Dear Nadiya. Data dapat dilihat
         oleh seluruh customer tanpa login.
       </p>
-
-
-      <!-- SEARCH -->
-
-      <div class="search-box">
-
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Cari kode produk, nama produk, customer, versi, atau status..."
-        >
-
-      </div>
-
 
       <!-- REKAP CAROUSEL -->
 
@@ -813,6 +797,70 @@
 ></div>
       
     </section>
+
+    <!-- =========================
+     DETAIL REKAP PESANAN
+========================= -->
+
+<section
+  id="rekapDetail"
+  class="panel"
+  style="display:none;"
+>
+
+  <p class="eyebrow">REKAP PESANAN</p>
+
+  <div class="recap-detail-header">
+
+    <button
+      type="button"
+      class="recap-back-button"
+      onclick="closeRecapDetail()"
+    >
+      ← Kembali
+    </button>
+
+    <div>
+      <h2 id="recapDetailTitle">
+        Detail Rekap Pesanan
+      </h2>
+
+      <p
+        id="recapDetailSubtitle"
+        class="panel-description"
+      >
+        Detail pesanan Dear Nadiya.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- SEARCH CUSTOMER -->
+
+  <div class="recap-search-box">
+
+    <input
+      type="text"
+      id="recapCustomerSearch"
+      placeholder="Cari nama customer..."
+      autocomplete="off"
+    >
+
+  </div>
+
+
+  <!-- DETAIL -->
+
+  <div id="recapDetailContent">
+
+    <p class="loading">
+      Pilih rekap pesanan.
+    </p>
+
+  </div>
+
+</section>
 
     <!-- =========================
      UPLOAD PEMBAYARAN
@@ -1200,8 +1248,6 @@
 
   }
 
-
-
   /* =========================
    RENDER RECAP CAROUSEL
 ========================= */
@@ -1238,7 +1284,6 @@ function renderRecap(data) {
 
     return;
   }
-
 
   /* =========================
      KELOMPOKKAN BERDASARKAN
@@ -1324,6 +1369,227 @@ function renderRecap(data) {
         : "";
 
   }
+
+}
+
+  /* =========================
+   SHOW RECAP DETAIL
+========================= */
+
+function showRecapDetail(productCode) {
+
+  const detailSection =
+    document.getElementById(
+      "rekapDetail"
+    );
+
+  const dashboardSection =
+    document.getElementById(
+      "rekap"
+    );
+
+  const detailContent =
+    document.getElementById(
+      "recapDetailContent"
+    );
+
+  const detailTitle =
+    document.getElementById(
+      "recapDetailTitle"
+    );
+
+  const detailSubtitle =
+    document.getElementById(
+      "recapDetailSubtitle"
+    );
+
+
+  if (
+    !detailSection ||
+    !detailContent
+  ) {
+    return;
+  }
+
+
+  /* =========================
+     CARI DATA PRODUK
+  ========================= */
+
+  const items =
+    recapData.filter(
+      item =>
+        String(
+          item.product_code
+        ) === String(
+          productCode
+        )
+    );
+
+
+  if (!items.length) {
+
+    detailContent.innerHTML = `
+      <div class="empty">
+        Data rekap tidak ditemukan.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  const firstItem =
+    items[0];
+
+
+  /* =========================
+     JUDUL
+  ========================= */
+
+  if (detailTitle) {
+
+    detailTitle.textContent =
+      firstItem.product_name ||
+      "Detail Rekap Pesanan";
+
+  }
+
+
+  if (detailSubtitle) {
+
+    detailSubtitle.textContent =
+      `${firstItem.product_code || "-"} • ${items.length} customer`;
+
+  }
+
+
+  /* =========================
+     TAMPILKAN DETAIL
+  ========================= */
+
+  detailContent.innerHTML =
+    items.map(
+      item => `
+
+        <div class="recap-detail-card">
+
+          <div class="recap-detail-customer">
+
+            <strong>
+              ${display(
+                item.customer_name ||
+                "Customer"
+              )}
+            </strong>
+
+          </div>
+
+
+          <div class="recap-detail-info">
+
+            <div>
+              <span>Versi</span>
+              <strong>
+                ${display(
+                  item.product_version ||
+                  "-"
+                )}
+              </strong>
+            </div>
+
+
+            <div>
+              <span>Qty</span>
+              <strong>
+                ${display(
+                  item.quantity ||
+                  1
+                )}
+              </strong>
+            </div>
+
+
+            <div>
+              <span>Harga</span>
+              <strong>
+                ${rupiah(
+                  item.price || 0
+                )}
+              </strong>
+            </div>
+
+
+            <div>
+              <span>DP</span>
+              <strong>
+                ${rupiah(
+                  item.dp || 0
+                )}
+              </strong>
+            </div>
+
+
+            <div>
+              <span>Pelunasan</span>
+              <strong>
+                ${rupiah(
+                  item.pelunasan || 0
+                )}
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="recap-detail-status">
+
+            📦
+            ${display(
+              item.item_status ||
+              "-"
+            )}
+
+          </div>
+
+
+          <div class="recap-customer-status">
+
+            ${display(
+              item.customer_status ||
+              "Belum Checkout Shopee"
+            )}
+
+          </div>
+
+        </div>
+
+      `
+    )
+    .join("");
+
+
+  /* =========================
+     PINDAH KE DETAIL
+  ========================= */
+
+  if (dashboardSection) {
+
+    dashboardSection.style.display =
+      "none";
+
+  }
+
+
+  detailSection.style.display =
+    "block";
+
+
+  detailSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 
 }
   
