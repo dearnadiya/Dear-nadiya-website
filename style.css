@@ -711,3 +711,231 @@
   }
 
 }
+
+/* =========================
+   REKAP DETAIL
+========================= */
+
+.recap-detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.recap-back-button {
+  flex-shrink: 0;
+  border: 0;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.recap-back-button:active {
+  transform: scale(.97);
+}
+
+.recap-detail-header h2 {
+  margin: 0 0 5px;
+}
+
+.recap-detail-header .panel-description {
+  margin: 0;
+}
+
+
+/* =========================
+   SEARCH CUSTOMER
+========================= */
+
+.recap-search-box {
+  margin-bottom: 18px;
+}
+
+.recap-search-box input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.recap-search-box input:focus {
+  border-color: #bbb;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, .04);
+}
+
+
+/* =========================
+   SEARCH EMPTY STATE
+========================= */
+
+.recap-search-empty {
+  text-align: center;
+  padding: 34px 18px;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  background: #fafafa;
+}
+
+.recap-search-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.recap-search-empty strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.recap-search-empty p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: .65;
+}
+
+
+/* =========================
+   CUSTOMER DETAIL CARD
+========================= */
+
+.recap-detail-card {
+  padding: 16px;
+  margin-bottom: 14px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .05);
+}
+
+
+/* CUSTOMER */
+
+.recap-detail-customer {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.recap-detail-customer strong {
+  font-size: 16px;
+}
+
+
+/* =========================
+   DETAIL INFORMATION
+========================= */
+
+.recap-detail-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.recap-detail-info > div {
+  padding: 10px;
+  border-radius: 10px;
+  background: #f8f8f8;
+}
+
+.recap-detail-info span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  opacity: .6;
+}
+
+.recap-detail-info strong {
+  display: block;
+  font-size: 12px;
+  word-break: break-word;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.recap-detail-status,
+.recap-customer-status {
+  margin-top: 12px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.recap-detail-status {
+  background: #f5f5f5;
+}
+
+.recap-customer-status {
+  background: #f8f8f8;
+  font-weight: 600;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .recap-detail-header {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .recap-back-button {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  .recap-detail-header h2 {
+    font-size: 18px;
+  }
+
+  .recap-search-box input {
+    padding: 11px 12px;
+    font-size: 13px;
+  }
+
+  .recap-detail-card {
+    padding: 13px;
+    border-radius: 14px;
+  }
+
+  .recap-detail-customer strong {
+    font-size: 14px;
+  }
+
+  .recap-detail-info {
+    gap: 8px;
+  }
+
+  .recap-detail-info > div {
+    padding: 8px;
+  }
+
+  .recap-detail-info strong {
+    font-size: 11px;
+  }
+
+  .recap-detail-status,
+  .recap-customer-status {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+
+  .recap-search-empty {
+    padding: 28px 14px;
+  }
+
+}
