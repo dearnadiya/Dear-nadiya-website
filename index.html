@@ -2089,257 +2089,91 @@ async function loadPOCustomer() {
     }
 
 
-    container.innerHTML =
-      data.map(po => {
+    /* =========================
+       SIMPAN DATA PO
+    ========================= */
 
-        /* =========================
-           DATA LIST PO
-        ========================= */
+    window.customerPOData = data;
 
-        let rows = [];
 
-        if (Array.isArray(po.list_data)) {
+    /* =========================
+       TAMPILKAN CAROUSEL
+    ========================= */
 
-          rows = po.list_data;
+    container.innerHTML = `
 
-        } else if (po.list_data) {
+      <div class="po-carousel">
 
-          try {
+        <div class="po-carousel-track">
 
-            rows =
-              typeof po.list_data === "string"
-                ? JSON.parse(po.list_data)
-                : [];
+          ${
+            data.map((po, index) => `
 
-          } catch (error) {
+              <article
+                class="po-mini-card"
+                onclick="showPODetail(${index})"
+              >
 
-            rows = [];
+                ${
+                  po.image_url
+                    ? `
+                      <img
+                        src="${display(po.image_url)}"
+                        alt="${display(po.title)}"
+                        class="po-mini-image"
+                      >
+                    `
+                    : `
+                      <div class="po-mini-placeholder">
+                        Dear Nadiya
+                      </div>
+                    `
+                }
 
+
+                <div class="po-mini-content">
+
+                  <h3>
+                    ${display(po.title)}
+                  </h3>
+
+                  <span class="po-mini-status">
+                    PO Berjalan
+                  </span>
+
+                </div>
+
+              </article>
+
+            `).join("")
           }
 
-        }
+        </div>
 
 
-        /* =========================
-           TABEL MEMBER / BARANG
-        ========================= */
-
-        let listHTML = "";
-
-        if (rows.length) {
-
-          listHTML = `
-            <div class="table-wrap">
-
-              <table>
-
-                <thead>
-                  <tr>
-                    <th>Batch</th>
-                    <th>Member / Barang</th>
-                    <th>Customer</th>
-                    <th>Qty</th>
-                    <th>Catatan</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-
-                  ${
-                    rows.map(row => {
-
-                      const customer =
-                        row.customer &&
-                        String(row.customer).trim()
-                          ? display(row.customer)
-                          : `
-                              <span class="po-available">
-                                Tersedia
-                              </span>
-                            `;
-
-
-                      return `
-                        <tr>
-
-                          <td>
-                            ${display(row.batch || "—")}
-                          </td>
-
-                          <td>
-                            <strong>
-                              ${display(row.member || "—")}
-                            </strong>
-                          </td>
-
-                          <td>
-                            ${customer}
-                          </td>
-
-                          <td>
-                            ${display(row.quantity || 1)}
-                          </td>
-
-                          <td>
-                            ${display(row.note || "—")}
-                          </td>
-
-                        </tr>
-                      `;
-
-                    }).join("")
-                  }
-
-                </tbody>
-
-              </table>
-
-            </div>
-          `;
-
-        } else {
-
-          listHTML = `
-            <div class="empty">
-              Belum ada daftar member / barang.
-            </div>
-          `;
-
-        }
-
-
-        /* =========================
-           CARD PO
-        ========================= */
-
-        return `
-
-          <article class="po-card">
-
-            ${
-              po.image_url
-                ? `
-                  <img
-                    src="${display(po.image_url)}"
-                    alt="${display(po.title)}"
-                    class="po-image"
-                  >
-                `
-                : ""
-            }
-
-
-            <div class="po-content">
-
-              <p class="eyebrow">
-                ${display(po.po_type)}
-              </p>
-
-
-              <h3>
-                ${display(po.title)}
-              </h3>
-
-
-              ${
-                po.price_text
-                  ? `
-                    <p>
-                      <b>Harga:</b>
-                      ${display(po.price_text)}
-                    </p>
-                  `
-                  : ""
-              }
-
-
-              ${
-                po.dp_text
-                  ? `
-                    <p>
-                      <b>DP:</b>
-                      ${display(po.dp_text)}
-                    </p>
-                  `
-                  : ""
-              }
-
-
-              ${
-                po.close_date
-                  ? `
-                    <p>
-                      <b>Deadline PO:</b>
-                      ${new Date(
-                        po.close_date
-                      ).toLocaleString(
-                        "id-ID",
-                        {
-                          dateStyle: "long",
-                          timeStyle: "short"
-                        }
-                      )}
-                    </p>
-                  `
-                  : ""
-              }
-
-
-              ${
-                po.last_dp_date
-                  ? `
-                    <p>
-                      <b>Deadline DP:</b>
-                      ${new Date(
-                        po.last_dp_date
-                      ).toLocaleString(
-                        "id-ID",
-                        {
-                          dateStyle: "long",
-                          timeStyle: "short"
-                        }
-                      )}
-                    </p>
-                  `
-                  : ""
-              }
-
-
-              ${
-                po.description
-                  ? `
-                    <div class="po-description">
-                      ${display(po.description)}
-                    </div>
-                  `
-                  : ""
-              }
-
-
-              <div class="po-list">
-
-                <h4>
-                  Daftar Member / Barang
-                </h4>
-
-                ${listHTML}
-
+        ${
+          data.length > 1
+            ? `
+              <div class="po-carousel-hint">
+                Geser untuk melihat PO lainnya
               </div>
+            `
+            : ""
+        }
+
+      </div>
 
 
-              <p class="po-info">
-                Untuk melakukan pemesanan,
-                silakan hubungi Admin melalui WhatsApp.
-              </p>
+      <!-- =========================
+           DETAIL PO
+      ========================= -->
 
-            </div>
+      <div
+        id="poCustomerDetail"
+        class="po-detail-container"
+      ></div>
 
-          </article>
-
-        `;
-
-      }).join("");
-
+    `;
 
   } catch (error) {
 
@@ -2360,7 +2194,319 @@ async function loadPOCustomer() {
 
 }
 
-  loadPOCustomer();
+
+/* =========================
+   TAMPILKAN DETAIL PO
+========================= */
+
+function showPODetail(index) {
+
+  const po =
+    window.customerPOData?.[index];
+
+  const detail =
+    document.getElementById(
+      "poCustomerDetail"
+    );
+
+  if (!po || !detail) {
+    return;
+  }
+
+
+  /* =========================
+     DATA MEMBER / BARANG
+  ========================= */
+
+  let rows = [];
+
+  if (Array.isArray(po.list_data)) {
+
+    rows = po.list_data;
+
+  } else if (po.list_data) {
+
+    try {
+
+      rows =
+        typeof po.list_data === "string"
+          ? JSON.parse(po.list_data)
+          : [];
+
+    } catch (error) {
+
+      rows = [];
+
+    }
+
+  }
+
+
+  /* =========================
+     LIST MEMBER / BARANG
+  ========================= */
+
+  let listHTML = "";
+
+  if (rows.length) {
+
+    listHTML = `
+
+      <div class="po-detail-list">
+
+        ${
+          rows.map(row => {
+
+            const customer =
+              row.customer &&
+              String(row.customer).trim()
+                ? display(row.customer)
+                : `
+                    <span class="po-available">
+                      Tersedia
+                    </span>
+                  `;
+
+
+            return `
+
+              <div class="po-item-card">
+
+                <div class="po-item-main">
+
+                  <strong>
+                    ${display(row.member || "—")}
+                  </strong>
+
+                  ${
+                    row.note
+                      ? `
+                        <span>
+                          ${display(row.note)}
+                        </span>
+                      `
+                      : ""
+                  }
+
+                </div>
+
+
+                <div class="po-item-info">
+
+                  <span>
+                    ${customer}
+                  </span>
+
+                  <span>
+                    Qty ${display(row.quantity || 1)}
+                  </span>
+
+                </div>
+
+              </div>
+
+            `;
+
+          }).join("")
+        }
+
+      </div>
+
+    `;
+
+  } else {
+
+    listHTML = `
+      <div class="empty">
+        Belum ada daftar member / barang.
+      </div>
+    `;
+
+  }
+
+
+  /* =========================
+     DETAIL
+  ========================= */
+
+  detail.innerHTML = `
+
+    <article class="po-detail-card">
+
+      <button
+        type="button"
+        class="po-back-button"
+        onclick="closePODetail()"
+      >
+        ← Kembali ke PO
+      </button>
+
+
+      ${
+        po.image_url
+          ? `
+            <img
+              src="${display(po.image_url)}"
+              alt="${display(po.title)}"
+              class="po-detail-image"
+            >
+          `
+          : ""
+      }
+
+
+      <div class="po-detail-content">
+
+        <span class="po-detail-status">
+          PO BERJALAN
+        </span>
+
+
+        <h2>
+          ${display(po.title)}
+        </h2>
+
+
+        ${
+          po.price_text
+            ? `
+              <div class="po-info-row">
+                <span>Harga</span>
+                <strong>
+                  ${display(po.price_text)}
+                </strong>
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          po.dp_text
+            ? `
+              <div class="po-info-row">
+                <span>DP</span>
+                <strong>
+                  ${display(po.dp_text)}
+                </strong>
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          po.close_date
+            ? `
+              <div class="po-info-row">
+                <span>Deadline PO</span>
+                <strong>
+                  ${new Date(
+                    po.close_date
+                  ).toLocaleString(
+                    "id-ID",
+                    {
+                      dateStyle: "long",
+                      timeStyle: "short"
+                    }
+                  )}
+                </strong>
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          po.last_dp_date
+            ? `
+              <div class="po-info-row">
+                <span>Deadline DP</span>
+                <strong>
+                  ${new Date(
+                    po.last_dp_date
+                  ).toLocaleString(
+                    "id-ID",
+                    {
+                      dateStyle: "long",
+                      timeStyle: "short"
+                    }
+                  )}
+                </strong>
+              </div>
+            `
+            : ""
+        }
+
+
+        ${
+          po.description
+            ? `
+              <div class="po-detail-description">
+                ${display(po.description)}
+              </div>
+            `
+            : ""
+        }
+
+
+        <div class="po-members">
+
+          <h3>
+            Member / Barang
+          </h3>
+
+          ${listHTML}
+
+        </div>
+
+
+        <div class="po-order-info">
+
+          Untuk melakukan pemesanan,
+          silakan hubungi Admin melalui WhatsApp.
+
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+
+
+  /* =========================
+     SCROLL KE DETAIL
+  ========================= */
+
+  detail.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+}
+
+
+/* =========================
+   TUTUP DETAIL PO
+========================= */
+
+function closePODetail() {
+
+  const detail =
+    document.getElementById(
+      "poCustomerDetail"
+    );
+
+  if (!detail) {
+    return;
+  }
+
+  detail.innerHTML = "";
+
+}
+
+loadPOCustomer();
 
 </script>
 
