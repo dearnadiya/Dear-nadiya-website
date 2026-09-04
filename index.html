@@ -355,6 +355,52 @@
       background: #f3f3f3;
     }
 
+    /* =========================
+   CARI DATA CUSTOMER
+========================= */
+
+async function findCustomerPayments(
+  customerName,
+  whatsappLast4
+) {
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("purchase_recap")
+    .select("*")
+    .ilike(
+      "customer_name",
+      customerName
+    );
+
+  if (error) {
+    throw error;
+  }
+
+  // Cocokkan 4 digit terakhir WhatsApp
+  // jika kolomnya tersedia di purchase_recap
+  const results =
+    (data || []).filter(row => {
+
+      if (
+        row.whatsapp_last4 === undefined ||
+        row.whatsapp_last4 === null
+      ) {
+        return true;
+      }
+
+      return String(
+        row.whatsapp_last4
+      ) === String(
+        whatsappLast4
+      );
+
+    });
+
+  return results;
+}
 
     /* =========================
        PAYMENT FORM
