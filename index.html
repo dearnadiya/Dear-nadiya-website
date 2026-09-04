@@ -2151,23 +2151,34 @@ if (searchInput) {
           ).files[0];
 
 
-        const customerName =
-          document
-            .getElementById(
-              "paymentCustomerName"
-            )
-            .value
-            .trim();
+        const customerIdentity =
+  document
+    .getElementById(
+      "paymentCustomerIdentity"
+    )
+    .value
+    .trim();
 
 
-        const whatsappLast4 =
-          document
-            .getElementById(
-              "paymentWhatsappLast4"
-            )
-            .value
-            .trim();
+// Pisahkan nama customer dan 4 digit WhatsApp
+const match =
+  customerIdentity.match(
+    /^(.+?)\s*\(\s*(\d{4})\s*\)$/
+  );
 
+if (!match) {
+
+  throw new Error(
+    "Format identitas customer harus seperti: nanana (1234)"
+  );
+
+}
+
+const customerName =
+  match[1].trim();
+
+const whatsappLast4 =
+  match[2].trim();
 
         const productCode =
           document
