@@ -891,23 +891,24 @@
   >
 
 
-    <!-- NAMA CUSTOMER -->
+    <!-- IDENTITAS CUSTOMER -->
 
-    <div class="form-group">
+<div class="form-group">
 
-      <label for="paymentCustomerName">
-        Nama Customer
-      </label>
+  <label for="paymentCustomerIdentity">
+    Nama Customer (4 Digit Terakhir WhatsApp)
+  </label>
 
-      <input
-        id="paymentCustomerName"
-        type="text"
-        placeholder="Contoh: Nadiya"
-        required
-      >
+  <input
+    id="paymentCustomerIdentity"
+    type="text"
+    placeholder="Contoh: nanana (1234)"
+    autocomplete="off"
+    required
+  >
 
-    </div>
-
+</div>
+    
 <!-- JENIS PEMBAYARAN -->
 
 <div class="form-group">
@@ -939,28 +940,6 @@
   </select>
 
 </div>
-
-    <!-- 4 DIGIT WHATSAPP -->
-
-    <div class="form-group">
-
-      <label for="paymentWhatsappLast4">
-        4 Digit Terakhir WhatsApp
-      </label>
-
-      <input
-        id="paymentWhatsappLast4"
-        type="text"
-        placeholder="Contoh: 1234"
-        maxlength="4"
-        inputmode="numeric"
-        pattern="[0-9]{4}"
-        required
-      >
-
-    </div>
-
-
 
     <!-- KODE PRODUK -->
 
