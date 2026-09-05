@@ -939,3 +939,49 @@
   }
 
 }
+
+/* =========================
+   PAYMENT INTRO + MASKOT
+========================= */
+
+.payment-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.payment-intro-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.payment-intro-mascot {
+  flex: 0 0 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.payment-intro-mascot img {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 600px) {
+
+  .payment-intro {
+    gap: 15px;
+  }
+
+  .payment-intro-mascot {
+    flex: 0 0 110px;
+  }
+
+  .payment-intro-mascot img {
+    width: 110px;
+  }
+
+}
