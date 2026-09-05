@@ -985,3 +985,172 @@
   }
 
 }
+
+/* =========================
+   REKAP BATCH
+========================= */
+
+.recap-batch-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.recap-back-category {
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.recap-back-category:hover {
+  background: #f8f8f8;
+}
+
+.recap-current-category {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4b315f;
+}
+
+
+/* =========================
+   LIST BATCH
+========================= */
+
+.recap-batch-list {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 2px 12px;
+  scroll-behavior: smooth;
+}
+
+
+/* =========================
+   BATCH CARD
+========================= */
+
+.recap-batch-card {
+  position: relative;
+
+  flex: 0 0 220px;
+
+  min-height: 110px;
+
+  padding: 18px;
+
+  border: 1px solid #eee;
+  border-radius: 14px;
+
+  background: #fff;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.recap-batch-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  border-color: #e7dce9;
+}
+
+
+/* =========================
+   ICON
+========================= */
+
+.recap-batch-icon {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: #faf4f8;
+
+  font-size: 20px;
+}
+
+
+/* =========================
+   INFO
+========================= */
+
+.recap-batch-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.recap-batch-code {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4b315f;
+
+  margin-bottom: 5px;
+
+  word-break: break-word;
+}
+
+.recap-batch-name {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #777;
+
+  word-break: break-word;
+}
+
+
+/* =========================
+   ARROW
+========================= */
+
+.recap-batch-arrow {
+  flex: 0 0 auto;
+
+  font-size: 18px;
+  color: #777;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .recap-batch-header {
+    gap: 10px;
+  }
+
+  .recap-current-category {
+    font-size: 16px;
+  }
+
+  .recap-batch-card {
+    flex: 0 0 190px;
+    min-height: 100px;
+    padding: 15px;
+  }
+
+}
