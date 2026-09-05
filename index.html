@@ -2850,9 +2850,35 @@ selectButton.addEventListener(
       bill
     );
 
+    /* =========================
+       ISI DATA TAGIHAN
+    ========================= */
+
+    document.getElementById(
+      "paymentProductCode"
+    ).value =
+      bill.batch_code || "";
+
+    document.getElementById(
+      "paymentProductVersion"
+    ).value =
+      bill.version || "";
+
+    /* =========================
+       NONAKTIFKAN INPUT MANUAL
+    ========================= */
+
+    document.getElementById(
+      "paymentProductCode"
+    ).readOnly = true;
+
+    document.getElementById(
+      "paymentProductVersion"
+    ).readOnly = true;
+
   }
 );
-
+          
 billBox.appendChild(
   selectButton
 );
