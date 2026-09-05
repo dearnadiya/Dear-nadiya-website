@@ -2851,6 +2851,65 @@ const checkbox =
 checkbox.type = "checkbox";
 checkbox.className = "payment-bill-checkbox";
 
+          checkbox.addEventListener(
+  "change",
+  function () {
+
+    /* =========================
+       SIAPKAN DAFTAR TAGIHAN
+    ========================= */
+
+    if (!window.selectedPaymentBills) {
+      window.selectedPaymentBills = [];
+    }
+
+
+    /* =========================
+       JIKA DICENTANG
+    ========================= */
+
+    if (checkbox.checked) {
+
+      const alreadySelected =
+        window.selectedPaymentBills.some(
+          selected =>
+            selected.id === bill.id
+        );
+
+      if (!alreadySelected) {
+
+        window.selectedPaymentBills.push(
+          bill
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       JIKA DILEPAS
+    ========================= */
+
+    else {
+
+      window.selectedPaymentBills =
+        window.selectedPaymentBills.filter(
+          selected =>
+            selected.id !== bill.id
+        );
+
+    }
+
+
+    console.log(
+      "TAGIHAN TERPILIH:",
+      window.selectedPaymentBills
+    );
+
+  }
+);
+
 checkbox.style.width = "18px";
 checkbox.style.height = "18px";
 checkbox.style.cursor = "pointer";
