@@ -917,29 +917,48 @@ async function findCustomerPayments(
   class="panel"
 >
 
-  <p class="eyebrow">
-    PAYMENT PROOF
-  </p>
+  <div class="payment-intro">
 
-  <h2>
-    Upload Bukti Pembayaran
-  </h2>
+  <div class="payment-intro-text">
 
-  <p class="panel-description">
-    Tidak perlu login. Isi data sesuai pesanan kamu,
-    lalu kirim bukti pembayaran kepada Admin Dear Nadiya.
-  </p>
+    <p class="eyebrow">
+      PAYMENT PROOF
+    </p>
 
-  <!-- TOMBOL BUKA FORM PEMBAYARAN -->
+    <h2>
+      Upload Bukti Pembayaran
+    </h2>
 
-<button
-  type="button"
-  id="paymentStartBtn"
-  class="btn primary"
->
-  Kirim Bukti Pembayaran →
-</button>
+    <p class="panel-description">
+      Tidak perlu login. Isi data sesuai pesanan kamu,
+      lalu kirim bukti pembayaran kepada Admin Dear Nadiya.
+    </p>
 
+    <!-- TOMBOL BUKA FORM PEMBAYARAN -->
+
+    <button
+      type="button"
+      id="paymentStartBtn"
+      class="btn primary"
+    >
+      Kirim Bukti Pembayaran →
+    </button>
+
+  </div>
+
+  <!-- MASKOT -->
+
+  <div class="payment-intro-mascot">
+
+    <img
+      src="Maskot-bill.png"
+      alt="Maskot Dear Nadiya membawa tagihan"
+    >
+
+  </div>
+
+</div>
+  
   <form
   id="paymentForm"
   class="payment-form"
