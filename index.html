@@ -2876,6 +2876,142 @@ selectButton.addEventListener(
       "paymentProductVersion"
     ).readOnly = true;
 
+    selectButton.addEventListener(
+  "click",
+  function () {
+
+    console.log(
+      "TAGIHAN DIPILIH:",
+      bill
+    );
+
+    /* =========================
+       ISI DATA TAGIHAN
+    ========================= */
+
+    document.getElementById(
+      "paymentProductCode"
+    ).value =
+      bill.batch_code || "";
+
+    document.getElementById(
+      "paymentProductVersion"
+    ).value =
+      bill.version || "";
+
+    /* =========================
+       NONAKTIFKAN INPUT MANUAL
+    ========================= */
+
+    document.getElementById(
+      "paymentProductCode"
+    ).readOnly = true;
+
+    document.getElementById(
+      "paymentProductVersion"
+    ).readOnly = true;
+
+
+    /* =========================
+       SIMPAN TAGIHAN TERPILIH
+    ========================= */
+
+    window.selectedPaymentBill = bill;
+
+
+    /* =========================
+       ATUR JENIS PEMBAYARAN
+    ========================= */
+
+    const paymentType =
+      document.getElementById(
+        "paymentType"
+      );
+
+    const paymentAmount =
+      document.getElementById(
+        "paymentAmount"
+      );
+
+
+    /* RESET NOMINAL */
+
+    paymentType.value = "";
+    paymentAmount.value = "";
+
+
+    /* =========================
+       NONAKTIFKAN DP
+       JIKA SUDAH DIBAYAR
+    ========================= */
+
+    const dpOption =
+      paymentType.querySelector(
+        'option[value="dp"]'
+      );
+
+    if (dpOption) {
+
+      dpOption.disabled =
+        bill.dp_status === "paid";
+
+    }
+
+
+    /* =========================
+       NOMINAL OTOMATIS
+    ========================= */
+
+    paymentType.onchange =
+      function () {
+
+        const type =
+          paymentType.value;
+
+        let amount = 0;
+
+
+        if (type === "dp") {
+
+          amount =
+            Number(
+              bill.dp_amount || 0
+            );
+
+        }
+
+        else if (type === "pelunasan") {
+
+          amount =
+            Number(
+              bill.remaining_amount || 0
+            );
+
+        }
+
+        else if (type === "both") {
+
+          amount =
+            Number(
+              bill.dp_amount || 0
+            ) +
+            Number(
+              bill.remaining_amount || 0
+            );
+
+        }
+
+
+        paymentAmount.value =
+          amount > 0
+            ? amount
+            : "";
+
+      };
+
+  }
+);
+
   }
 );
           
