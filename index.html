@@ -2268,6 +2268,22 @@ if (searchInput) {
             .value;
 
         /* =====================
+   VALIDASI TAGIHAN TERPILIH
+===================== */
+
+const selectedBills =
+  window.selectedPaymentBills || [];
+
+if (selectedBills.length === 0) {
+  showPaymentMessage(
+    "Pilih minimal satu tagihan terlebih dahulu.",
+    true
+  );
+
+  return;
+}
+        
+        /* =====================
            VALIDASI FILE
         ===================== */
 
