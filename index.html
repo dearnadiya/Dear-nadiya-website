@@ -962,8 +962,24 @@ async function findCustomerPayments(
 >
   Lanjutkan →
 </button>
-    
-<!-- JENIS PEMBAYARAN -->
+  
+    <!-- HASIL DATA CUSTOMER -->
+
+<div
+  id="customerPaymentResults"
+  class="form-group"
+  style="display:none;"
+>
+
+  <label>
+    Tagihan Kamu
+  </label>
+
+  <div id="customerPaymentList"></div>
+
+</div>
+
+    <!-- JENIS PEMBAYARAN -->
 
 <div class="form-group">
 
@@ -994,23 +1010,7 @@ async function findCustomerPayments(
   </select>
 
 </div>
-
-    <!-- HASIL DATA CUSTOMER -->
-
-<div
-  id="customerPaymentResults"
-  class="form-group"
-  style="display:none;"
->
-
-  <label>
-    Tagihan Kamu
-  </label>
-
-  <div id="customerPaymentList"></div>
-
-</div>
-
+    
     <!-- KODE PRODUK -->
 
     <div class="form-group">
