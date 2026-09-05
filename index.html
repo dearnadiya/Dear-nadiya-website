@@ -2313,22 +2313,13 @@ if (selectedBills.length === 0) {
            VALIDASI WHATSAPP
         ===================== */
 
-        if (
-          !/^[0-9]{4}$/
-            .test(
-              whatsappLast4
-            )
-        ) {
-
-          showPaymentMessage(
-            "Masukkan tepat 4 digit terakhir WhatsApp.",
-            true
-          );
-
-          return;
-
-        }
-
+        if (!whatsappLast4 || !/^\d{4}$/.test(whatsappLast4)) {
+  showPaymentMessage(
+    "Gunakan format Nama Customer (4 digit terakhir WhatsApp). Contoh: nadiya (1234)",
+    true
+  );
+  return;
+}
 
         /* =====================
            VALIDASI UKURAN
