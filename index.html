@@ -2227,6 +2227,16 @@ if (searchInput) {
     .value
     .trim();
 
+      const match = customerIdentity.match(/^(.*?)\s*\((\d{4})\)$/);
+
+const customerName = match
+  ? match[1].trim()
+  : customerIdentity;
+
+const whatsappLast4 = match
+  ? match[2]
+  : "";
+
 
 // Pisahkan nama customer dan 4 digit WhatsApp
         
