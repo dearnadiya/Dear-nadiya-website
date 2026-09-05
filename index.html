@@ -2831,6 +2831,32 @@ document
             </div>
           `;
 
+          const selectButton =
+  document.createElement("button");
+
+selectButton.type = "button";
+selectButton.className = "btn primary";
+selectButton.textContent = "Pilih Tagihan";
+
+selectButton.style.width = "100%";
+selectButton.style.marginTop = "10px";
+
+selectButton.addEventListener(
+  "click",
+  function () {
+
+    console.log(
+      "TAGIHAN DIPILIH:",
+      bill
+    );
+
+  }
+);
+
+billBox.appendChild(
+  selectButton
+);
+          
           resultList.appendChild(
             billBox
           );
