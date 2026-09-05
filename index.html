@@ -2017,122 +2017,338 @@ if (recapCustomerSearch) {
 }
   
   /* =========================
-     LOAD RECAP
-  ========================= */
+   LOAD RECAP
+========================= */
 
-  async function loadRecap() {
+async function loadRecap() {
 
-        try {
+  try {
 
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from(
-            "go_rekap_public"
-          )
-          .select("*");
+    /* =========================
+       DATA PUBLIC CUSTOMER
+    ========================= */
 
+    const {
+      data: publicData,
+      error: publicError
+    } =
+      await supabaseClient
+        .from("go_rekap_public")
+        .select("*");
 
-      if (error) {
-        throw error;
-      }
-
-
-      recapData =
-        data || [];
+    if (publicError) {
+      throw publicError;
+    }
 
 
-      /* TOTAL PESANAN */
+    /* =========================
+       DATA KATEGORI / BATCH
+       DARI REKAP UTAMA
+    ========================= */
 
-      document
-        .getElementById(
-          "totalOrder"
-        )
-        .textContent =
-        recapData.length;
-
-
-      /* TOTAL PRODUK */
-
-      const totalProduct =
-        recapData.reduce(
-          (
-            total,
-            item
-          ) => {
-
-            return (
-              total +
-              Number(
-                item.quantity || 1
-              )
-            );
-
-          },
-          0
+    const {
+      data: recapMeta,
+      error: metaError
+    } =
+      await supabaseClient
+        .from("purchase_recap")
+        .select(
+          "category, batch_code, item_name"
         );
 
-
-      document
-        .getElementById(
-          "totalProduct"
-        )
-        .textContent =
-        totalProduct;
+    if (metaError) {
+      throw metaError;
+    }
 
 
-      /* DATA TERAKHIR */
+    /* =========================
+       GABUNGKAN DATA
+    ========================= */
 
-      document
-        .getElementById(
-          "lastUpdate"
-        )
-        .textContent =
-        recapData.length
-          ? "Tersedia"
-          : "-";
+    recapData =
+      (publicData || []).map(
+        function (item) {
+
+          const meta =
+            (recapMeta || []).find(
+              function (row) {
+
+                return (
+                  String(row.batch_code || "")
+                    .trim()
+                    .toLowerCase() ===
+                  String(item.product_code || "")
+                    .trim()
+                    .toLowerCase()
+                );
+
+              }
+            );
 
 
-      renderRecap(
-        recapData
+          return {
+
+            ...item,
+
+            category:
+              meta?.category || "Lainnya",
+
+            batch_code:
+              meta?.batch_code ||
+              item.product_code,
+
+            item_name:
+              meta?.item_name ||
+              item.product_name
+
+          };
+
+        }
       );
 
 
-    } catch (error) {
+    /* =========================
+       TOTAL PESANAN
+    ========================= */
 
-  console.error(
-    "Gagal memuat rekap:",
-    error
-  );
+    document
+      .getElementById("totalOrder")
+      .textContent =
+      recapData.length;
+
+
+    /* =========================
+       TOTAL PRODUK
+    ========================= */
+
+    const totalProduct =
+      recapData.reduce(
+        function (
+          total,
+          item
+        ) {
+
+          return (
+            total +
+            Number(
+              item.quantity || 1
+            )
+          );
+
+        },
+        0
+      );
+
+
+    document
+      .getElementById("totalProduct")
+      .textContent =
+      totalProduct;
+
+
+    /* =========================
+       DATA TERAKHIR
+    ========================= */
+
+    document
+      .getElementById("lastUpdate")
+      .textContent =
+      recapData.length
+        ? "Tersedia"
+        : "-";
+
+
+    /* =========================
+       TAMPILKAN KATEGORI
+    ========================= */
+
+    renderRecapCategories(
+      recapData
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Gagal memuat rekap:",
+      error
+    );
+
+
+    const track =
+      document.getElementById(
+        "recapCarouselTrack"
+      );
+
+
+    if (track) {
+
+      track.innerHTML = `
+
+        <div class="error">
+
+          Rekap belum dapat dimuat.
+
+          <br><br>
+
+          ${display(
+            error.message
+          )}
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
+}
+
+  /* =========================
+   TAMPILKAN KATEGORI REKAP
+========================= */
+
+function renderRecapCategories(
+  data
+) {
 
   const track =
     document.getElementById(
       "recapCarouselTrack"
     );
 
-  if (track) {
+
+  if (!track) {
+    return;
+  }
+
+
+  if (!data || !data.length) {
 
     track.innerHTML = `
 
-      <div class="error">
+      <div class="empty">
 
-        Rekap belum dapat dimuat.
-
-        <br><br>
-
-        ${display(
-          error.message
-        )}
+        Belum ada data rekap.
 
       </div>
 
     `;
 
+    return;
+
   }
 
-}
+
+  /* =========================
+     AMBIL KATEGORI UNIK
+  ========================= */
+
+  const categories =
+    [
+      ...new Set(
+        data
+          .map(
+            item =>
+              item.category
+          )
+          .filter(Boolean)
+      )
+    ];
+
+
+  /* =========================
+     TAMPILKAN KATEGORI
+  ========================= */
+
+  track.innerHTML =
+
+    categories
+      .map(
+        function(category) {
+
+          const total =
+            data.filter(
+              item =>
+                item.category ===
+                category
+            ).length;
+
+
+          return `
+
+            <article
+              class="recap-category-card"
+              data-category="${display(
+                category
+              )}"
+            >
+
+              <div
+                class="recap-category-icon"
+              >
+                📦
+              </div>
+
+              <div
+                class="recap-category-name"
+              >
+                ${display(
+                  category
+                )}
+              </div>
+
+              <div
+                class="recap-category-count"
+              >
+                ${total} pesanan
+              </div>
+
+              <div
+                class="recap-category-arrow"
+              >
+                →
+              </div>
+
+            </article>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  /* =========================
+     KLIK KATEGORI
+  ========================= */
+
+  track
+    .querySelectorAll(
+      ".recap-category-card"
+    )
+    .forEach(
+      function(card) {
+
+        card.addEventListener(
+          "click",
+          function() {
+
+            const category =
+              this.dataset.category;
+
+
+            renderRecapBatches(
+              data,
+              category
+            );
+
+          }
+        );
+
+      }
+    );
 
 }
     
