@@ -2933,13 +2933,6 @@ selectButton.addEventListener(
         "paymentAmount"
       );
 
-
-    /* RESET NOMINAL */
-
-    paymentType.value = "";
-    paymentAmount.value = "";
-
-
     /* =========================
        NONAKTIFKAN DP
        JIKA SUDAH DIBAYAR
@@ -3009,8 +3002,9 @@ selectButton.addEventListener(
 
       };
 
-  }
-);
+    if (paymentType.value) {
+  paymentType.onchange();
+}
 
   }
 );
