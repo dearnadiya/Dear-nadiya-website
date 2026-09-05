@@ -2903,6 +2903,22 @@ checkbox.className = "payment-bill-checkbox";
 
     }
 
+    // ISI KODE PRODUK & VERSI DARI TAGIHAN TERPILIH
+const productCodeInput =
+  document.getElementById("paymentProductCode");
+
+const productVersionInput =
+  document.getElementById("paymentProductVersion");
+
+productCodeInput.value =
+  window.selectedPaymentBills
+    .map(selected => selected.batch_code || "-")
+    .join(", ");
+
+productVersionInput.value =
+  window.selectedPaymentBills
+    .map(selected => selected.version || "-")
+    .join(", ");
 
     console.log(
       "TAGIHAN TERPILIH:",
@@ -3069,7 +3085,7 @@ paymentType.onchange = function () {
     </div>
   `;
 };
-
+      
     } catch (error) {
 
       console.error(
