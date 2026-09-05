@@ -2206,6 +2206,245 @@ async function loadRecap() {
 }
 
   /* =========================
+   TAMPILKAN BATCH REKAP
+========================= */
+
+function renderRecapBatches(
+  data,
+  category
+) {
+
+  const track =
+    document.getElementById(
+      "recapCarouselTrack"
+    );
+
+
+  if (!track) {
+    return;
+  }
+
+
+  /* =========================
+     DATA SESUAI KATEGORI
+  ========================= */
+
+  const categoryData =
+    data.filter(
+      function(item) {
+
+        return (
+          item.category ===
+          category
+        );
+
+      }
+    );
+
+
+  if (!categoryData.length) {
+
+    track.innerHTML = `
+
+      <div class="empty">
+
+        Belum ada batch pada kategori ini.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  /* =========================
+     BATCH UNIK
+  ========================= */
+
+  const batches = [];
+
+
+  categoryData.forEach(
+    function(item) {
+
+      const batchCode =
+        String(
+          item.batch_code || ""
+        ).trim();
+
+
+      if (!batchCode) {
+        return;
+      }
+
+
+      const alreadyExists =
+        batches.some(
+          function(batch) {
+
+            return (
+              batch.batch_code ===
+              batchCode
+            );
+
+          }
+        );
+
+
+      if (!alreadyExists) {
+
+        batches.push({
+
+          batch_code:
+            batchCode,
+
+          item_name:
+            item.item_name ||
+            item.product_name ||
+            "-"
+
+        });
+
+      }
+
+    }
+  );
+
+
+  /* =========================
+     TAMPILKAN BATCH
+  ========================= */
+
+  track.innerHTML = `
+
+    <div class="recap-batch-header">
+
+      <button
+        type="button"
+        class="recap-back-category"
+        id="recapBackCategory"
+      >
+        ← Kembali ke Kategori
+      </button>
+
+      <div class="recap-current-category">
+        ${display(category)}
+      </div>
+
+    </div>
+
+    <div class="recap-batch-list">
+
+      ${batches
+        .map(
+          function(batch) {
+
+            return `
+
+              <article
+                class="recap-batch-card"
+                data-batch-code="${display(
+                  batch.batch_code
+                )}"
+              >
+
+                <div class="recap-batch-icon">
+                  📦
+                </div>
+
+                <div class="recap-batch-info">
+
+                  <div class="recap-batch-code">
+                    ${display(
+                      batch.batch_code
+                    )}
+                  </div>
+
+                  <div class="recap-batch-name">
+                    ${display(
+                      batch.item_name
+                    )}
+                  </div>
+
+                </div>
+
+                <div class="recap-batch-arrow">
+                  →
+                </div>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("")}
+
+    </div>
+
+  `;
+
+
+  /* =========================
+     KEMBALI KE KATEGORI
+  ========================= */
+
+  const backButton =
+    document.getElementById(
+      "recapBackCategory"
+    );
+
+
+  if (backButton) {
+
+    backButton.addEventListener(
+      "click",
+      function() {
+
+        renderRecapCategories(
+          data
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================
+     KLIK BATCH
+  ========================= */
+
+  track
+    .querySelectorAll(
+      ".recap-batch-card"
+    )
+    .forEach(
+      function(card) {
+
+        card.addEventListener(
+          "click",
+          function() {
+
+            const batchCode =
+              this.dataset.batchCode;
+
+
+            showRecapDetail(
+              batchCode
+            );
+
+          }
+        );
+
+      }
+    );
+
+}
+
+  /* =========================
    TAMPILKAN KATEGORI REKAP
 ========================= */
 
