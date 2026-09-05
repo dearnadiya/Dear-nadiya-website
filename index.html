@@ -2159,52 +2159,177 @@ async function loadRecap() {
 
 
     /* =========================
-       TAMPILKAN KATEGORI
-    ========================= */
+   TAMPILKAN KATEGORI REKAP
+========================= */
 
-    renderRecapCategories(
-      recapData
+function renderRecapCategories(
+  data
+) {
+
+  const track =
+    document.getElementById(
+      "recapCarouselTrack"
     );
 
 
-  } catch (error) {
-
-    console.error(
-      "Gagal memuat rekap:",
-      error
-    );
-
-
-    const track =
-      document.getElementById(
-        "recapCarouselTrack"
-      );
-
-
-    if (track) {
-
-      track.innerHTML = `
-
-        <div class="error">
-
-          Rekap belum dapat dimuat.
-
-          <br><br>
-
-          ${display(
-            error.message
-          )}
-
-        </div>
-
-      `;
-
-    }
-
+  if (!track) {
+    return;
   }
 
-}
 
+  /* =========================
+     DAFTAR KATEGORI
+  ========================= */
+
+  const categoryList = [
+
+    {
+      name: "Truz",
+      icon: "🧸"
+    },
+
+    {
+      name: "Treasure KR",
+      icon: "🇰🇷"
+    },
+
+    {
+      name: "Treasure JP",
+      icon: "🇯🇵"
+    },
+
+    {
+      name: "Treasure CH",
+      icon: "🇨🇳"
+    },
+
+    {
+      name: "Treasure Thai",
+      icon: "🇹🇭"
+    },
+
+    {
+      name: "Treasure INA",
+      icon: "🇮🇩"
+    },
+
+    {
+      name: "Treasure Album",
+      icon: "📖"
+    }
+
+  ];
+
+
+  /* =========================
+     DATA
+  ========================= */
+
+  const recapDataList =
+    data || [];
+
+
+  /* =========================
+     TAMPILKAN KATEGORI
+  ========================= */
+
+  track.innerHTML =
+
+    categoryList
+      .map(
+        function(category) {
+
+          const total =
+            recapDataList.filter(
+              function(item) {
+
+                return (
+                  String(
+                    item.category || ""
+                  )
+                    .trim()
+                    .toLowerCase() ===
+                  category.name
+                    .toLowerCase()
+                );
+
+              }
+            ).length;
+
+
+          return `
+
+            <article
+              class="recap-category-card"
+              data-category="${category.name}"
+            >
+
+              <div
+                class="recap-category-icon"
+              >
+                ${category.icon}
+              </div>
+
+              <div
+                class="recap-category-name"
+              >
+                ${display(
+                  category.name
+                )}
+              </div>
+
+              <div
+                class="recap-category-count"
+              >
+                ${total} pesanan
+              </div>
+
+              <div
+                class="recap-category-arrow"
+              >
+                →
+              </div>
+
+            </article>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  /* =========================
+     KLIK KATEGORI
+  ========================= */
+
+  track
+    .querySelectorAll(
+      ".recap-category-card"
+    )
+    .forEach(
+      function(card) {
+
+        card.addEventListener(
+          "click",
+          function() {
+
+            const category =
+              this.dataset.category;
+
+
+            renderRecapBatches(
+              recapDataList,
+              category
+            );
+
+          }
+        );
+
+      }
+    );
+
+}
   /* =========================
    TAMPILKAN BATCH REKAP
 ========================= */
