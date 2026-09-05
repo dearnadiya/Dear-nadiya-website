@@ -2739,13 +2739,14 @@ document
     try {
 
       const {
-        data: bills,
-        error: billError
-      } = await supabaseClient
-        .from("purchase_recap")
-        .select("*")
-        .eq("customer_name", customer);
-
+  data: bills,
+  error: billError
+} = await supabaseClient
+  .from("purchase_recap")
+  .select("*")
+  .eq("customer_name", customer)
+  .or("dp_status.eq.unpaid,payment_status.eq.unpaid");
+      
       if (billError) {
         throw billError;
       }
