@@ -3015,6 +3015,59 @@ billBox.appendChild(
         }
       );
 
+  // HITUNG TOTAL SESUAI JENIS PEMBAYARAN
+const paymentType = document.getElementById("paymentType");
+
+paymentType.onchange = function () {
+  const selectedBills = window.selectedPaymentBills || [];
+
+  let totalPayment = 0;
+
+  selectedBills.forEach(bill => {
+    if (paymentType.value === "dp") {
+      // DP hanya dibayar jika status DP masih belum dibayar
+      if (bill.dp_status === "unpaid") {
+        totalPayment += Number(bill.dp_amount || 0);
+      }
+    }
+
+    if (paymentType.value === "pelunasan") {
+      // Pelunasan menggunakan sisa tagihan
+      totalPayment += Number(bill.remaining_amount || 0);
+    }
+
+    if (paymentType.value === "both") {
+      // DP + Pelunasan
+      if (bill.dp_status === "unpaid") {
+        totalPayment += Number(bill.dp_amount || 0);
+      }
+
+      totalPayment += Number(bill.remaining_amount || 0);
+    }
+  });
+
+  let totalBox = document.getElementById("selectedPaymentTotal");
+
+  if (!totalBox) {
+    totalBox = document.createElement("div");
+    totalBox.id = "selectedPaymentTotal";
+    totalBox.style.marginTop = "12px";
+    totalBox.style.padding = "12px";
+    totalBox.style.border = "1px solid #ddd";
+    totalBox.style.borderRadius = "10px";
+    totalBox.style.background = "#fafafa";
+
+    document.getElementById("customerPaymentList").appendChild(totalBox);
+  }
+
+  totalBox.innerHTML = `
+    <b>Total Pembayaran</b>
+    <div style="font-size:18px;font-weight:bold;margin-top:5px;">
+      Rp ${totalPayment.toLocaleString("id-ID")}
+    </div>
+  `;
+};
+
     } catch (error) {
 
       console.error(
