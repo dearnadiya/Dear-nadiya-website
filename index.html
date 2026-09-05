@@ -2920,6 +2920,44 @@ productVersionInput.value =
     .map(selected => selected.version || "-")
     .join(", ");
 
+        // ISI NOMINAL PEMBAYARAN
+const paymentAmountInput =
+  document.getElementById("paymentAmount");
+
+let totalPayment = 0;
+
+const paymentType =
+  document.getElementById("paymentType").value;
+
+window.selectedPaymentBills.forEach(selectedBill => {
+
+  if (paymentType === "dp") {
+
+    if (selectedBill.dp_status === "unpaid") {
+      totalPayment +=
+        Number(selectedBill.dp_amount || 0);
+    }
+
+  } else if (paymentType === "pelunasan") {
+
+    totalPayment +=
+      Number(selectedBill.remaining_amount || 0);
+
+  } else if (paymentType === "both") {
+
+    if (selectedBill.dp_status === "unpaid") {
+      totalPayment +=
+        Number(selectedBill.dp_amount || 0);
+    }
+
+    totalPayment +=
+      Number(selectedBill.remaining_amount || 0);
+  }
+
+});
+
+paymentAmountInput.value = totalPayment;
+
     console.log(
       "TAGIHAN TERPILIH:",
       window.selectedPaymentBills
