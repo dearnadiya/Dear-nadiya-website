@@ -2231,25 +2231,7 @@ if (searchInput) {
 
 
 // Pisahkan nama customer dan 4 digit WhatsApp
-const match =
-  customerIdentity.match(
-    /^(.+?)\s*\(\s*(\d{4})\s*\)$/
-  );
-
-if (!match) {
-
-  throw new Error(
-    "Format identitas customer harus seperti: nanana (1234)"
-  );
-
-}
-
-const customerName =
-  match[1].trim();
-
-const whatsappLast4 =
-  match[2].trim();
-
+        
         const productCode =
           document
             .getElementById(
@@ -2596,119 +2578,202 @@ const whatsappLast4 =
 
 document
   .getElementById("paymentCustomerNextBtn")
-  .addEventListener("click", async function () {
+  .addEventListener(
+    "click",
+    async function () {
 
-    const input =
-      document.getElementById(
-        "paymentCustomerIdentity"
-      );
-
-    const identity =
-      input.value.trim();
-
-    const match =
-      identity.match(
-        /^(.+?)\s*\(\s*(\d{4})\s*\)$/
-      );
-
-    if (!match) {
-
-      showPaymentMessage(
-        "Format harus seperti: nanana (1234)",
-        true
-      );
-
-      return;
-
-    }
-
-    const customerName =
-      match[1].trim();
-
-    const whatsappLast4 =
-      match[2].trim();
-
-    const button =
-      document.getElementById(
-        "paymentCustomerNextBtn"
-      );
-
-    button.disabled = true;
-    button.textContent = "Mencari...";
-
-    try {
-
-      const {
-  data: results,
-  error
-} = await supabaseClient
-  .from("purchase_recap")
-  .select("*")
-  .ilike(
-    "customer_name",
-    customerName
-  );
-
-if (error) {
-  throw error;
-}
-      
-      const resultBox =
+      const input =
         document.getElementById(
-          "customerPaymentResults"
+          "paymentCustomerIdentity"
         );
 
-      const resultList =
-        document.getElementById(
-          "customerPaymentList"
+      const identity =
+        input.value.trim();
+
+      if (!identity) {
+
+        showPaymentMessage(
+          "Masukkan nama atau 4 digit terakhir WhatsApp.",
+          true
         );
-
-      resultBox.style.display = "block";
-
-      if (
-        !results ||
-        results.length === 0
-      ) {
-
-        resultList.innerHTML = `
-          <p>
-            Data customer tidak ditemukan.
-          </p>
-        `;
 
         return;
 
       }
 
-      resultList.innerHTML = `
-        <p>
-          Data customer ditemukan:
-          <b>${customerName}</b>
-        </p>
-      `;
+      const button =
+        document.getElementById(
+          "paymentCustomerNextBtn"
+        );
 
-    } catch (error) {
+      button.disabled = true;
 
-      console.error(
-        "Gagal mencari customer:",
-        error
-      );
+      button.textContent =
+        "Mencari...";
 
-      showPaymentMessage(
-        "Gagal mencari data customer: " +
-        error.message,
-        true
-      );
+      try {
 
-    } finally {
+        /* =========================
+           CARI DI PURCHASE RECAP
+        ========================= */
 
-      button.disabled = false;
-      button.textContent = "Lanjutkan →";
+        const {
+          data: results,
+          error
+        } = await supabaseClient
+          .from("purchase_recap")
+          .select("customer_name")
+          .ilike(
+            "customer_name",
+            `%${identity}%`
+          );
+
+        if (error) {
+          throw error;
+        }
+
+
+        /* =========================
+           TAMPILKAN HASIL
+        ========================= */
+
+        const resultBox =
+          document.getElementById(
+            "customerPaymentResults"
+          );
+
+        const resultList =
+          document.getElementById(
+            "customerPaymentList"
+          );
+
+        resultBox.style.display =
+          "block";
+
+
+        /* =========================
+           TIDAK DITEMUKAN
+        ========================= */
+
+        if (
+          !results ||
+          results.length === 0
+        ) {
+
+          resultList.innerHTML = `
+            <p>
+              Data customer tidak ditemukan.
+            </p>
+          `;
+
+          return;
+
+        }
+
+
+        /* =========================
+           HAPUS DUPLIKAT CUSTOMER
+        ========================= */
+
+        const customers =
+          [
+            ...new Set(
+              results
+                .map(row =>
+                  row.customer_name
+                )
+                .filter(Boolean)
+            )
+          ];
+
+
+        /* =========================
+           TAMPILKAN PILIHAN CUSTOMER
+        ========================= */
+
+        resultList.innerHTML = `
+          <p>
+            <b>Customer ditemukan:</b>
+          </p>
+        `;
+
+
+        customers.forEach(
+          customer => {
+
+            const option =
+              document.createElement(
+                "button"
+              );
+
+            option.type =
+              "button";
+
+            option.className =
+              "btn";
+
+            option.style.marginBottom =
+              "8px";
+
+            option.style.width =
+              "100%";
+
+            option.textContent =
+              customer;
+
+
+            option.addEventListener(
+              "click",
+              function () {
+
+                input.value =
+                  customer;
+
+                resultList.innerHTML = `
+                  <p>
+                    Customer dipilih:
+                    <b>${customer}</b>
+                  </p>
+                `;
+
+              }
+            );
+
+
+            resultList.appendChild(
+              option
+            );
+
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Gagal mencari customer:",
+          error
+        );
+
+        showPaymentMessage(
+          "Gagal mencari data customer: " +
+          error.message,
+          true
+        );
+
+      } finally {
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Lanjutkan →";
+
+      }
 
     }
-
-  });
-
+  );
+  
   /* =========================
      PAYMENT MESSAGE
   ========================= */
