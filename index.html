@@ -3102,6 +3102,11 @@ paymentType.onchange = function () {
     }
   });
 
+  const paymentAmountInput =
+  document.getElementById("paymentAmount");
+
+paymentAmountInput.value = totalPayment;
+
   let totalBox = document.getElementById("selectedPaymentTotal");
 
   if (!totalBox) {
