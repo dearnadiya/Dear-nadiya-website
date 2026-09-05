@@ -2751,17 +2751,19 @@ document
         throw billError;
       }
 
-      if (!bills || bills.length === 0) {
+      if (
+  !bills ||
+  bills.length === 0
+) {
 
-        resultList.innerHTML = `
-          <p>
-            Data tagihan customer tidak ditemukan.
-          </p>
-        `;
+  resultList.innerHTML = `
+    <p>
+      ✅ Semua tagihan kamu sudah lunas.
+    </p>
+  `;
 
-        return;
-      }
-
+  return;
+}
       /* =========================
          TAMPILKAN TAGIHAN
       ========================= */
