@@ -2723,22 +2723,136 @@ document
 
 
             option.addEventListener(
-              "click",
-              function () {
+  "click",
+  async function () {
 
-                input.value =
-                  customer;
+    input.value = customer;
 
-                resultList.innerHTML = `
-                  <p>
-                    Customer dipilih:
-                    <b>${customer}</b>
-                  </p>
-                `;
+    resultList.innerHTML = `
+      <p>
+        Customer dipilih:
+        <b>${customer}</b>
+      </p>
+      <p>Mengambil data tagihan...</p>
+    `;
 
-              }
-            );
+    try {
 
+      const {
+        data: bills,
+        error: billError
+      } = await supabaseClient
+        .from("purchase_recap")
+        .select("*")
+        .eq("customer_name", customer);
+
+      if (billError) {
+        throw billError;
+      }
+
+      if (!bills || bills.length === 0) {
+
+        resultList.innerHTML = `
+          <p>
+            Data tagihan customer tidak ditemukan.
+          </p>
+        `;
+
+        return;
+      }
+
+      /* =========================
+         TAMPILKAN TAGIHAN
+      ========================= */
+
+      resultList.innerHTML = `
+        <p>
+          <b>Customer:</b> ${customer}
+        </p>
+
+        <p>
+          <b>Tagihan Kamu:</b>
+        </p>
+      `;
+
+      bills.forEach(
+        bill => {
+
+          const billBox =
+            document.createElement("div");
+
+          billBox.style.border =
+            "1px solid #ddd";
+
+          billBox.style.borderRadius =
+            "10px";
+
+          billBox.style.padding =
+            "12px";
+
+          billBox.style.marginBottom =
+            "10px";
+
+          billBox.innerHTML = `
+            <div>
+              <b>${bill.batch_code || "-"}</b>
+            </div>
+
+            <div>
+              Produk:
+              ${bill.item_name || "-"}
+            </div>
+
+            <div>
+              Versi:
+              ${bill.version || "-"}
+            </div>
+
+            <div>
+              DP:
+              ${bill.dp_status === "paid"
+                ? "✅ Sudah Dibayar"
+                : "❌ Belum Dibayar"}
+            </div>
+
+            <div>
+              Pelunasan:
+              ${bill.payment_status === "paid"
+                ? "✅ Sudah Lunas"
+                : "❌ Belum Lunas"}
+            </div>
+
+            <div>
+              Sisa:
+              ${bill.remaining_amount ?? 0}
+            </div>
+          `;
+
+          resultList.appendChild(
+            billBox
+          );
+
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Gagal mengambil tagihan customer:",
+        error
+      );
+
+      resultList.innerHTML = `
+        <p>
+          Gagal mengambil data tagihan:
+          ${error.message}
+        </p>
+      `;
+
+    }
+
+  }
+);
 
             resultList.appendChild(
               option
