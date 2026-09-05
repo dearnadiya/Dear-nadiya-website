@@ -2907,6 +2907,79 @@ checkbox.className = "payment-bill-checkbox";
       window.selectedPaymentBills
     );
 
+    /* =========================
+   TAMPILKAN TOTAL TAGIHAN
+========================= */
+
+let totalSelected =
+  0;
+
+window.selectedPaymentBills.forEach(
+  selectedBill => {
+
+    totalSelected +=
+      Number(
+        selectedBill.remaining_amount || 0
+      );
+
+  }
+);
+
+
+/* =========================
+   CARI / BUAT KOTAK TOTAL
+========================= */
+
+let totalBox =
+  document.getElementById(
+    "selectedPaymentTotal"
+  );
+
+if (!totalBox) {
+
+  totalBox =
+    document.createElement("div");
+
+  totalBox.id =
+    "selectedPaymentTotal";
+
+  totalBox.style.marginTop =
+    "12px";
+
+  totalBox.style.padding =
+    "12px";
+
+  totalBox.style.border =
+    "1px solid #ddd";
+
+  totalBox.style.borderRadius =
+    "10px";
+
+  totalBox.style.background =
+    "#fafafa";
+
+  resultList.appendChild(
+    totalBox
+  );
+
+}
+
+
+/* =========================
+   TAMPILKAN TOTAL
+========================= */
+
+totalBox.innerHTML = `
+  <b>Total Tagihan Terpilih</b>
+  <div style="
+    font-size:18px;
+    font-weight:bold;
+    margin-top:5px;
+  ">
+    Rp ${totalSelected.toLocaleString("id-ID")}
+  </div>
+`;
+
   }
 );
 
