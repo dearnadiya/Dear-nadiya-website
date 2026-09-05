@@ -2638,12 +2638,21 @@ document
 
     try {
 
-      const results =
-        await findCustomerPayments(
-          customerName,
-          whatsappLast4
-        );
+      const {
+  data: results,
+  error
+} = await supabaseClient
+  .from("purchase_recap")
+  .select("*")
+  .ilike(
+    "customer_name",
+    customerName
+  );
 
+if (error) {
+  throw error;
+}
+      
       const resultBox =
         document.getElementById(
           "customerPaymentResults"
