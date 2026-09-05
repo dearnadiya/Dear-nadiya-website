@@ -2831,154 +2831,52 @@ document
             </div>
           `;
 
-          const selectButton =
-  document.createElement("button");
+          /* =========================
+   CHECKBOX PILIH TAGIHAN
+========================= */
 
-selectButton.type = "button";
-selectButton.className = "btn primary";
-selectButton.textContent = "Pilih Tagihan";
+const selectWrapper =
+  document.createElement("label");
 
-selectButton.style.width = "100%";
-selectButton.style.marginTop = "10px";
-          
-    selectButton.addEventListener(
-  "click",
-  function () {
-
-    console.log(
-      "TAGIHAN DIPILIH:",
-      bill
-    );
-
-    /* =========================
-       ISI DATA TAGIHAN
-    ========================= */
-
-    document.getElementById(
-      "paymentProductCode"
-    ).value =
-      bill.batch_code || "";
-
-    document.getElementById(
-      "paymentProductVersion"
-    ).value =
-      bill.version || "";
-
-    /* =========================
-       NONAKTIFKAN INPUT MANUAL
-    ========================= */
-
-    document.getElementById(
-      "paymentProductCode"
-    ).readOnly = true;
-
-    document.getElementById(
-      "paymentProductVersion"
-    ).readOnly = true;
+selectWrapper.style.display = "flex";
+selectWrapper.style.alignItems = "center";
+selectWrapper.style.gap = "8px";
+selectWrapper.style.marginTop = "12px";
+selectWrapper.style.cursor = "pointer";
 
 
-    /* =========================
-       SIMPAN TAGIHAN TERPILIH
-    ========================= */
+const checkbox =
+  document.createElement("input");
 
-    window.selectedPaymentBill = bill;
+checkbox.type = "checkbox";
+checkbox.className = "payment-bill-checkbox";
 
-
-    /* =========================
-       ATUR JENIS PEMBAYARAN
-    ========================= */
-
-    const paymentType =
-      document.getElementById(
-        "paymentType"
-      );
-
-    const paymentAmount =
-      document.getElementById(
-        "paymentAmount"
-      );
-
-    /* =========================
-       NONAKTIFKAN DP
-       JIKA SUDAH DIBAYAR
-    ========================= */
-
-    const dpOption =
-      paymentType.querySelector(
-        'option[value="dp"]'
-      );
-
-    if (dpOption) {
-
-      dpOption.disabled =
-        bill.dp_status === "paid";
-
-    }
+checkbox.style.width = "18px";
+checkbox.style.height = "18px";
+checkbox.style.cursor = "pointer";
 
 
-    /* =========================
-       NOMINAL OTOMATIS
-    ========================= */
+const checkboxText =
+  document.createElement("span");
 
-    paymentType.onchange =
-      function () {
-
-        const type =
-          paymentType.value;
-
-        let amount = 0;
+checkboxText.textContent =
+  "Pilih tagihan ini";
 
 
-        if (type === "dp") {
-
-          amount =
-            Number(
-              bill.dp_amount || 0
-            );
-
-        }
-
-        else if (type === "pelunasan") {
-
-          amount =
-            Number(
-              bill.remaining_amount || 0
-            );
-
-        }
-
-        else if (type === "both") {
-
-          amount =
-            Number(
-              bill.dp_amount || 0
-            ) +
-            Number(
-              bill.remaining_amount || 0
-            );
-
-        }
-
-
-        paymentAmount.value =
-          amount > 0
-            ? amount
-            : "";
-
-      };
-
-    if (paymentType.value) {
-  paymentType.onchange();
-}
-
-  }
+selectWrapper.appendChild(
+  checkbox
 );
-          
+
+selectWrapper.appendChild(
+  checkboxText
+);
+
+
 billBox.appendChild(
-  selectButton
+  selectWrapper
 );
           
-          resultList.appendChild(
+        resultList.appendChild(
             billBox
           );
 
