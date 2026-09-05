@@ -3781,6 +3781,36 @@ function closePODetail() {
 
 loadPOCustomer();
 
+  /* =========================
+   BUKA FORM PEMBAYARAN
+========================= */
+
+const paymentStartBtn =
+  document.getElementById("paymentStartBtn");
+
+const paymentForm =
+  document.getElementById("paymentForm");
+
+if (paymentStartBtn && paymentForm) {
+
+  paymentStartBtn.addEventListener(
+    "click",
+    function () {
+
+      paymentStartBtn.style.display = "none";
+
+      paymentForm.style.display = "block";
+
+      paymentForm.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
+  );
+
+}
+  
 </script>
 
 </body>
