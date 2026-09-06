@@ -62,18 +62,66 @@ header {
   display: block;
 }
 
+
+/* =========================
+   NAVIGATION
+========================= */
+
 nav {
   display: flex;
-  gap: 22px;
+  align-items: center;
+  gap: 10px;
   margin-left: auto;
 }
 
 nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  min-width: 68px;
+  padding: 7px 9px;
+
   text-decoration: none;
   color: var(--t);
+
   font-weight: 800;
-  font-size: 13px;
+  font-size: 11px;
+
+  border-radius: 12px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
+
+nav a:hover {
+  background: #f8e8f0;
+  color: var(--u);
+  transform: translateY(-2px);
+}
+
+
+/* =========================
+   NAV ICON
+========================= */
+
+.nav-icon {
+  font-size: 21px;
+  line-height: 1;
+}
+
+.nav-label {
+  white-space: nowrap;
+}
+
+
+/* =========================
+   CART / PAYMENT BUTTON
+========================= */
 
 .cart {
   border: 0;
@@ -85,67 +133,193 @@ nav a {
   cursor: pointer;
 }
 
+
 /* =========================
-   DASHBOARD / HERO
+   MOBILE HEADER
+========================= */
+
+@media (max-width: 800px) {
+
+  header {
+    padding: 8px 5%;
+    gap: 12px;
+  }
+
+  .brand img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand b {
+    font-size: 18px;
+  }
+
+  .brand small {
+    font-size: 8px;
+  }
+
+  nav {
+    gap: 4px;
+  }
+
+  nav a {
+    min-width: 52px;
+    padding: 6px 5px;
+    font-size: 9px;
+  }
+
+  .nav-icon {
+    font-size: 18px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  header {
+    padding: 7px 4%;
+  }
+
+  .brand b {
+    font-size: 16px;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  nav {
+    gap: 2px;
+  }
+
+  nav a {
+    min-width: 44px;
+    padding: 5px 3px;
+    font-size: 8px;
+  }
+
+  .nav-icon {
+    font-size: 17px;
+  }
+}
+
+/* =========================
+   DASHBOARD / WELCOME
 ========================= */
 
 .hero {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  min-height: 330px;
+  min-height: 300px;
   padding: 30px 7%;
+  gap: 30px;
+
   background:
     radial-gradient(
-      circle at 68% 38%,
+      circle at 72% 35%,
       #fbd5e5 0,
-      transparent 27%
+      transparent 25%
     ),
     linear-gradient(
       135deg,
       #f9e8f0,
       #eee7f7
     );
+
+  border-radius: 0 0 24px 24px;
 }
 
-.hero > div {
-  max-width: 560px;
+.hero-content {
+  flex: 1;
+  max-width: 600px;
 }
 
-.hero img {
-  width: min(300px, 32vw);
-  filter: drop-shadow(
-    0 12px 12px #65354d20
-  );
+.hero-content .eyebrow {
+  margin-bottom: 8px;
 }
 
-.eyebrow {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  color: var(--h);
-  margin: 0 0 6px;
-}
-
-h1,
-h2 {
-  color: var(--u);
+.hero-content h1 {
   margin: 0;
-}
-
-h1 {
   font-size: 44px;
-  line-height: 1.02;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
 }
 
-h1 span {
-  color: var(--p);
+.hero-content p {
+  margin: 12px 0 0;
+  max-width: 540px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #665b68;
 }
 
-h2 {
-  font-size: 29px;
+.hero-mascot {
+  width: min(280px, 30vw);
+  max-width: 280px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+
+  filter:
+    drop-shadow(
+      0 12px 14px #65354d20
+    );
 }
 
+/* =========================
+   DASHBOARD MOBILE
+========================= */
+
+@media (max-width: 800px) {
+
+  .hero {
+    min-height: auto;
+    padding: 30px 7%;
+    gap: 10px;
+  }
+
+  .hero-content h1 {
+    font-size: 38px;
+  }
+
+  .hero-content p {
+    font-size: 12px;
+  }
+
+  .hero-mascot {
+    width: 220px;
+    max-width: 35vw;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .hero {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 25px 6%;
+    gap: 8px;
+  }
+
+  .hero-content h1 {
+    font-size: 28px;
+    line-height: 1.08;
+  }
+
+  .hero-content p {
+    font-size: 11px;
+    line-height: 1.55;
+  }
+
+  .hero-mascot {
+    width: 125px;
+    max-width: 34vw;
+  }
+
+}
 /* =========================
    BUTTON
 ========================= */
