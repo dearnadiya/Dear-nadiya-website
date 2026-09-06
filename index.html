@@ -1682,24 +1682,36 @@ function showRecapDetail(productCode) {
     </div>
 
 
-    <!-- PETUNJUK CUSTOMER -->
+    /* =========================
+   SEARCH CUSTOMER
+========================= */
 
-    <div class="recap-customer-search-hint">
+<div class="recap-customer-search-area">
 
-      <div class="recap-search-icon">
-        🔎
-      </div>
+  <div class="recap-customer-search-title">
+    🔎 Cari Customer
+  </div>
 
-      <strong>
-        Cari nama customer
-      </strong>
+  <input
+    type="text"
+    id="recapCustomerSearchInput"
+    class="recap-customer-search-input"
+    placeholder="Cari nama atau 4 digit WhatsApp..."
+    autocomplete="off"
+  >
 
-      <p>
-        Ketik nama customer untuk
-        melihat detail pesanannya.
-      </p>
+</div>
 
-    </div>
+
+/* =========================
+   DAFTAR CUSTOMER
+========================= */
+
+<div
+  id="recapCustomerList"
+  class="recap-customer-list"
+>
+</div>
 
   `;
 
