@@ -1788,10 +1788,14 @@ function closeRecapDetail() {
   }
 
 
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
+  if (dashboardSection) {
+
+  dashboardSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
   });
+
+}
 
 }
 
