@@ -2700,3 +2700,78 @@ footer {
   }
 
 }
+
+/* =========================
+   GLOBAL SEARCH REKAP
+========================= */
+
+.recap-global-search {
+  width: 100%;
+  margin: 18px 0 22px;
+  padding: 18px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 4px 16px #54233a08;
+}
+
+.recap-global-search-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--t);
+  margin-bottom: 5px;
+}
+
+.recap-global-search p {
+  margin: 0 0 12px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #888;
+}
+
+.recap-global-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 15px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--t);
+  outline: none;
+}
+
+.recap-global-search input::placeholder {
+  color: #aaa2ad;
+}
+
+.recap-global-search input:focus {
+  border-color: #d9a8c0;
+  box-shadow: 0 0 0 3px #f7e5ee;
+}
+
+@media (max-width: 600px) {
+
+  .recap-global-search {
+    margin: 14px 0 18px;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .recap-global-search-title {
+    font-size: 14px;
+  }
+
+  .recap-global-search p {
+    font-size: 10px;
+  }
+
+  .recap-global-search input {
+    padding: 11px 13px;
+    font-size: 11px;
+    border-radius: 12px;
+  }
+
+}
