@@ -2241,3 +2241,73 @@ footer {
   }
 
 }
+
+/* =========================
+   MOBILE HEADER - FIX
+========================= */
+
+@media (max-width: 600px) {
+
+  header {
+    padding: 8px 4%;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .brand {
+    flex-shrink: 0;
+    gap: 5px;
+  }
+
+  .brand img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brand b {
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+
+  /* MENU NAVIGASI */
+
+  nav {
+    flex: 1;
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 2px;
+    margin-left: auto;
+  }
+
+  nav a {
+    min-width: 0;
+    padding: 5px 2px;
+
+    gap: 3px;
+
+    font-size: 8px;
+    line-height: 1.1;
+
+    text-align: center;
+
+    border-radius: 9px;
+  }
+
+  .nav-icon {
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  .nav-label {
+    white-space: normal;
+  }
+
+}
