@@ -2920,3 +2920,115 @@ footer {
   }
 
 }
+
+/* =========================
+   GLOBAL SEARCH - FILTER CO
+========================= */
+
+.recap-global-co-filter {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:16px 0;
+  padding:12px 14px;
+  background:#faf7f9;
+  border:1px solid var(--line);
+  border-radius:13px;
+}
+
+.recap-global-co-filter label {
+  font-size:11px;
+  font-weight:600;
+  color:var(--t);
+}
+
+.recap-global-co-filter select {
+  min-width:190px;
+  padding:9px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  color:var(--t);
+  font-family:inherit;
+  font-size:11px;
+  outline:none;
+  cursor:pointer;
+}
+
+.recap-global-co-filter select:focus {
+  border-color:#d9a8c0;
+  box-shadow:0 0 0 3px #f7e5ee;
+}
+
+
+.recap-global-summary {
+  display:grid;
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+
+.recap-global-summary-card {
+  min-width:0;
+  padding:13px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:13px;
+  text-align:center;
+}
+
+.recap-global-summary-card span {
+  display:block;
+  margin-bottom:5px;
+  font-size:10px;
+  color:#999;
+}
+
+.recap-global-summary-card strong {
+  display:block;
+  font-size:18px;
+  color:var(--t);
+}
+
+
+@media (max-width:600px) {
+
+  .recap-global-summary {
+    gap:7px;
+  }
+
+  .recap-global-summary-card {
+    padding:10px 6px;
+    border-radius:11px;
+  }
+
+  .recap-global-summary-card span {
+    font-size:8px;
+    line-height:1.3;
+  }
+
+  .recap-global-summary-card strong {
+    font-size:16px;
+  }
+
+  .recap-global-co-filter {
+    flex-direction:column;
+    align-items:stretch;
+    gap:7px;
+    padding:11px 12px;
+  }
+
+  .recap-global-co-filter label {
+    font-size:10px;
+  }
+
+  .recap-global-co-filter select {
+    width:100%;
+    min-width:0;
+    padding:10px 11px;
+    font-size:10px;
+  }
+
+}
