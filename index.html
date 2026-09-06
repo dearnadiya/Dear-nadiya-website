@@ -2599,42 +2599,152 @@ function setupRecapGlobalSearch() {
 
 
         <div
-          class="recap-global-order-list"
-          id="recapGlobalOrderList"
-        >
+  class="recap-global-order-table"
+  id="recapGlobalOrderList"
+>
 
-          ${filtered.map(
-            function(item) {
+  <!-- HEADER TABEL -->
 
-              return `
+  <div class="recap-global-table-header">
 
-                <div
-                  class="recap-global-result-card"
-                >
+    <div>Batch</div>
 
-                  <div
-                    class="recap-global-result-header"
-                  >
+    <div>Nama Barang</div>
 
-                    <strong>
-                      ${display(
-                        item.product_name ||
-                        "-"
-                      )}
-                    </strong>
+    <div>Versi / Member</div>
 
-                    <span
-                      class="recap-global-batch"
-                    >
-                      ${display(
-                        item.batch_code ||
-                        item.product_code ||
-                        "-"
-                      )}
-                    </span>
+    <div>Harga</div>
 
-                  </div>
+    <div>DP</div>
 
+    <div>Pembayaran</div>
+
+    <div>Tracking</div>
+
+    <div>CO Shopee</div>
+
+  </div>
+
+
+  <!-- DATA PESANAN -->
+
+  <div class="recap-global-table-body">
+
+    ${filtered.map(
+      function(item) {
+
+        return `
+
+          <div
+            class="recap-global-table-row"
+          >
+
+            <div
+              class="recap-table-cell recap-table-batch"
+              data-label="Batch"
+            >
+              <span>
+                ${display(
+                  item.batch_code ||
+                  item.product_code ||
+                  "-"
+                )}
+              </span>
+            </div>
+
+
+            <div
+              class="recap-table-cell recap-table-item"
+              data-label="Nama Barang"
+            >
+              <strong>
+                ${display(
+                  item.item_name ||
+                  item.product_name ||
+                  "-"
+                )}
+              </strong>
+            </div>
+
+
+            <div
+              class="recap-table-cell recap-table-version"
+              data-label="Versi / Member"
+            >
+              <span>
+                ${display(
+                  item.product_version ||
+                  "-"
+                )}
+              </span>
+            </div>
+
+
+            <div
+              class="recap-table-cell recap-table-price"
+              data-label="Harga"
+            >
+              <strong>
+                ${rupiah(
+                  item.price ||
+                  0
+                )}
+              </strong>
+            </div>
+
+
+            <div
+              class="recap-table-cell recap-table-dp"
+              data-label="DP"
+            >
+              <strong>
+                ${rupiah(
+                  item.dp ||
+                  0
+                )}
+              </strong>
+            </div>
+
+
+            <div
+              class="recap-table-cell recap-table-payment"
+              data-label="Pembayaran"
+            >
+              ${getPaymentStatusDisplay(
+                item
+              )}
+            </div>
+
+
+            <div
+              class="recap-table-cell recap-table-tracking"
+              data-label="Tracking"
+            >
+              ${getTrackingDisplay(
+                item.item_status
+              )}
+            </div>
+
+
+            <div
+              class="recap-table-cell recap-table-co"
+              data-label="CO Shopee"
+            >
+              ${getCustomerStatusDisplay(
+                item.customer_status
+              )}
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    ).join("")}
+
+  </div>
+
+</div>
 
                   <div
                     class="recap-global-product"
