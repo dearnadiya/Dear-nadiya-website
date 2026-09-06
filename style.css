@@ -1505,3 +1505,216 @@
   }
 
 }
+
+/* =========================================
+   RINGKASAN BARANG - 1 KOTAK
+========================================= */
+
+.recap-batch-summary {
+  width: 100%;
+  margin-bottom: 16px;
+
+  padding: 13px 16px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  border: 1px solid #eee8f0;
+  border-radius: 14px;
+
+  background: #fff;
+
+  overflow: hidden;
+}
+
+
+/* =========================================
+   SETIAP DATA
+========================================= */
+
+.recap-summary-card {
+  flex: 1 1 0;
+  min-width: 0;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 0;
+
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  text-align: left;
+}
+
+
+/* =========================================
+   ICON
+========================================= */
+
+.recap-summary-icon {
+  width: 30px;
+  height: 30px;
+
+  flex: 0 0 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #faf5fa;
+
+  font-size: 14px;
+}
+
+
+/* =========================================
+   LABEL + VALUE
+========================================= */
+
+.recap-summary-label {
+  margin: 0 0 2px;
+
+  font-size: 9px;
+
+  line-height: 1.2;
+
+  color: #999;
+
+  font-weight: 500;
+}
+
+
+.recap-summary-value {
+  font-size: 11px;
+
+  line-height: 1.3;
+
+  font-weight: 600;
+
+  color: #4b315f;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================
+   PEMBATAS ANTAR DATA
+========================================= */
+
+.recap-summary-card:not(:last-child)::after {
+  content: "";
+
+  width: 1px;
+  height: 28px;
+
+  background: #eee8f0;
+
+  margin-left: auto;
+}
+
+
+/* =========================================
+   HILANGKAN PANAH BESAR
+========================================= */
+
+.recap-summary-card::after {
+  font-size: inherit;
+}
+
+
+/* =========================================
+   PETUNJUK SEARCH CUSTOMER
+========================================= */
+
+.recap-customer-search-hint {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 14px 18px;
+
+  margin-top: 4px;
+
+  border: 1px dashed #ddd3df;
+
+  border-radius: 12px;
+
+  background: #fdfbfd;
+
+  text-align: center;
+
+  color: #999;
+
+  font-size: 11px;
+}
+
+.recap-customer-search-hint strong {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #4b315f;
+
+  font-size: 12px;
+}
+
+.recap-customer-search-hint p {
+  margin: 4px 0 0;
+
+  color: #aaa;
+
+  font-size: 10px;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .recap-batch-summary {
+    padding: 11px 12px;
+
+    gap: 8px;
+  }
+
+  .recap-summary-card {
+    gap: 6px;
+  }
+
+  .recap-summary-icon {
+    width: 26px;
+    height: 26px;
+
+    flex-basis: 26px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+  }
+
+  .recap-summary-label {
+    font-size: 8px;
+  }
+
+  .recap-summary-value {
+    font-size: 10px;
+  }
+
+}
