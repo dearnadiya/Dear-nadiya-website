@@ -2197,65 +2197,7 @@ async function loadRecap() {
 
         }
       );
-
-
-    /* =========================
-       TOTAL PESANAN
-    ========================= */
-
-    document
-      .getElementById(
-        "totalOrder"
-      )
-      .textContent =
-      recapData.length;
-
-
-    /* =========================
-       TOTAL PRODUK
-    ========================= */
-
-    const totalProduct =
-      recapData.reduce(
-        function(
-          total,
-          item
-        ) {
-
-          return (
-            total +
-            Number(
-              item.quantity || 1
-            )
-          );
-
-        },
-        0
-      );
-
-
-    document
-      .getElementById(
-        "totalProduct"
-      )
-      .textContent =
-      totalProduct;
-
-
-    /* =========================
-       DATA TERAKHIR
-    ========================= */
-
-    document
-      .getElementById(
-        "lastUpdate"
-      )
-      .textContent =
-      recapData.length
-        ? "Tersedia"
-        : "-";
-
-
+  
     /* =========================
        TAMPILKAN KATEGORI
     ========================= */
