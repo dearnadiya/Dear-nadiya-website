@@ -2067,17 +2067,21 @@ async function loadRecap() {
 
     recapData =
       (publicData || []).map(
-        function (item) {
+        function(item) {
 
           const meta =
             (recapMeta || []).find(
-              function (row) {
+              function(row) {
 
                 return (
-                  String(row.batch_code || "")
+                  String(
+                    row.batch_code || ""
+                  )
                     .trim()
                     .toLowerCase() ===
-                  String(item.product_code || "")
+                  String(
+                    item.product_code || ""
+                  )
                     .trim()
                     .toLowerCase()
                 );
@@ -2091,7 +2095,8 @@ async function loadRecap() {
             ...item,
 
             category:
-              meta?.category || "Lainnya",
+              meta?.category ||
+              "Lainnya",
 
             batch_code:
               meta?.batch_code ||
@@ -2112,7 +2117,9 @@ async function loadRecap() {
     ========================= */
 
     document
-      .getElementById("totalOrder")
+      .getElementById(
+        "totalOrder"
+      )
       .textContent =
       recapData.length;
 
@@ -2123,7 +2130,7 @@ async function loadRecap() {
 
     const totalProduct =
       recapData.reduce(
-        function (
+        function(
           total,
           item
         ) {
@@ -2141,7 +2148,9 @@ async function loadRecap() {
 
 
     document
-      .getElementById("totalProduct")
+      .getElementById(
+        "totalProduct"
+      )
       .textContent =
       totalProduct;
 
@@ -2151,7 +2160,9 @@ async function loadRecap() {
     ========================= */
 
     document
-      .getElementById("lastUpdate")
+      .getElementById(
+        "lastUpdate"
+      )
       .textContent =
       recapData.length
         ? "Tersedia"
@@ -2159,6 +2170,54 @@ async function loadRecap() {
 
 
     /* =========================
+       TAMPILKAN KATEGORI
+    ========================= */
+
+    renderRecapCategories(
+      recapData
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Gagal memuat rekap:",
+      error
+    );
+
+
+    const track =
+      document.getElementById(
+        "recapCarouselTrack"
+      );
+
+
+    if (track) {
+
+      track.innerHTML = `
+
+        <div class="error">
+
+          Rekap belum dapat dimuat.
+
+          <br><br>
+
+          ${display(
+            error.message
+          )}
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
+}
+
+
+/* =========================
    TAMPILKAN KATEGORI REKAP
 ========================= */
 
@@ -2220,10 +2279,6 @@ function renderRecapCategories(
 
   ];
 
-
-  /* =========================
-     DATA
-  ========================= */
 
   const recapDataList =
     data || [];
@@ -2330,7 +2385,9 @@ function renderRecapCategories(
     );
 
 }
-  /* =========================
+
+
+/* =========================
    TAMPILKAN BATCH REKAP
 ========================= */
 
@@ -2559,153 +2616,6 @@ function renderRecapBatches(
 
             showRecapDetail(
               batchCode
-            );
-
-          }
-        );
-
-      }
-    );
-
-}
-
-  /* =========================
-   TAMPILKAN KATEGORI REKAP
-========================= */
-
-function renderRecapCategories(
-  data
-) {
-
-  const track =
-    document.getElementById(
-      "recapCarouselTrack"
-    );
-
-
-  if (!track) {
-    return;
-  }
-
-
-  if (!data || !data.length) {
-
-    track.innerHTML = `
-
-      <div class="empty">
-
-        Belum ada data rekap.
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  /* =========================
-     AMBIL KATEGORI UNIK
-  ========================= */
-
-  const categories =
-    [
-      ...new Set(
-        data
-          .map(
-            item =>
-              item.category
-          )
-          .filter(Boolean)
-      )
-    ];
-
-
-  /* =========================
-     TAMPILKAN KATEGORI
-  ========================= */
-
-  track.innerHTML =
-
-    categories
-      .map(
-        function(category) {
-
-          const total =
-            data.filter(
-              item =>
-                item.category ===
-                category
-            ).length;
-
-
-          return `
-
-            <article
-              class="recap-category-card"
-              data-category="${display(
-                category
-              )}"
-            >
-
-              <div
-                class="recap-category-icon"
-              >
-                📦
-              </div>
-
-              <div
-                class="recap-category-name"
-              >
-                ${display(
-                  category
-                )}
-              </div>
-
-              <div
-                class="recap-category-count"
-              >
-                ${total} pesanan
-              </div>
-
-              <div
-                class="recap-category-arrow"
-              >
-                →
-              </div>
-
-            </article>
-
-          `;
-
-        }
-      )
-      .join("");
-
-
-  /* =========================
-     KLIK KATEGORI
-  ========================= */
-
-  track
-    .querySelectorAll(
-      ".recap-category-card"
-    )
-    .forEach(
-      function(card) {
-
-        card.addEventListener(
-          "click",
-          function() {
-
-            const category =
-              this.dataset.category;
-
-
-            renderRecapBatches(
-              data,
-              category
             );
 
           }
