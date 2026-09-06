@@ -2124,7 +2124,7 @@ async function loadRecap() {
   try {
 
     /* =========================
-       DATA REKAP PUBLIC
+       DATA PUBLIC CUSTOMER
     ========================= */
 
     const {
@@ -2135,14 +2135,14 @@ async function loadRecap() {
         .from("go_rekap_public")
         .select("*");
 
-
     if (publicError) {
       throw publicError;
     }
 
 
     /* =========================
-       DATA STATUS PEMBAYARAN
+       DATA KATEGORI / BATCH
+       DARI REKAP UTAMA
     ========================= */
 
     const {
@@ -2151,14 +2151,9 @@ async function loadRecap() {
     } =
       await supabaseClient
         .from("purchase_recap")
-        .select(`
-          customer_name,
-          batch_code,
-          version,
-          dp_status,
-          payment_status
-        `);
-
+        .select(
+          "category, batch_code, item_name"
+        );
 
     if (metaError) {
       throw metaError;
@@ -2173,63 +2168,21 @@ async function loadRecap() {
       (publicData || []).map(
         function(item) {
 
-          const publicCustomer =
-            String(
-              item.customer_name || ""
-            )
-              .trim()
-              .toLowerCase();
-
-          const publicCode =
-            String(
-              item.product_code || ""
-            )
-              .trim()
-              .toLowerCase();
-
-          const publicVersion =
-            String(
-              item.product_version || ""
-            )
-              .trim()
-              .toLowerCase();
-
-
           const meta =
             (recapMeta || []).find(
               function(row) {
 
-                const recapCustomer =
-                  String(
-                    row.customer_name || ""
-                  )
-                    .trim()
-                    .toLowerCase();
-
-                const recapCode =
+                return (
                   String(
                     row.batch_code || ""
                   )
                     .trim()
-                    .toLowerCase();
-
-                const recapVersion =
+                    .toLowerCase() ===
                   String(
-                    row.version || ""
+                    item.product_code || ""
                   )
                     .trim()
-                    .toLowerCase();
-
-
-                return (
-                  recapCustomer ===
-                    publicCustomer
-                  &&
-                  recapCode ===
-                    publicCode
-                  &&
-                  recapVersion ===
-                    publicVersion
+                    .toLowerCase()
                 );
 
               }
@@ -2240,13 +2193,17 @@ async function loadRecap() {
 
             ...item,
 
-            dp_status:
-              meta?.dp_status ||
-              "unpaid",
+            category:
+              meta?.category ||
+              "Lainnya",
 
-            payment_status:
-              meta?.payment_status ||
-              "unpaid"
+            batch_code:
+              meta?.batch_code ||
+              item.product_code,
+
+            item_name:
+              meta?.item_name ||
+              item.product_name
 
           };
 
@@ -2259,7 +2216,9 @@ async function loadRecap() {
     ========================= */
 
     document
-      .getElementById("totalOrder")
+      .getElementById(
+        "totalOrder"
+      )
       .textContent =
       recapData.length;
 
@@ -2270,7 +2229,10 @@ async function loadRecap() {
 
     const totalProduct =
       recapData.reduce(
-        function(total, item) {
+        function(
+          total,
+          item
+        ) {
 
           return (
             total +
@@ -2285,7 +2247,9 @@ async function loadRecap() {
 
 
     document
-      .getElementById("totalProduct")
+      .getElementById(
+        "totalProduct"
+      )
       .textContent =
       totalProduct;
 
@@ -2295,7 +2259,9 @@ async function loadRecap() {
     ========================= */
 
     document
-      .getElementById("lastUpdate")
+      .getElementById(
+        "lastUpdate"
+      )
       .textContent =
       recapData.length
         ? "Tersedia"
@@ -2303,10 +2269,10 @@ async function loadRecap() {
 
 
     /* =========================
-       TAMPILKAN REKAP
+       TAMPILKAN KATEGORI
     ========================= */
 
-    renderRecap(
+    renderRecapCategories(
       recapData
     );
 
@@ -2328,6 +2294,7 @@ async function loadRecap() {
     if (track) {
 
       track.innerHTML = `
+
         <div class="error">
 
           Rekap belum dapat dimuat.
@@ -2339,11 +2306,422 @@ async function loadRecap() {
           )}
 
         </div>
+
       `;
 
     }
 
   }
+
+}
+
+
+/* =========================
+   TAMPILKAN KATEGORI REKAP
+========================= */
+
+function renderRecapCategories(
+  data
+) {
+
+  const track =
+    document.getElementById(
+      "recapCarouselTrack"
+    );
+
+
+  if (!track) {
+    return;
+  }
+
+
+  /* =========================
+     DAFTAR KATEGORI
+  ========================= */
+
+  const categoryList = [
+
+    {
+      name: "Truz",
+      icon: "🧸"
+    },
+
+    {
+      name: "Treasure KR",
+      icon: "🇰🇷"
+    },
+
+    {
+      name: "Treasure JP",
+      icon: "🇯🇵"
+    },
+
+    {
+      name: "Treasure CH",
+      icon: "🇨🇳"
+    },
+
+    {
+      name: "Treasure Thai",
+      icon: "🇹🇭"
+    },
+
+    {
+      name: "Treasure INA",
+      icon: "🇮🇩"
+    },
+
+    {
+      name: "Treasure Album",
+      icon: "📖"
+    }
+
+  ];
+
+
+  const recapDataList =
+    data || [];
+
+
+  /* =========================
+     TAMPILKAN KATEGORI
+  ========================= */
+
+  track.innerHTML =
+
+    categoryList
+      .map(
+        function(category) {
+
+          const total =
+            recapDataList.filter(
+              function(item) {
+
+                return (
+                  String(
+                    item.category || ""
+                  )
+                    .trim()
+                    .toLowerCase() ===
+                  category.name
+                    .toLowerCase()
+                );
+
+              }
+            ).length;
+
+
+          return `
+
+            <article
+              class="recap-category-card"
+              data-category="${category.name}"
+            >
+
+              <div
+                class="recap-category-icon"
+              >
+                ${category.icon}
+              </div>
+
+              <div
+                class="recap-category-name"
+              >
+                ${display(
+                  category.name
+                )}
+              </div>
+
+              <div
+                class="recap-category-count"
+              >
+                ${total} pesanan
+              </div>
+
+              <div
+                class="recap-category-arrow"
+              >
+                →
+              </div>
+
+            </article>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  /* =========================
+     KLIK KATEGORI
+  ========================= */
+
+  track
+    .querySelectorAll(
+      ".recap-category-card"
+    )
+    .forEach(
+      function(card) {
+
+        card.addEventListener(
+          "click",
+          function() {
+
+            const category =
+              this.dataset.category;
+
+
+            renderRecapBatches(
+              recapDataList,
+              category
+            );
+
+          }
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================
+   TAMPILKAN BATCH REKAP
+========================= */
+
+function renderRecapBatches(
+  data,
+  category
+) {
+
+  const track =
+    document.getElementById(
+      "recapCarouselTrack"
+    );
+
+
+  if (!track) {
+    return;
+  }
+
+
+  /* =========================
+     DATA SESUAI KATEGORI
+  ========================= */
+
+  const categoryData =
+    data.filter(
+      function(item) {
+
+        return (
+          item.category ===
+          category
+        );
+
+      }
+    );
+
+
+  if (!categoryData.length) {
+
+    track.innerHTML = `
+
+      <div class="empty">
+
+        Belum ada batch pada kategori ini.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  /* =========================
+     BATCH UNIK
+  ========================= */
+
+  const batches = [];
+
+
+  categoryData.forEach(
+    function(item) {
+
+      const batchCode =
+        String(
+          item.batch_code || ""
+        ).trim();
+
+
+      if (!batchCode) {
+        return;
+      }
+
+
+      const alreadyExists =
+        batches.some(
+          function(batch) {
+
+            return (
+              batch.batch_code ===
+              batchCode
+            );
+
+          }
+        );
+
+
+      if (!alreadyExists) {
+
+        batches.push({
+
+          batch_code:
+            batchCode,
+
+          item_name:
+            item.item_name ||
+            item.product_name ||
+            "-"
+
+        });
+
+      }
+
+    }
+  );
+
+
+  /* =========================
+     TAMPILKAN BATCH
+  ========================= */
+
+  track.innerHTML = `
+
+    <div class="recap-batch-header">
+
+      <button
+        type="button"
+        class="recap-back-category"
+        id="recapBackCategory"
+      >
+        ← Kembali ke Kategori
+      </button>
+
+      <div class="recap-current-category">
+        ${display(category)}
+      </div>
+
+    </div>
+
+    <div class="recap-batch-list">
+
+      ${batches
+        .map(
+          function(batch) {
+
+            return `
+
+              <article
+                class="recap-batch-card"
+                data-batch-code="${display(
+                  batch.batch_code
+                )}"
+              >
+
+                <div class="recap-batch-icon">
+                  📦
+                </div>
+
+                <div class="recap-batch-info">
+
+                  <div class="recap-batch-code">
+                    ${display(
+                      batch.batch_code
+                    )}
+                  </div>
+
+                  <div class="recap-batch-name">
+                    ${display(
+                      batch.item_name
+                    )}
+                  </div>
+
+                </div>
+
+                <div class="recap-batch-arrow">
+                  →
+                </div>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("")}
+
+    </div>
+
+  `;
+
+
+  /* =========================
+     KEMBALI KE KATEGORI
+  ========================= */
+
+  const backButton =
+    document.getElementById(
+      "recapBackCategory"
+    );
+
+
+  if (backButton) {
+
+    backButton.addEventListener(
+      "click",
+      function() {
+
+        renderRecapCategories(
+          data
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================
+     KLIK BATCH
+  ========================= */
+
+  track
+    .querySelectorAll(
+      ".recap-batch-card"
+    )
+    .forEach(
+      function(card) {
+
+        card.addEventListener(
+          "click",
+          function() {
+
+            const batchCode =
+              this.dataset.batchCode;
+
+
+            showRecapDetail(
+              batchCode
+            );
+
+          }
+        );
+
+      }
+    );
 
 }
     
