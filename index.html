@@ -1540,9 +1540,13 @@ function showRecapDetail(productCode) {
   if (!items.length) {
 
     detailContent.innerHTML = `
+
       <div class="empty">
+
         Data rekap tidak ditemukan.
+
       </div>
+
     `;
 
     return;
@@ -1584,7 +1588,7 @@ function showRecapDetail(productCode) {
 
 
   /* =========================
-     RESET SEARCH
+     RESET SEARCH CUSTOMER
   ========================= */
 
   if (searchInput) {
@@ -1595,13 +1599,108 @@ function showRecapDetail(productCode) {
 
 
   /* =========================
-     JANGAN TAMPILKAN
-     SEMUA CUSTOMER
+     DATA RINGKASAN BARANG
+  ========================= */
+
+  const tracking =
+    firstItem.item_status ||
+    "-";
+
+  const price =
+    Number(
+      firstItem.price || 0
+    );
+
+  const dp =
+    Number(
+      firstItem.dp || 0
+    );
+
+
+  /* =========================
+     TAMPILKAN RINGKASAN
   ========================= */
 
   detailContent.innerHTML = `
 
-    <div class="recap-search-empty">
+    <div class="recap-batch-summary">
+
+
+      <!-- TRACKING -->
+
+      <div class="recap-summary-card">
+
+        <div class="recap-summary-icon">
+          📦
+        </div>
+
+        <div class="recap-summary-text">
+
+          <div class="recap-summary-label">
+            Tracking
+          </div>
+
+          <div class="recap-summary-value">
+            ${getTrackingDisplay(tracking)}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- HARGA -->
+
+      <div class="recap-summary-card">
+
+        <div class="recap-summary-icon">
+          💰
+        </div>
+
+        <div class="recap-summary-text">
+
+          <div class="recap-summary-label">
+            Harga
+          </div>
+
+          <div class="recap-summary-value">
+            ${rupiah(price)}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- DP -->
+
+      <div class="recap-summary-card">
+
+        <div class="recap-summary-icon">
+          💳
+        </div>
+
+        <div class="recap-summary-text">
+
+          <div class="recap-summary-label">
+            DP
+          </div>
+
+          <div class="recap-summary-value">
+            ${rupiah(dp)}
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- PETUNJUK CUSTOMER -->
+
+    <div class="recap-customer-search-hint">
 
       <div class="recap-search-icon">
         🔎
@@ -1613,7 +1712,7 @@ function showRecapDetail(productCode) {
 
       <p>
         Ketik nama customer untuk
-        melihat detail pesanan.
+        melihat detail pesanannya.
       </p>
 
     </div>
