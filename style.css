@@ -1,5 +1,500 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');:root{--p:#e66f9f;--h:#d84e86;--u:#543663;--l:#f2e7f4;--line:#eadce8;--t:#4c4350}*{box-sizing:border-box}body{margin:0;font-family:Nunito,Arial;background:#fffafd;color:var(--t)}header{display:flex;align-items:center;padding:10px 7%;gap:25px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fffafddd;backdrop-filter:blur(8px);z-index:5}.brand{display:flex;align-items:center;gap:8px;color:var(--u);text-decoration:none}.brand img{width:52px;height:52px;object-fit:contain}.brand b{font-size:23px;display:block}.brand small{font-size:9px;letter-spacing:1px;display:block}nav{display:flex;gap:22px;margin-left:auto}nav a{text-decoration:none;color:var(--t);font-weight:800;font-size:13px}.cart{border:0;border-radius:12px;padding:11px;background:#fff;box-shadow:0 3px 15px #54233a12;font-weight:900;cursor:pointer}.hero{display:flex;justify-content:center;align-items:center;min-height:470px;padding:40px 10%;background:radial-gradient(circle at 68% 38%,#fbd5e5 0,transparent 27%),linear-gradient(135deg,#f9e8f0,#eee7f7)}.hero>div{max-width:560px}.hero img{width:min(400px,40vw);filter:drop-shadow(0 15px 15px #65354d20)}.eyebrow{font-size:11px;font-weight:900;letter-spacing:2px;color:var(--h);margin:0 0 6px}h1,h2{color:var(--u);margin:0}h1{font-size:58px;line-height:.98}h1 span{color:var(--p)}h2{font-size:29px}.pill{display:inline-block;background:var(--p);color:#fff;padding:9px 14px;border-radius:99px;font-weight:800}.btn{display:inline-block;border:0;border-radius:11px;padding:12px 17px;font-weight:900;text-decoration:none;cursor:pointer}.primary{background:linear-gradient(135deg,var(--u),var(--h));color:#fff}.secondary{background:#fff;color:var(--u);border:1px solid var(--line)}main{max-width:1250px;margin:auto;padding:45px 7%}section{margin-bottom:55px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:19px;padding:15px;box-shadow:0 8px 22px #633b5410}.thumb{height:155px;border-radius:14px;background:linear-gradient(135deg,#f8e4ee,#eee8f5);display:grid;place-items:center;font-size:58px}.badge{display:inline-block;margin-top:10px;background:#ffe7f0;color:#c34574;border-radius:8px;padding:5px 8px;font-size:9px;font-weight:900}.card h3{font-size:15px;color:var(--u);margin:8px 0}.card p{font-size:12px;margin:4px 0}.card .btn{width:100%;margin-top:10px}.track{display:flex;gap:8px;margin-top:15px}.track input,input,textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-family:inherit}.modal{display:none;position:fixed;inset:0;background:#321b3188;z-index:20;padding:20px;align-items:center;justify-content:center}.modal.show{display:flex}.box{background:#fff;border-radius:20px;padding:25px;width:min(620px,100%);max-height:90vh;overflow:auto;position:relative}.close{position:absolute;right:12px;top:10px;border:0;background:#f3e9f1;border-radius:50%;width:34px;height:34px;font-size:22px;cursor:pointer}.options{display:flex;gap:8px;flex-wrap:wrap}.option{border:1px solid var(--line);padding:8px 10px;border-radius:9px;background:#fff;cursor:pointer}.option.active{border-color:var(--h);background:#fff0f5;color:var(--h)}.qty{display:flex;gap:10px;align-items:center;margin:14px 0}.qty button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:7px}.form{display:grid;gap:10px}.form label{font-size:11px;font-weight:900;color:var(--u)}.pay{display:flex;gap:10px;flex-wrap:wrap}.pay label{padding:10px;background:#f9f2f7;border-radius:10px}.result{margin-top:15px;background:#eff9f2;border:1px solid #cde8d5;padding:15px;border-radius:12px;font-size:13px}.cartline{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}footer{display:flex;justify-content:space-between;align-items:center;padding:24px 7%;background:#f4e8f1;font-size:12px}@media(max-width:800px){nav{display:none}.hero{display:block;text-align:center}.hero img{width:250px}.grid{grid-template-columns:1fr}.track{display:block}.track button{margin-top:8px;width:100%}h1{font-size:42px}}
-.uploadbox{margin-top:15px;background:#fff;border:1px dashed #dcbcd0;padding:15px;border-radius:14px}.uploadbox h3{color:var(--u);margin:0}.uploadbox p{font-size:11px}.uploadbox input{margin:8px 0}.uploadbox .btn{width:100%}
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --p: #e66f9f;
+  --h: #d84e86;
+  --u: #543663;
+  --l: #f2e7f4;
+  --line: #eadce8;
+  --t: #4c4350;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Nunito, Arial;
+  background: #fffafd;
+  color: var(--t);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+  display: flex;
+  align-items: center;
+  padding: 10px 7%;
+  gap: 25px;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: #fffafddd;
+  backdrop-filter: blur(8px);
+  z-index: 5;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--u);
+  text-decoration: none;
+}
+
+.brand img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.brand b {
+  font-size: 23px;
+  display: block;
+}
+
+.brand small {
+  font-size: 9px;
+  letter-spacing: 1px;
+  display: block;
+}
+
+nav {
+  display: flex;
+  gap: 22px;
+  margin-left: auto;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--t);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.cart {
+  border: 0;
+  border-radius: 12px;
+  padding: 11px;
+  background: #fff;
+  box-shadow: 0 3px 15px #54233a12;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* =========================
+   DASHBOARD / HERO
+========================= */
+
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 330px;
+  padding: 30px 7%;
+  background:
+    radial-gradient(
+      circle at 68% 38%,
+      #fbd5e5 0,
+      transparent 27%
+    ),
+    linear-gradient(
+      135deg,
+      #f9e8f0,
+      #eee7f7
+    );
+}
+
+.hero > div {
+  max-width: 560px;
+}
+
+.hero img {
+  width: min(300px, 32vw);
+  filter: drop-shadow(
+    0 12px 12px #65354d20
+  );
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--h);
+  margin: 0 0 6px;
+}
+
+h1,
+h2 {
+  color: var(--u);
+  margin: 0;
+}
+
+h1 {
+  font-size: 44px;
+  line-height: 1.02;
+}
+
+h1 span {
+  color: var(--p);
+}
+
+h2 {
+  font-size: 29px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.pill {
+  display: inline-block;
+  background: var(--p);
+  color: #fff;
+  padding: 9px 14px;
+  border-radius: 99px;
+  font-weight: 800;
+}
+
+.btn {
+  display: inline-block;
+  border: 0;
+  border-radius: 11px;
+  padding: 12px 17px;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  background: linear-gradient(
+    135deg,
+    var(--u),
+    var(--h)
+  );
+  color: #fff;
+}
+
+.secondary {
+  background: #fff;
+  color: var(--u);
+  border: 1px solid var(--line);
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main {
+  max-width: 1250px;
+  margin: auto;
+  padding: 45px 7%;
+}
+
+section {
+  margin-bottom: 55px;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.card,
+.panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 19px;
+  padding: 15px;
+  box-shadow: 0 8px 22px #633b5410;
+}
+
+.thumb {
+  height: 155px;
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    #f8e4ee,
+    #eee8f5
+  );
+  display: grid;
+  place-items: center;
+  font-size: 58px;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 10px;
+  background: #ffe7f0;
+  color: #c34574;
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.card h3 {
+  font-size: 15px;
+  color: var(--u);
+  margin: 8px 0;
+}
+
+.card p {
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.card .btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* =========================
+   TRACKING
+========================= */
+
+.track {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.track input,
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-family: inherit;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #321b3188;
+  z-index: 20;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 25px;
+  width: min(620px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  border: 0;
+  background: #f3e9f1;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* =========================
+   OPTIONS
+========================= */
+
+.options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.option {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.option.active {
+  border-color: var(--h);
+  background: #fff0f5;
+  color: var(--h);
+}
+
+/* =========================
+   QUANTITY
+========================= */
+
+.qty {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 14px 0;
+}
+
+.qty button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 7px;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form {
+  display: grid;
+  gap: 10px;
+}
+
+.form label {
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--u);
+}
+
+.pay {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pay label {
+  padding: 10px;
+  background: #f9f2f7;
+  border-radius: 10px;
+}
+
+.result {
+  margin-top: 15px;
+  background: #eff9f2;
+  border: 1px solid #cde8d5;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+/* =========================
+   CART
+========================= */
+
+.cartline {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 7%;
+  background: #f4e8f1;
+  font-size: 12px;
+}
+
+/* =========================
+   RESPONSIVE TABLET
+========================= */
+
+@media (max-width: 800px) {
+
+  nav {
+    display: none;
+  }
+
+  .hero {
+    display: block;
+    text-align: center;
+  }
+
+  .hero img {
+    width: 250px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .track {
+    display: block;
+  }
+
+  .track button {
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 42px;
+  }
+}
+
+/* =========================
+   UPLOAD BOX
+========================= */
+
+.uploadbox {
+  margin-top: 15px;
+  background: #fff;
+  border: 1px dashed #dcbcd0;
+  padding: 15px;
+  border-radius: 14px;
+}
+
+.uploadbox h3 {
+  color: var(--u);
+  margin: 0;
+}
+
+.uploadbox p {
+  font-size: 11px;
+}
+
+.uploadbox input {
+  margin: 8px 0;
+}
+
+.uploadbox .btn {
+  width: 100%;
+}
+
+/* =========================
+   TABLE
+========================= */
+
 .table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -16,7 +511,7 @@
 #rekapTable td {
   padding: 14px 12px;
   text-align: left;
-  border-bottom: 1px solid rgba(0,0,0,.08);
+  border-bottom: 1px solid rgba(0, 0, 0, .08);
 }
 
 #rekapTable th {
@@ -37,7 +532,7 @@
 }
 
 /* =========================
-   PO CUSTOMER - MOBILE
+   PO CUSTOMER
 ========================= */
 
 .po-carousel {
@@ -59,7 +554,6 @@
   display: none;
 }
 
-
 .po-mini-card {
   flex: 0 0 170px;
   scroll-snap-align: start;
@@ -68,7 +562,7 @@
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease;
 }
 
@@ -76,14 +570,12 @@
   transform: scale(0.97);
 }
 
-
 .po-mini-image {
   width: 100%;
   height: 170px;
   object-fit: cover;
   display: block;
 }
-
 
 .po-mini-placeholder {
   width: 100%;
@@ -96,18 +588,15 @@
   color: #777;
 }
 
-
 .po-mini-content {
   padding: 11px;
 }
-
 
 .po-mini-content h3 {
   margin: 0 0 7px;
   font-size: 14px;
   line-height: 1.35;
 }
-
 
 .po-mini-status {
   display: inline-block;
@@ -118,14 +607,12 @@
   color: #555;
 }
 
-
 .po-carousel-hint {
   text-align: center;
   font-size: 11px;
   color: #888;
   margin-top: 2px;
 }
-
 
 /* =========================
    DETAIL PO
@@ -135,14 +622,12 @@
   margin-top: 22px;
 }
 
-
 .po-detail-card {
   background: #fff;
   border-radius: 18px;
   border: 1px solid #eee;
   overflow: hidden;
 }
-
 
 .po-back-button {
   margin: 14px;
@@ -153,7 +638,6 @@
   font-size: 13px;
   cursor: pointer;
 }
-
 
 .po-detail-image {
   display: block;
@@ -170,20 +654,17 @@
   padding: 18px;
 }
 
-
 .po-detail-status {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
-
 .po-detail-content h2 {
   margin: 7px 0 18px;
   font-size: 22px;
   line-height: 1.3;
 }
-
 
 .po-info-row {
   display: flex;
@@ -194,16 +675,13 @@
   font-size: 13px;
 }
 
-
 .po-info-row span {
   color: #777;
 }
 
-
 .po-info-row strong {
   text-align: right;
 }
-
 
 .po-detail-description {
   margin-top: 18px;
@@ -215,24 +693,20 @@
   white-space: pre-line;
 }
 
-
 .po-members {
   margin-top: 22px;
 }
-
 
 .po-members h3 {
   margin: 0 0 12px;
   font-size: 16px;
 }
 
-
 .po-detail-list {
   display: flex;
   flex-direction: column;
   gap: 9px;
 }
-
 
 .po-item-card {
   display: flex;
@@ -243,7 +717,6 @@
   border-radius: 12px;
 }
 
-
 .po-item-main {
   min-width: 0;
   display: flex;
@@ -251,17 +724,14 @@
   gap: 4px;
 }
 
-
 .po-item-main strong {
   font-size: 14px;
 }
-
 
 .po-item-main span {
   font-size: 11px;
   color: #777;
 }
-
 
 .po-item-info {
   flex-shrink: 0;
@@ -272,11 +742,9 @@
   font-size: 11px;
 }
 
-
 .po-available {
   font-weight: 600;
 }
-
 
 .po-order-info {
   margin-top: 20px;
@@ -287,9 +755,8 @@
   line-height: 1.5;
 }
 
-
 /* =========================
-   MOBILE
+   MOBILE PO
 ========================= */
 
 @media (max-width: 600px) {
@@ -365,7 +832,6 @@
   line-height: 1.3;
 }
 
-
 /* =========================
    INFORMASI PO
 ========================= */
@@ -390,9 +856,8 @@
   max-width: 65%;
 }
 
-
 /* =========================
-   DESKRIPSI
+   DESKRIPSI PO
 ========================= */
 
 .po-detail-description {
@@ -404,7 +869,6 @@
   line-height: 1.65;
   white-space: pre-line;
 }
-
 
 /* =========================
    MEMBER / BARANG
@@ -425,8 +889,9 @@
   gap: 8px;
 }
 
-
-/* CARD MEMBER */
+/* =========================
+   CARD MEMBER
+========================= */
 
 .po-item-card {
   display: flex;
@@ -439,8 +904,9 @@
   border-radius: 13px;
 }
 
-
-/* NAMA MEMBER / BARANG */
+/* =========================
+   NAMA MEMBER / BARANG
+========================= */
 
 .po-item-main {
   min-width: 0;
@@ -462,8 +928,9 @@
   color: #888;
 }
 
-
-/* CUSTOMER + QTY */
+/* =========================
+   CUSTOMER + QTY
+========================= */
 
 .po-item-info {
   flex-shrink: 0;
@@ -485,7 +952,6 @@
   color: #888;
 }
 
-
 /* =========================
    STATUS TERSEDIA
 ========================= */
@@ -499,7 +965,6 @@
   background: #f0f0f0;
   color: #555 !important;
 }
-
 
 /* =========================
    INFO PEMESANAN
@@ -515,9 +980,8 @@
   text-align: center;
 }
 
-
 /* =========================
-   MOBILE
+   MOBILE DETAIL PO
 ========================= */
 
 @media (max-width: 600px) {
@@ -559,7 +1023,7 @@
     max-width: 110px;
   }
 
-    .po-detail-image {
+  .po-detail-image {
     max-width: 150px;
     max-height: 190px;
     margin-left: 0;
@@ -598,7 +1062,6 @@
   overflow: hidden;
 }
 
-
 .recap-carousel-track {
   display: flex;
   gap: 14px;
@@ -609,11 +1072,9 @@
   -webkit-overflow-scrolling: touch;
 }
 
-
 .recap-carousel-track::-webkit-scrollbar {
   display: none;
 }
-
 
 /* =========================
    REKAP MINI CARD
@@ -624,78 +1085,51 @@
   min-height: 125px;
   padding: 14px;
   box-sizing: border-box;
-
   background: #fff;
-
   border: 1px solid #eee;
   border-radius: 16px;
-
   scroll-snap-align: start;
-
   cursor: pointer;
-
-  box-shadow:
-    0 4px 14px
-    rgba(0,0,0,.05);
-
-  transition:
-    transform .2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .05);
+  transition: transform .2s ease;
 }
-
 
 .recap-mini-card:active {
   transform: scale(.97);
 }
 
-
 .recap-mini-code {
   font-size: 11px;
   font-weight: 700;
-
   opacity: .6;
-
   margin-bottom: 7px;
 }
 
-
 .recap-mini-card h3 {
   margin: 0 0 12px;
-
   font-size: 14px;
   line-height: 1.35;
-
   word-break: break-word;
 }
 
-
 .recap-mini-status {
   display: inline-block;
-
   padding: 5px 8px;
-
   border-radius: 20px;
-
   background: #f5f5f5;
-
   font-size: 10px;
-
   line-height: 1.3;
 }
 
-
 .recap-carousel-hint {
   text-align: center;
-
   margin-top: 2px;
-
   font-size: 11px;
-
   opacity: .6;
 }
 
-
 /* =========================
-   MOBILE
+   MOBILE REKAP
 ========================= */
 
 @media (max-width: 600px) {
@@ -745,7 +1179,6 @@
   margin: 0;
 }
 
-
 /* =========================
    SEARCH CUSTOMER
 ========================= */
@@ -769,7 +1202,6 @@
   border-color: #bbb;
   box-shadow: 0 0 0 3px rgba(0, 0, 0, .04);
 }
-
 
 /* =========================
    SEARCH EMPTY STATE
@@ -801,7 +1233,6 @@
   opacity: .65;
 }
 
-
 /* =========================
    CUSTOMER DETAIL CARD
 ========================= */
@@ -815,8 +1246,9 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, .05);
 }
 
-
-/* CUSTOMER */
+/* =========================
+   CUSTOMER
+========================= */
 
 .recap-detail-customer {
   padding-bottom: 12px;
@@ -827,7 +1259,6 @@
 .recap-detail-customer strong {
   font-size: 16px;
 }
-
 
 /* =========================
    DETAIL INFORMATION
@@ -858,7 +1289,6 @@
   word-break: break-word;
 }
 
-
 /* =========================
    STATUS
 ========================= */
@@ -881,9 +1311,8 @@
   font-weight: 600;
 }
 
-
 /* =========================
-   MOBILE
+   MOBILE DETAIL REKAP
 ========================= */
 
 @media (max-width: 600px) {
@@ -1071,7 +1500,6 @@
   color: #4b315f;
 }
 
-
 /* =========================
    LIST BATCH
 ========================= */
@@ -1084,34 +1512,24 @@
   scroll-behavior: smooth;
 }
 
-
 /* =========================
    BATCH CARD
 ========================= */
 
 .recap-batch-card {
   position: relative;
-
   flex: 0 0 220px;
-
   min-height: 110px;
-
   padding: 18px;
-
   border: 1px solid #eee;
   border-radius: 14px;
-
   background: #fff;
-
   box-sizing: border-box;
-
   cursor: pointer;
-
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
     border-color 0.2s ease;
-
   display: flex;
   align-items: center;
   gap: 14px;
@@ -1123,31 +1541,24 @@
   border-color: #e7dce9;
 }
 
-
 /* =========================
-   ICON
+   ICON BATCH
 ========================= */
 
 .recap-batch-icon {
   width: 42px;
   height: 42px;
-
   flex: 0 0 42px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 12px;
-
   background: #faf4f8;
-
   font-size: 20px;
 }
 
-
 /* =========================
-   INFO
+   INFO BATCH
 ========================= */
 
 .recap-batch-info {
@@ -1159,9 +1570,7 @@
   font-size: 14px;
   font-weight: 700;
   color: #4b315f;
-
   margin-bottom: 5px;
-
   word-break: break-word;
 }
 
@@ -1169,25 +1578,21 @@
   font-size: 12px;
   line-height: 1.4;
   color: #777;
-
   word-break: break-word;
 }
 
-
 /* =========================
-   ARROW
+   ARROW BATCH
 ========================= */
 
 .recap-batch-arrow {
   flex: 0 0 auto;
-
   font-size: 18px;
   color: #777;
 }
 
-
 /* =========================
-   MOBILE
+   MOBILE BATCH
 ========================= */
 
 @media (max-width: 600px) {
@@ -1220,17 +1625,12 @@
 #recapBatchSearch {
   width: 100%;
   box-sizing: border-box;
-
   padding: 11px 14px;
-
   border: 1px solid #ddd;
   border-radius: 10px;
-
   background: #fff;
-
   font-size: 13px;
   color: #333;
-
   outline: none;
 }
 
@@ -1246,13 +1646,11 @@
    REKAP BATCH - LAYOUT BARU
 ========================================= */
 
-/* Ubah halaman batch dari carousel menjadi layout normal */
 #recapCarouselTrack:has(.recap-batch-header) {
   display: block;
   width: 100%;
   overflow: visible;
 }
-
 
 /* =========================================
    HEADER BATCH
@@ -1266,8 +1664,9 @@
   flex-wrap: wrap;
 }
 
-
-/* Tombol kembali */
+/* =========================================
+   TOMBOL KEMBALI
+========================================= */
 
 .recap-back-category {
   border: 1px solid #e4dfe5;
@@ -1287,8 +1686,9 @@
   transform: translateY(-1px);
 }
 
-
-/* Nama kategori */
+/* =========================================
+   NAMA KATEGORI
+========================================= */
 
 .recap-current-category {
   font-size: 19px;
@@ -1296,7 +1696,6 @@
   color: #4b315f;
   letter-spacing: 0.1px;
 }
-
 
 /* =========================================
    SEARCH BATCH
@@ -1311,19 +1710,13 @@
   width: 100%;
   height: 44px;
   box-sizing: border-box;
-
   padding: 0 15px;
-
   border: 1px solid #e3dfe4;
   border-radius: 11px;
-
   background: #fff;
-
   font-size: 13px;
   color: #333;
-
   outline: none;
-
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -1338,26 +1731,19 @@
   box-shadow: 0 0 0 3px rgba(203, 185, 208, 0.12);
 }
 
-
 /* =========================================
    GRID BATCH
 ========================================= */
 
 .recap-batch-list {
   display: grid;
-
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
-
   gap: 14px;
-
   width: 100%;
-
   padding: 2px 0 8px;
-
   overflow: visible;
 }
-
 
 /* =========================================
    CARD BATCH
@@ -1365,26 +1751,18 @@
 
 .recap-batch-card {
   position: relative;
-
   width: 100%;
   min-width: 0;
   min-height: 100px;
-
   padding: 16px;
-
   box-sizing: border-box;
-
   border: 1px solid #eee8f0;
   border-radius: 14px;
-
   background: #fff;
-
   cursor: pointer;
-
   display: flex;
   align-items: center;
   gap: 13px;
-
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -1393,76 +1771,58 @@
 
 .recap-batch-card:hover {
   transform: translateY(-2px);
-
   box-shadow:
-    0 8px 22px rgba(75, 49, 95, 0.08);
-
+    0 8px 22px
+    rgba(75, 49, 95, 0.08);
   border-color: #dccfe0;
 }
 
-
-/* Icon */
+/* ICON */
 
 .recap-batch-icon {
   width: 42px;
   height: 42px;
-
   flex: 0 0 42px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 12px;
-
   background: #faf5fa;
-
   font-size: 19px;
 }
 
-
-/* Isi card */
+/* ISI CARD */
 
 .recap-batch-info {
   min-width: 0;
   flex: 1;
 }
 
-
-/* Kode batch */
+/* KODE BATCH */
 
 .recap-batch-code {
   font-size: 14px;
   font-weight: 700;
-
   color: #4b315f;
-
   margin-bottom: 5px;
-
   word-break: break-word;
 }
 
-
-/* Nama barang */
+/* NAMA BARANG */
 
 .recap-batch-name {
   font-size: 12px;
   line-height: 1.4;
-
   color: #777;
-
   word-break: break-word;
 }
 
-
-/* Panah */
+/* PANAH */
 
 .recap-batch-arrow {
   flex: 0 0 auto;
-
   font-size: 17px;
   color: #999;
-
   transition:
     transform 0.2s ease,
     color 0.2s ease;
@@ -1473,27 +1833,20 @@
   color: #4b315f;
 }
 
-
 /* =========================================
    BATCH TIDAK DITEMUKAN
 ========================================= */
 
 .recap-batch-list .empty {
   grid-column: 1 / -1;
-
   padding: 30px 20px;
-
   text-align: center;
-
   border: 1px dashed #ddd3df;
   border-radius: 12px;
-
   color: #888;
   font-size: 13px;
-
   background: #fff;
 }
-
 
 /* =========================================
    TABLET
@@ -1507,7 +1860,6 @@
   }
 
 }
-
 
 /* =========================================
    HP
@@ -1566,23 +1918,16 @@
 .recap-batch-summary {
   width: 100%;
   margin-bottom: 16px;
-
   padding: 13px 16px;
-
   box-sizing: border-box;
-
   display: flex;
   align-items: center;
   gap: 16px;
-
   border: 1px solid #eee8f0;
   border-radius: 14px;
-
   background: #fff;
-
   overflow: hidden;
 }
-
 
 /* =========================================
    SETIAP DATA
@@ -1591,21 +1936,15 @@
 .recap-summary-card {
   flex: 1 1 0;
   min-width: 0;
-
   padding: 0;
-
   border: none;
   border-radius: 0;
-
   background: transparent;
-
   display: flex;
   align-items: center;
   gap: 8px;
-
   text-align: left;
 }
-
 
 /* =========================================
    ICON
@@ -1614,20 +1953,14 @@
 .recap-summary-icon {
   width: 30px;
   height: 30px;
-
   flex: 0 0 30px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 9px;
-
   background: #faf5fa;
-
   font-size: 14px;
 }
-
 
 /* =========================================
    LABEL + VALUE
@@ -1635,33 +1968,21 @@
 
 .recap-summary-label {
   margin: 0 0 2px;
-
   font-size: 9px;
-
   line-height: 1.2;
-
   color: #999;
-
   font-weight: 500;
 }
 
-
 .recap-summary-value {
   font-size: 11px;
-
   line-height: 1.3;
-
   font-weight: 600;
-
   color: #4b315f;
-
   white-space: nowrap;
-
   overflow: hidden;
-
   text-overflow: ellipsis;
 }
-
 
 /* =========================================
    PEMBATAS ANTAR DATA
@@ -1669,15 +1990,11 @@
 
 .recap-summary-card:not(:last-child)::after {
   content: "";
-
   width: 1px;
   height: 28px;
-
   background: #eee8f0;
-
   margin-left: auto;
 }
-
 
 /* =========================================
    HILANGKAN PANAH BESAR
@@ -1687,63 +2004,45 @@
   font-size: inherit;
 }
 
-
 /* =========================================
    PETUNJUK SEARCH CUSTOMER
 ========================================= */
 
 .recap-customer-search-hint {
   width: 100%;
-
   box-sizing: border-box;
-
   padding: 14px 18px;
-
   margin-top: 4px;
-
   border: 1px dashed #ddd3df;
-
   border-radius: 12px;
-
   background: #fdfbfd;
-
   text-align: center;
-
   color: #999;
-
   font-size: 11px;
 }
 
 .recap-customer-search-hint strong {
   display: block;
-
   margin-top: 4px;
-
   color: #4b315f;
-
   font-size: 12px;
 }
 
 .recap-customer-search-hint p {
   margin: 4px 0 0;
-
   color: #aaa;
-
   font-size: 10px;
-
   line-height: 1.4;
 }
 
-
 /* =========================================
-   MOBILE
+   MOBILE RINGKASAN BARANG
 ========================================= */
 
 @media (max-width: 600px) {
 
   .recap-batch-summary {
     padding: 11px 12px;
-
     gap: 8px;
   }
 
@@ -1754,11 +2053,8 @@
   .recap-summary-icon {
     width: 26px;
     height: 26px;
-
     flex-basis: 26px;
-
     border-radius: 8px;
-
     font-size: 12px;
   }
 
