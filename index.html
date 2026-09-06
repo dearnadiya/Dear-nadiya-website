@@ -1680,41 +1680,8 @@ function showRecapDetail(productCode) {
 
 
     </div>
-
-
-    /* =========================
-   SEARCH CUSTOMER
-========================= */
-
-<div class="recap-customer-search-area">
-
-  <div class="recap-customer-search-title">
-    🔎 Cari Customer
-  </div>
-
-  <input
-    type="text"
-    id="recapCustomerSearchInput"
-    class="recap-customer-search-input"
-    placeholder="Cari nama atau 4 digit WhatsApp..."
-    autocomplete="off"
-  >
-
-</div>
-
-
-/* =========================
-   DAFTAR CUSTOMER
-========================= */
-
-<div
-  id="recapCustomerList"
-  class="recap-customer-list"
->
-</div>
-
+    
   `;
-
 
   /* =========================
      PINDAH KE DETAIL
@@ -1726,7 +1693,6 @@ function showRecapDetail(productCode) {
       "none";
 
   }
-
 
   detailSection.style.display =
     "block";
@@ -1963,17 +1929,24 @@ if (recapCustomerSearch) {
           item => {
 
             const customer =
-              String(
-                item.customer_name ||
-                ""
-              )
-                .toLowerCase();
+  String(
+    item.customer_name ||
+    ""
+  )
+    .toLowerCase();
 
+const whatsappLast4 =
+  String(
+    item.whatsapp_last4 ||
+    ""
+  )
+    .toLowerCase();
 
-            return customer.includes(
-              keyword
-            );
-
+return (
+  customer.includes(keyword) ||
+  whatsappLast4.includes(keyword)
+);
+            
           }
         );
 
