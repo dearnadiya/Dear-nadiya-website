@@ -2635,3 +2635,34 @@ footer {
   }
 
 }
+/* =========================
+   FIX RINGKASAN BATCH MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .recap-batch-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .recap-summary-card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .recap-summary-text {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .recap-summary-value {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.4;
+  }
+
+}
