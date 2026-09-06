@@ -1154,3 +1154,37 @@
   }
 
 }
+
+/* =========================
+   SEARCH BATCH REKAP
+========================= */
+
+.recap-batch-search {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+#recapBatchSearch {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 11px 14px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: #fff;
+
+  font-size: 13px;
+  color: #333;
+
+  outline: none;
+}
+
+#recapBatchSearch:focus {
+  border-color: #bbb;
+}
+
+#recapBatchSearch::placeholder {
+  color: #999;
+}
