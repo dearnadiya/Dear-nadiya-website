@@ -2936,79 +2936,255 @@ function setupRecapGlobalSearch() {
          CARI CUSTOMER
       ========================= */
 
-      const matched =
-        customerItems.filter(
-          function(item) {
+      /* =========================
+   CARI CUSTOMER
+========================= */
 
-            const customerName =
-              normalize(
-                item.customer_name
-              );
+const matched =
+  customerItems.filter(
+    function(item) {
 
-
-            const whatsappLast4 =
-              normalize(
-                item.whatsapp_last4
-              );
-
-
-            return (
-              customerName.includes(
-                keyword
-              ) ||
-              whatsappLast4.includes(
-                keyword
-              )
-            );
-
-          }
+      const customerName =
+        normalize(
+          item.customer_name
         );
 
+      const whatsappLast4 =
+        normalize(
+          item.whatsapp_last4
+        );
 
-      /* =========================
-         TIDAK DITEMUKAN
-      ========================= */
-
-      if (!matched.length) {
-
-        results.innerHTML = `
-          <div class="recap-search-empty">
-
-            <div class="recap-search-icon">
-              🔎
-            </div>
-
-            <strong>
-              Customer tidak ditemukan
-            </strong>
-
-            <p>
-              Periksa kembali nama customer
-              atau 4 digit WhatsApp.
-            </p>
-
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      /* =========================
-         TAMPILKAN SEMUA
-      ========================= */
-
-      renderGlobalResults(
-        matched,
-        "semua"
+      return (
+        customerName.includes(
+          keyword
+        ) ||
+        whatsappLast4.includes(
+          keyword
+        )
       );
 
     }
   );
 
+
+/* =========================
+   TIDAK DITEMUKAN
+========================= */
+
+if (!matched.length) {
+
+  results.innerHTML = `
+    <div class="recap-search-empty">
+
+      <div class="recap-search-icon">
+        🔎
+      </div>
+
+      <strong>
+        Customer tidak ditemukan
+      </strong>
+
+      <p>
+        Periksa kembali nama customer
+        atau 4 digit WhatsApp.
+      </p>
+
+    </div>
+  `;
+
+  return;
+
 }
-  
+
+
+/* =========================
+   BUAT DAFTAR CUSTOMER UNIK
+========================= */
+
+const customerMap =
+  new Map();
+
+
+matched.forEach(
+  function(item) {
+
+    const name =
+      String(
+        item.customer_name ||
+        "Customer"
+      ).trim();
+
+    const last4 =
+      String(
+        item.whatsapp_last4 ||
+        ""
+      ).trim();
+
+    const key =
+      (
+        name.toLowerCase() +
+        "|" +
+        last4
+      );
+
+
+    if (
+      !customerMap.has(key)
+    ) {
+
+      customerMap.set(
+        key,
+        {
+          name:
+            name,
+
+          last4:
+            last4,
+
+          items:
+            []
+        }
+      );
+
+    }
+
+
+    customerMap
+      .get(key)
+      .items
+      .push(item);
+
+  }
+);
+
+
+const customers =
+  Array.from(
+    customerMap.values()
+  );
+
+
+/* =========================
+   JIKA HANYA 1 CUSTOMER
+   LANGSUNG TAMPILKAN DATA
+========================= */
+
+if (
+  customers.length === 1
+) {
+
+  renderGlobalResults(
+    customers[0].items,
+    "semua"
+  );
+
+  return;
+
+}
+
+
+/* =========================
+   TAMPILKAN PILIHAN CUSTOMER
+========================= */
+
+results.innerHTML = `
+
+  <div
+    class="recap-customer-choice"
+  >
+
+    <div
+      class="recap-customer-choice-title"
+    >
+      Customer ditemukan
+    </div>
+
+    <p
+      class="recap-customer-choice-desc"
+    >
+      Pilih nama customer untuk
+      melihat pesanan Anda.
+    </p>
+
+
+    <div
+      class="recap-customer-choice-list"
+    >
+
+      ${customers.map(
+        function(customer) {
+
+          return `
+
+            <button
+              type="button"
+              class="recap-customer-choice-item"
+            >
+
+              <span
+                class="recap-customer-choice-name"
+              >
+                ${display(
+                  customer.name
+                )}
+              </span>
+
+              ${
+                customer.last4
+                  ? `
+                    <span
+                      class="recap-customer-choice-wa"
+                    >
+                      • ${display(
+                        customer.last4
+                      )}
+                    </span>
+                  `
+                  : ""
+              }
+
+            </button>
+
+          `;
+
+        }
+      ).join("")}
+
+    </div>
+
+  </div>
+
+`;
+
+
+/* =========================
+   EVENT PILIH CUSTOMER
+========================= */
+
+const customerButtons =
+  results.querySelectorAll(
+    ".recap-customer-choice-item"
+  );
+
+
+customerButtons.forEach(
+  function(button, index) {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        renderGlobalResults(
+          customers[index].items,
+          "semua"
+        );
+
+      }
+    );
+
+  }
+);
+    
 /* =========================
    TAMPILKAN KATEGORI REKAP
 ========================= */
