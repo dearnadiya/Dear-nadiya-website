@@ -2435,20 +2435,52 @@ function renderRecapBatches(
 
   if (!categoryData.length) {
 
-    track.innerHTML = `
+  track.innerHTML = `
 
-      <div class="empty">
+    <div class="recap-batch-header">
 
-        Belum ada batch pada kategori ini.
+      <button
+        type="button"
+        class="recap-back-category"
+        id="recapBackCategory"
+      >
+        ← Kembali ke Kategori
+      </button>
 
+      <div class="recap-current-category">
+        ${display(category)}
       </div>
 
-    `;
+    </div>
 
-    return;
+    <div class="empty">
+      Belum ada batch pada kategori ini.
+    </div>
+
+  `;
+
+  const backButton =
+    document.getElementById(
+      "recapBackCategory"
+    );
+
+  if (backButton) {
+
+    backButton.addEventListener(
+      "click",
+      function() {
+
+        renderRecapCategories(
+          data
+        );
+
+      }
+    );
 
   }
 
+  return;
+}
 
   /* =========================
      BATCH UNIK
