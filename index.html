@@ -1762,7 +1762,7 @@ function closeRecapDetail() {
 }
 
   /* =========================
-   STATUS DISPLAY
+   STATUS DISPLAY CUSTOMER
 ========================= */
 
 function getCustomerStatusDisplay(status) {
@@ -1829,6 +1829,53 @@ function getTrackingDisplay(status) {
 
   }
 
+}
+
+   /* =========================
+   STATUS DISPLAY PAYMENT
+========================= */
+
+  function getPaymentStatusDisplay(item) {
+  const dp = Number(item.dp || 0);
+  const pelunasan = Number(item.pelunasan || 0);
+
+  if (dp <= 0 && pelunasan <= 0) {
+    return `
+      <span class="payment-status payment-status-none">
+        ⚪ Belum Ada Pembayaran
+      </span>
+    `;
+  }
+
+  if (dp > 0 && pelunasan <= 0) {
+    return `
+      <span class="payment-status payment-status-dp">
+        🟠 DP Lunas • Pelunasan Belum
+      </span>
+    `;
+  }
+
+  if (dp <= 0 && pelunasan > 0) {
+    return `
+      <span class="payment-status payment-status-full">
+        🔵 Pelunasan Lunas
+      </span>
+    `;
+  }
+
+  if (dp > 0 && pelunasan > 0) {
+    return `
+      <span class="payment-status payment-status-both">
+        🟣 DP & Pelunasan
+      </span>
+    `;
+  }
+
+  return `
+    <span class="payment-status payment-status-none">
+      ⚪ Belum Ada Pembayaran
+    </span>
+  `;
 }
 
   /* =========================
