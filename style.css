@@ -1188,3 +1188,320 @@
 #recapBatchSearch::placeholder {
   color: #999;
 }
+
+/* =========================================
+   REKAP BATCH - LAYOUT BARU
+========================================= */
+
+/* Ubah halaman batch dari carousel menjadi layout normal */
+#recapCarouselTrack:has(.recap-batch-header) {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+
+/* =========================================
+   HEADER BATCH
+========================================= */
+
+.recap-batch-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+
+/* Tombol kembali */
+
+.recap-back-category {
+  border: 1px solid #e4dfe5;
+  background: #fff;
+  color: #4b315f;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recap-back-category:hover {
+  background: #faf6fb;
+  border-color: #d9c9dc;
+  transform: translateY(-1px);
+}
+
+
+/* Nama kategori */
+
+.recap-current-category {
+  font-size: 19px;
+  font-weight: 700;
+  color: #4b315f;
+  letter-spacing: 0.1px;
+}
+
+
+/* =========================================
+   SEARCH BATCH
+========================================= */
+
+.recap-batch-search {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#recapBatchSearch {
+  width: 100%;
+  height: 44px;
+  box-sizing: border-box;
+
+  padding: 0 15px;
+
+  border: 1px solid #e3dfe4;
+  border-radius: 11px;
+
+  background: #fff;
+
+  font-size: 13px;
+  color: #333;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+#recapBatchSearch::placeholder {
+  color: #aaa;
+}
+
+#recapBatchSearch:focus {
+  border-color: #cbb9d0;
+  box-shadow: 0 0 0 3px rgba(203, 185, 208, 0.12);
+}
+
+
+/* =========================================
+   GRID BATCH
+========================================= */
+
+.recap-batch-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 14px;
+
+  width: 100%;
+
+  padding: 2px 0 8px;
+
+  overflow: visible;
+}
+
+
+/* =========================================
+   CARD BATCH
+========================================= */
+
+.recap-batch-card {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 100px;
+
+  padding: 16px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #eee8f0;
+  border-radius: 14px;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.recap-batch-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 22px rgba(75, 49, 95, 0.08);
+
+  border-color: #dccfe0;
+}
+
+
+/* Icon */
+
+.recap-batch-icon {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: #faf5fa;
+
+  font-size: 19px;
+}
+
+
+/* Isi card */
+
+.recap-batch-info {
+  min-width: 0;
+  flex: 1;
+}
+
+
+/* Kode batch */
+
+.recap-batch-code {
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #4b315f;
+
+  margin-bottom: 5px;
+
+  word-break: break-word;
+}
+
+
+/* Nama barang */
+
+.recap-batch-name {
+  font-size: 12px;
+  line-height: 1.4;
+
+  color: #777;
+
+  word-break: break-word;
+}
+
+
+/* Panah */
+
+.recap-batch-arrow {
+  flex: 0 0 auto;
+
+  font-size: 17px;
+  color: #999;
+
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.recap-batch-card:hover .recap-batch-arrow {
+  transform: translateX(3px);
+  color: #4b315f;
+}
+
+
+/* =========================================
+   BATCH TIDAK DITEMUKAN
+========================================= */
+
+.recap-batch-list .empty {
+  grid-column: 1 / -1;
+
+  padding: 30px 20px;
+
+  text-align: center;
+
+  border: 1px dashed #ddd3df;
+  border-radius: 12px;
+
+  color: #888;
+  font-size: 13px;
+
+  background: #fff;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+
+  .recap-batch-list {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* =========================================
+   HP
+========================================= */
+
+@media (max-width: 600px) {
+
+  .recap-batch-header {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .recap-current-category {
+    font-size: 17px;
+  }
+
+  .recap-batch-search {
+    margin-bottom: 14px;
+  }
+
+  #recapBatchSearch {
+    height: 42px;
+    font-size: 12px;
+  }
+
+  .recap-batch-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .recap-batch-card {
+    min-height: 88px;
+    padding: 14px;
+  }
+
+  .recap-batch-icon {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .recap-batch-code {
+    font-size: 13px;
+  }
+
+  .recap-batch-name {
+    font-size: 11px;
+  }
+
+}
