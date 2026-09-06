@@ -2302,7 +2302,7 @@ async function loadRecap() {
 
 function setupRecapGlobalSearch() {
 
-  const input =
+  const searchInput =
     document.getElementById(
       "recapGlobalSearch"
     );
@@ -2312,8 +2312,17 @@ function setupRecapGlobalSearch() {
       "recapGlobalResults"
     );
 
-  if (!input || !results) return;
+  if (
+    !searchInput ||
+    !results
+  ) {
+    return;
+  }
 
+
+  /* =========================
+     NORMALIZE
+  ========================= */
 
   function normalize(value) {
 
@@ -2326,20 +2335,22 @@ function setupRecapGlobalSearch() {
   }
 
 
-  function getCOStatus(item) {
+  /* =========================
+     STATUS CO BARANG
+  ========================= */
 
-    const tracking =
-      normalize(
-        item.item_status
-      );
+  function getCOFilterStatus(item) {
 
     const customerStatus =
       normalize(
         item.customer_status
       );
 
+    const tracking =
+      normalize(
+        item.item_status
+      );
 
-    /* SUDAH DI CO */
 
     if (
       customerStatus ===
@@ -2350,8 +2361,6 @@ function setupRecapGlobalSearch() {
 
     }
 
-
-    /* SUDAH BISA CO */
 
     if (
       customerStatus ===
@@ -2365,46 +2374,31 @@ function setupRecapGlobalSearch() {
     }
 
 
-    /* BELUM BISA CO */
-
     return "belum-bisa-co";
 
   }
 
 
-  function renderResults(
-    customerItems,
-    keyword,
-    coFilter
+  /* =========================
+     TAMPILKAN HASIL
+  ========================= */
+
+  function renderGlobalResults(
+    items,
+    selectedFilter
   ) {
 
     let filtered =
-      customerItems.filter(
-        function(item) {
-
-          const name =
-            normalize(
-              item.customer_name
-            );
-
-          const last4 =
-            normalize(
-              item.whatsapp_last4
-            );
-
-          return (
-            name.includes(keyword) ||
-            last4.includes(keyword)
-          );
-
-        }
-      );
+      items.slice();
 
 
-    /* FILTER STATUS CO BARANG */
+    /* =========================
+       FILTER STATUS CO
+    ========================= */
 
     if (
-      coFilter !== "semua"
+      selectedFilter !==
+      "semua"
     ) {
 
       filtered =
@@ -2412,8 +2406,10 @@ function setupRecapGlobalSearch() {
           function(item) {
 
             return (
-              getCOStatus(item) ===
-              coFilter
+              getCOFilterStatus(
+                item
+              ) ===
+              selectedFilter
             );
 
           }
@@ -2422,22 +2418,29 @@ function setupRecapGlobalSearch() {
     }
 
 
+    /* =========================
+       JIKA TIDAK ADA DATA
+    ========================= */
+
     if (!filtered.length) {
 
       results.innerHTML = `
         <div class="recap-search-empty">
+
           <div class="recap-search-icon">
             🔎
           </div>
 
           <strong>
-            Pesanan tidak ditemukan
+            Tidak ada pesanan
           </strong>
 
           <p>
-            Tidak ada pesanan yang sesuai
-            dengan pencarian atau filter.
+            Tidak ada pesanan yang
+            sesuai dengan status CO
+            yang dipilih.
           </p>
+
         </div>
       `;
 
@@ -2446,25 +2449,16 @@ function setupRecapGlobalSearch() {
     }
 
 
-    /*
-      CUSTOMER YANG DITAMPILKAN
-      DIAMBIL DARI HASIL PENCARIAN
-    */
+    /* =========================
+       RINGKASAN CUSTOMER
+    ========================= */
 
-    const firstCustomer =
-      filtered[0];
-
-
-    /*
-      RINGKASAN CUSTOMER
-    */
-
-    const totalPesanan =
-      filtered.length;
+    const totalOrders =
+      items.length;
 
 
     const belumCO =
-      filtered.filter(
+      items.filter(
         function(item) {
 
           return (
@@ -2479,8 +2473,13 @@ function setupRecapGlobalSearch() {
 
 
     const belumLunas =
-      filtered.filter(
+      items.filter(
         function(item) {
+
+          const price =
+            Number(
+              item.price || 0
+            );
 
           const dp =
             Number(
@@ -2490,11 +2489,6 @@ function setupRecapGlobalSearch() {
           const pelunasan =
             Number(
               item.pelunasan || 0
-            );
-
-          const price =
-            Number(
-              item.price || 0
             );
 
 
@@ -2507,65 +2501,89 @@ function setupRecapGlobalSearch() {
       ).length;
 
 
+    const customerName =
+      customerDisplay(
+        items[0]
+      );
+
+
+    /* =========================
+       HTML HASIL
+    ========================= */
+
     results.innerHTML = `
 
-      <div class="recap-global-customer">
+      <div
+        class="recap-global-customer"
+      >
 
-        <div class="recap-global-customer-name">
+        <!-- CUSTOMER -->
 
-          <strong>
-            ${customerDisplay(
-              firstCustomer
-            )}
-          </strong>
-
+        <div
+          class="recap-global-customer-name"
+        >
+          ${customerName}
         </div>
 
 
-        <div class="recap-global-summary">
+        <!-- RINGKASAN -->
 
-          <div class="recap-global-summary-card">
+        <div
+          class="recap-global-summary"
+        >
+
+          <div
+            class="recap-global-summary-card"
+          >
+
+            <strong>
+              ${totalOrders}
+            </strong>
 
             <span>
               Pesanan Berjalan
             </span>
 
-            <strong>
-              ${totalPesanan}
-            </strong>
-
           </div>
 
 
-          <div class="recap-global-summary-card">
-
-            <span>
-              Belum CO
-            </span>
+          <div
+            class="recap-global-summary-card"
+          >
 
             <strong>
               ${belumCO}
             </strong>
 
+            <span>
+              Belum CO
+            </span>
+
           </div>
 
 
-          <div class="recap-global-summary-card">
-
-            <span>
-              Belum Lunas
-            </span>
+          <div
+            class="recap-global-summary-card"
+          >
 
             <strong>
               ${belumLunas}
             </strong>
+
+            <span>
+              Belum Lunas
+            </span>
 
           </div>
 
         </div>
 
 
-        <div class="recap-global-co-filter">
+        <!-- FILTER CO -->
+
+        <div
+          class="recap-global-co-filter"
+        >
 
           <label
             for="recapGlobalCOFilter"
@@ -2573,23 +2591,39 @@ function setupRecapGlobalSearch() {
             Status CO Barang
           </label>
 
+
           <select
             id="recapGlobalCOFilter"
           >
 
-            <option value="semua">
+            <option
+              value="semua"
+              ${selectedFilter === "semua" ? "selected" : ""}
+            >
               Semua
             </option>
 
-            <option value="belum-bisa-co">
+
+            <option
+              value="belum-bisa-co"
+              ${selectedFilter === "belum-bisa-co" ? "selected" : ""}
+            >
               Belum bisa di CO
             </option>
 
-            <option value="sudah-bisa-co">
+
+            <option
+              value="sudah-bisa-co"
+              ${selectedFilter === "sudah-bisa-co" ? "selected" : ""}
+            >
               Sudah bisa di CO
             </option>
 
-            <option value="sudah-co">
+
+            <option
+              value="sudah-co"
+              ${selectedFilter === "sudah-co" ? "selected" : ""}
+            >
               Sudah di CO
             </option>
 
@@ -2598,199 +2632,115 @@ function setupRecapGlobalSearch() {
         </div>
 
 
+        <!-- TABEL -->
+
         <div
-  class="recap-global-order-table"
-  id="recapGlobalOrderList"
->
+          class="recap-global-order-table"
+        >
 
-  <!-- HEADER TABEL -->
-
-  <div class="recap-global-table-header">
-
-    <div>Batch</div>
-
-    <div>Nama Barang</div>
-
-    <div>Versi / Member</div>
-
-    <div>Harga</div>
-
-    <div>DP</div>
-
-    <div>Pembayaran</div>
-
-    <div>Tracking</div>
-
-    <div>CO Shopee</div>
-
-  </div>
-
-
-  <!-- DATA PESANAN -->
-
-  <div class="recap-global-table-body">
-
-    ${filtered.map(
-      function(item) {
-
-        return `
+          <!-- HEADER -->
 
           <div
-            class="recap-global-table-row"
+            class="recap-global-table-header"
           >
 
-            <div
-              class="recap-table-cell recap-table-batch"
-              data-label="Batch"
-            >
-              <span>
-                ${display(
-                  item.batch_code ||
-                  item.product_code ||
-                  "-"
-                )}
-              </span>
+            <div>
+              Batch
             </div>
 
-
-            <div
-              class="recap-table-cell recap-table-item"
-              data-label="Nama Barang"
-            >
-              <strong>
-                ${display(
-                  item.item_name ||
-                  item.product_name ||
-                  "-"
-                )}
-              </strong>
+            <div>
+              Nama Barang
             </div>
 
-
-            <div
-              class="recap-table-cell recap-table-version"
-              data-label="Versi / Member"
-            >
-              <span>
-                ${display(
-                  item.product_version ||
-                  "-"
-                )}
-              </span>
+            <div>
+              Versi / Member
             </div>
 
-
-            <div
-              class="recap-table-cell recap-table-price"
-              data-label="Harga"
-            >
-              <strong>
-                ${rupiah(
-                  item.price ||
-                  0
-                )}
-              </strong>
+            <div>
+              Harga
             </div>
 
-
-            <div
-              class="recap-table-cell recap-table-dp"
-              data-label="DP"
-            >
-              <strong>
-                ${rupiah(
-                  item.dp ||
-                  0
-                )}
-              </strong>
+            <div>
+              DP
             </div>
 
-
-            <div
-              class="recap-table-cell recap-table-payment"
-              data-label="Pembayaran"
-            >
-              ${getPaymentStatusDisplay(
-                item
-              )}
+            <div>
+              Pembayaran
             </div>
 
-
-            <div
-              class="recap-table-cell recap-table-tracking"
-              data-label="Tracking"
-            >
-              ${getTrackingDisplay(
-                item.item_status
-              )}
+            <div>
+              Tracking
             </div>
 
-
-            <div
-              class="recap-table-cell recap-table-co"
-              data-label="CO Shopee"
-            >
-              ${getCustomerStatusDisplay(
-                item.customer_status
-              )}
+            <div>
+              CO Shopee
             </div>
 
           </div>
 
-        `;
 
-      }
-    ).join("")}
+          <!-- BODY -->
 
-  </div>
+          <div
+            class="recap-global-table-body"
+          >
 
-</div>
+            ${filtered.map(
+              function(item) {
 
-                  <div
-                    class="recap-global-product"
-                  >
-
-                    <strong>
-                      ${display(
-                        item.item_name ||
-                        item.product_name ||
-                        "-"
-                      )}
-                    </strong>
-
-                    <span>
-                      Versi:
-                      ${display(
-                        item.product_version ||
-                        "-"
-                      )}
-                    </span>
-
-                  </div>
-
+                return `
 
                   <div
-                    class="recap-global-info"
+                    class="recap-global-table-row"
                   >
 
-                    <div>
+                    <div
+                      class="recap-table-cell recap-table-batch"
+                    >
+
                       <span>
-                        Qty
+                        ${display(
+                          item.batch_code ||
+                          item.product_code ||
+                          "-"
+                        )}
                       </span>
 
-                      <strong>
-                        ${display(
-                          item.quantity ||
-                          1
-                        )}
-                      </strong>
                     </div>
 
 
-                    <div>
+                    <div
+                      class="recap-table-cell recap-table-item"
+                    >
+
+                      <strong>
+                        ${display(
+                          item.item_name ||
+                          item.product_name ||
+                          "-"
+                        )}
+                      </strong>
+
+                    </div>
+
+
+                    <div
+                      class="recap-table-cell recap-table-version"
+                    >
+
                       <span>
-                        Harga
+                        ${display(
+                          item.product_version ||
+                          "-"
+                        )}
                       </span>
+
+                    </div>
+
+
+                    <div
+                      class="recap-table-cell recap-table-price"
+                    >
 
                       <strong>
                         ${rupiah(
@@ -2798,13 +2748,13 @@ function setupRecapGlobalSearch() {
                           0
                         )}
                       </strong>
+
                     </div>
 
 
-                    <div>
-                      <span>
-                        DP
-                      </span>
+                    <div
+                      class="recap-table-cell recap-table-dp"
+                    >
 
                       <strong>
                         ${rupiah(
@@ -2812,65 +2762,50 @@ function setupRecapGlobalSearch() {
                           0
                         )}
                       </strong>
-                    </div>
-
-
-                    <div>
-                      <span>
-                        Pembayaran
-                      </span>
-
-                      <strong>
-                        ${getPaymentStatusDisplay(
-                          item
-                        )}
-                      </strong>
-                    </div>
-
-                  </div>
-
-
-                  <div
-                    class="recap-global-status"
-                  >
-
-                    <div>
-
-                      <span>
-                        Tracking
-                      </span>
-
-                      <strong>
-                        ${getTrackingDisplay(
-                          item.item_status
-                        )}
-                      </strong>
 
                     </div>
 
 
-                    <div>
+                    <div
+                      class="recap-table-cell recap-table-payment"
+                    >
 
-                      <span>
-                        Status CO Shopee
-                      </span>
+                      ${getPaymentStatusDisplay(
+                        item
+                      )}
 
-                      <strong>
-                        ${getCustomerStatusDisplay(
-                          item.customer_status
-                        )}
-                      </strong>
+                    </div>
+
+
+                    <div
+                      class="recap-table-cell recap-table-tracking"
+                    >
+
+                      ${getTrackingDisplay(
+                        item.item_status
+                      )}
+
+                    </div>
+
+
+                    <div
+                      class="recap-table-cell recap-table-co"
+                    >
+
+                      ${getCustomerStatusDisplay(
+                        item.customer_status
+                      )}
 
                     </div>
 
                   </div>
 
-                </div>
+                `;
 
-              `;
+              }
+            ).join("")}
 
-            }
-          ).join("")}
+          </div>
 
         </div>
 
@@ -2879,9 +2814,9 @@ function setupRecapGlobalSearch() {
     `;
 
 
-    /*
-      DROPDOWN FILTER
-    */
+    /* =========================
+       EVENT DROPDOWN
+    ========================= */
 
     const coSelect =
       document.getElementById(
@@ -2891,17 +2826,12 @@ function setupRecapGlobalSearch() {
 
     if (coSelect) {
 
-      coSelect.value =
-        coFilter;
-
-
       coSelect.addEventListener(
         "change",
         function() {
 
-          renderResults(
-            customerItems,
-            keyword,
+          renderGlobalResults(
+            items,
             this.value
           );
 
@@ -2913,9 +2843,9 @@ function setupRecapGlobalSearch() {
   }
 
 
-  /*
-    SAAT BELUM MENCARI
-  */
+  /* =========================
+     AWAL
+  ========================= */
 
   results.innerHTML = `
     <div class="recap-search-empty">
@@ -2938,11 +2868,11 @@ function setupRecapGlobalSearch() {
   `;
 
 
-  /*
-    EVENT SEARCH
-  */
+  /* =========================
+     SEARCH
+  ========================= */
 
-  input.addEventListener(
+  searchInput.addEventListener(
     "input",
     function() {
 
@@ -2951,6 +2881,8 @@ function setupRecapGlobalSearch() {
           this.value
         );
 
+
+      /* KOSONG */
 
       if (!keyword) {
 
@@ -2979,11 +2911,11 @@ function setupRecapGlobalSearch() {
       }
 
 
-      /*
-        CARI CUSTOMER
-        HANYA DARI PESANAN YANG
-        BELUM "SUDAH MENERIMA BARANG"
-      */
+      /* =========================
+         DATA PESANAN
+         TIDAK TERMASUK
+         SUDAH MENERIMA BARANG
+      ========================= */
 
       const customerItems =
         recapData.filter(
@@ -3000,32 +2932,42 @@ function setupRecapGlobalSearch() {
         );
 
 
-      /*
-        CEK APAKAH CUSTOMER DITEMUKAN
-      */
+      /* =========================
+         CARI CUSTOMER
+      ========================= */
 
       const matched =
         customerItems.filter(
           function(item) {
 
-            const name =
+            const customerName =
               normalize(
                 item.customer_name
               );
 
-            const last4 =
+
+            const whatsappLast4 =
               normalize(
                 item.whatsapp_last4
               );
 
+
             return (
-              name.includes(keyword) ||
-              last4.includes(keyword)
+              customerName.includes(
+                keyword
+              ) ||
+              whatsappLast4.includes(
+                keyword
+              )
             );
 
           }
         );
 
+
+      /* =========================
+         TIDAK DITEMUKAN
+      ========================= */
 
       if (!matched.length) {
 
@@ -3053,14 +2995,12 @@ function setupRecapGlobalSearch() {
       }
 
 
-      /*
-        DEFAULT:
-        SEMUA
-      */
+      /* =========================
+         TAMPILKAN SEMUA
+      ========================= */
 
-      renderResults(
-        customerItems,
-        keyword,
+      renderGlobalResults(
+        matched,
         "semua"
       );
 
