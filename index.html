@@ -2295,6 +2295,230 @@ async function loadRecap() {
 
 }
 
+  /* =========================
+   GLOBAL SEARCH PESANAN
+========================= */
+
+function setupRecapGlobalSearch() {
+
+  const searchInput =
+    document.getElementById(
+      "recapGlobalSearch"
+    );
+
+  const results =
+    document.getElementById(
+      "recapGlobalResults"
+    );
+
+  if (!searchInput || !results) {
+    return;
+  }
+
+  searchInput.addEventListener(
+    "input",
+    function () {
+
+      const keyword =
+        this.value
+          .toLowerCase()
+          .trim();
+
+      if (!keyword) {
+
+        results.innerHTML = "";
+
+        return;
+      }
+
+      const filtered =
+        recapData.filter(
+          function(item) {
+
+            /* =========================
+               HANYA PESANAN BERJALAN
+            ========================= */
+
+            const customerStatus =
+              String(
+                item.customer_status || ""
+              )
+                .trim()
+                .toLowerCase();
+
+            if (
+              customerStatus ===
+                "sudah checkout shopee" ||
+              customerStatus ===
+                "sudah menerima barang"
+            ) {
+              return false;
+            }
+
+            /* =========================
+               CARI CUSTOMER
+            ========================= */
+
+            const customerName =
+              String(
+                item.customer_name || ""
+              ).toLowerCase();
+
+            const whatsappLast4 =
+              String(
+                item.whatsapp_last4 || ""
+              ).toLowerCase();
+
+            return (
+              customerName.includes(
+                keyword
+              ) ||
+              whatsappLast4.includes(
+                keyword
+              )
+            );
+
+          }
+        );
+
+      if (!filtered.length) {
+
+        results.innerHTML = `
+          <div class="recap-search-empty">
+            <div class="recap-search-icon">
+              🔎
+            </div>
+
+            <strong>
+              Pesanan tidak ditemukan
+            </strong>
+
+            <p>
+              Periksa kembali nama customer
+              atau 4 digit WhatsApp.
+            </p>
+          </div>
+        `;
+
+        return;
+      }
+
+      results.innerHTML =
+        filtered
+          .map(
+            function(item) {
+
+              return `
+
+                <div class="recap-global-result-card">
+
+                  <div class="recap-global-result-header">
+
+                    <div>
+                      <strong>
+                        ${customerDisplay(item)}
+                      </strong>
+                    </div>
+
+                    <div class="recap-global-batch">
+                      ${display(
+                        item.batch_code ||
+                        item.product_code ||
+                        "-"
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  <div class="recap-global-product">
+
+                    <strong>
+                      ${display(
+                        item.item_name ||
+                        item.product_name ||
+                        "-"
+                      )}
+                    </strong>
+
+                    <span>
+                      Versi:
+                      ${display(
+                        item.product_version ||
+                        "-"
+                      )}
+                    </span>
+
+                  </div>
+
+
+                  <div class="recap-global-info">
+
+                    <div>
+                      <span>Harga</span>
+                      <strong>
+                        ${rupiah(
+                          item.price || 0
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>DP</span>
+                      <strong>
+                        ${rupiah(
+                          item.dp || 0
+                        )}
+                      </strong>
+                    </div>
+
+                  </div>
+
+
+                  <div class="recap-global-status">
+
+                    <div>
+                      <span>Status Pembayaran</span>
+
+                      ${getPaymentStatusDisplay(
+                        item
+                      )}
+                    </div>
+
+                    <div>
+                      <span>Tracking Barang</span>
+
+                      <strong>
+                        ${getTrackingDisplay(
+                          item.item_status
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Status CO Shopee</span>
+
+                      <strong>
+                        ${getCustomerStatusDisplay(
+                          item.customer_status
+                        )}
+                      </strong>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+  );
+
+}
 
 /* =========================
    TAMPILKAN KATEGORI REKAP
