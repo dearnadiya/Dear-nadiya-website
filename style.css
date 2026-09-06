@@ -2348,60 +2348,94 @@ footer {
 }
 
 /* =========================
-   DASHBOARD MOBILE
+   DASHBOARD MOBILE - FINAL
 ========================= */
 
 @media (max-width: 600px) {
 
   .hero {
-    min-height: auto;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
 
-    padding: 24px 6%;
+    min-height: 250px !important;
 
-    gap: 10px;
+    padding: 25px 6% !important;
 
-    border-radius: 0 0 20px 20px;
+    gap: 10px !important;
+
+    text-align: left !important;
+
+    box-sizing: border-box;
   }
 
 
+  /* =========================
+     TEXT DASHBOARD
+  ========================= */
+
   .hero-content {
-    max-width: 62%;
+    flex: 1 1 62% !important;
+
+    width: 62% !important;
+    max-width: 62% !important;
+
+    min-width: 0;
+
+    text-align: left !important;
   }
 
 
   .hero-content .eyebrow {
-    margin-bottom: 6px;
+    margin-bottom: 7px !important;
 
-    font-size: 9px;
-    letter-spacing: 1.5px;
+    font-size: 8px !important;
+    letter-spacing: 1.4px !important;
   }
 
 
   .hero-content h1 {
-    margin: 0;
+    margin: 0 !important;
 
-    font-size: 27px;
-    line-height: 1.08;
+    font-size: 24px !important;
+    line-height: 1.08 !important;
 
-    letter-spacing: -0.3px;
+    letter-spacing: -0.3px !important;
+
+    text-align: left !important;
   }
 
 
   .hero-content p {
-    margin: 9px 0 0;
+    margin: 9px 0 0 !important;
 
-    max-width: 100%;
+    max-width: 100% !important;
 
-    font-size: 10px;
-    line-height: 1.55;
+    font-size: 9.5px !important;
+    line-height: 1.5 !important;
+
+    text-align: left !important;
   }
 
 
-  .hero-mascot {
-    width: 125px;
-    max-width: 34vw;
+  /* =========================
+     MASCOT
+  ========================= */
 
-    flex-shrink: 0;
+  .hero-mascot {
+    display: block !important;
+
+    flex: 0 0 34% !important;
+
+    width: 34% !important;
+    max-width: 125px !important;
+
+    height: auto !important;
+
+    object-fit: contain;
+
+    align-self: center !important;
   }
 
 }
