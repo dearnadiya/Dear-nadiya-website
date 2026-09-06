@@ -2363,6 +2363,9 @@ function renderRecapCategories(
       )
       .join("");
 
+   `;
+
+   
 
   /* =========================
      KLIK KATEGORI
@@ -2590,6 +2593,55 @@ function renderRecapBatches(
 
   `;
 
+    /* =========================
+     PENCARIAN BATCH
+  ========================= */
+
+  const batchSearch =
+    document.getElementById(
+      "recapBatchSearch"
+    );
+
+  if (batchSearch) {
+
+    batchSearch.addEventListener(
+      "input",
+      function() {
+
+        const keyword =
+          this.value
+            .toLowerCase()
+            .trim();
+
+        const cards =
+          track.querySelectorAll(
+            ".recap-batch-card"
+          );
+
+        cards.forEach(
+          function(card) {
+
+            const searchText =
+              card.dataset.search || "";
+
+            const matched =
+              !keyword ||
+              searchText.includes(
+                keyword
+              );
+
+            card.style.display =
+              matched
+                ? ""
+                : "none";
+
+          }
+        );
+
+      }
+    );
+
+  }
 
   /* =========================
      KEMBALI KE KATEGORI
