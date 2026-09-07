@@ -5205,3 +5205,46 @@ footer {
   }
 
 }
+
+/* =========================================
+   KODE PESANAN SHOPEE
+========================================= */
+
+.checkout-yuk-order-code {
+  margin-bottom: 18px;
+}
+
+.checkout-yuk-order-code label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.checkout-yuk-order-code input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #ddd5e0;
+  border-radius: 9px;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  outline: none;
+}
+
+.checkout-yuk-order-code input:focus {
+  border-color: #8b7297;
+  box-shadow: 0 0 0 2px rgba(139, 114, 151, 0.08);
+}
+
+.checkout-yuk-order-code input::placeholder {
+  color: #aaa;
+}
+
+.checkout-yuk-order-code p {
+  margin: 6px 0 0;
+  font-size: 10px;
+  color: #999;
+  line-height: 1.4;
+}
