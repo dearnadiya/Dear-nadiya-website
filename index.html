@@ -1029,7 +1029,7 @@ async function findCustomerPayments(
     </h2>
 
     <p class="panel-description">
-      Tidak perlu login. Isi data sesuai pesanan kamu,
+      Isi data sesuai pesanan kamu,
       lalu kirim bukti pembayaran kepada Admin Dear Nadiya.
     </p>
 
@@ -3387,14 +3387,274 @@ function setupCheckoutYukSearch() {
 
 
   /* =========================
+     CEK PEMBAYARAN PENDING
+  ========================= */
+
+  async function getPendingPayments(
+    customerName
+  ) {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("dn_payment_submissions")
+        .select(`
+          customer_name,
+          whatsapp_last4,
+          product_code,
+          product_version,
+          amount,
+          status
+        `)
+        .eq(
+          "customer_name",
+          customerName
+        )
+        .eq(
+          "status",
+          "pending"
+        );
+
+
+    if (error) {
+
+      console.error(
+        "Gagal mengambil pembayaran pending:",
+        error
+      );
+
+      return [];
+
+    }
+
+
+    return data || [];
+
+  }
+
+
+  /* =========================
+     CEK STATUS PEMBAYARAN ITEM
+  ========================= */
+
+  function getCheckoutPaymentState(
+    item,
+    pendingPayments
+  ) {
+
+    const price =
+      Number(
+        item.price ||
+        item.item_price ||
+        0
+      );
+
+
+    const remainingValue =
+      item.remaining_amount;
+
+
+    /*
+      Jika remaining_amount tersedia,
+      gunakan nilai tersebut.
+
+      Jika tidak tersedia,
+      hitung dari harga - DP - pelunasan.
+    */
+
+    let remaining;
+
+    if (
+      remainingValue !== undefined &&
+      remainingValue !== null &&
+      remainingValue !== ""
+    ) {
+
+      remaining =
+        Number(
+          remainingValue
+        );
+
+    } else {
+
+      const dp =
+        Number(
+          item.dp ||
+          item.dp_amount ||
+          0
+        );
+
+      const pelunasan =
+        Number(
+          item.pelunasan ||
+          0
+        );
+
+      remaining =
+        Math.max(
+          0,
+          price -
+          dp -
+          pelunasan
+        );
+
+    }
+
+
+    /*
+      Jika tagihan sudah 0,
+      berarti sudah lunas berdasarkan
+      data rekap yang sudah dikonfirmasi Admin.
+    */
+
+    if (
+      remaining <= 0
+    ) {
+
+      return {
+        state: "ready",
+        remaining: 0
+      };
+
+    }
+
+
+    /*
+      Cari pembayaran pending yang
+      cocok dengan barang ini.
+    */
+
+    const productCode =
+      normalize(
+        item.product_code ||
+        item.batch_code
+      );
+
+    const productVersion =
+      normalize(
+        item.product_version ||
+        ""
+      );
+
+    const itemWhatsapp =
+      String(
+        item.whatsapp_last4 ||
+        ""
+      ).trim();
+
+
+    const matchedPending =
+      (pendingPayments || [])
+        .filter(
+          function(payment) {
+
+            const paymentCode =
+              normalize(
+                payment.product_code
+              );
+
+            const paymentVersion =
+              normalize(
+                payment.product_version ||
+                ""
+              );
+
+            const paymentWhatsapp =
+              String(
+                payment.whatsapp_last4 ||
+                ""
+              ).trim();
+
+
+            const sameProduct =
+              paymentCode ===
+              productCode;
+
+            const sameVersion =
+              !productVersion ||
+              !paymentVersion ||
+              paymentVersion ===
+                productVersion;
+
+            const sameWhatsapp =
+              !itemWhatsapp ||
+              !paymentWhatsapp ||
+              paymentWhatsapp ===
+                itemWhatsapp;
+
+
+            return (
+              sameProduct &&
+              sameVersion &&
+              sameWhatsapp
+            );
+
+          }
+        );
+
+
+    const pendingAmount =
+      matchedPending.reduce(
+        function(total, payment) {
+
+          return (
+            total +
+            Number(
+              payment.amount ||
+              0
+            )
+          );
+
+        },
+        0
+      );
+
+
+    /*
+      Jika pembayaran pending sudah
+      mencukupi seluruh tagihan,
+      berarti customer sudah membayar
+      tetapi Admin belum konfirmasi.
+    */
+
+    if (
+      pendingAmount >=
+      remaining
+    ) {
+
+      return {
+        state: "pending",
+        remaining:
+          remaining
+      };
+
+    }
+
+
+    /*
+      Masih ada tagihan yang belum lunas.
+    */
+
+    return {
+      state: "unpaid",
+      remaining:
+        remaining
+    };
+
+  }
+
+
+  /* =========================
      TAMPILKAN CUSTOMER
   ========================= */
 
   function renderCustomerChoices(
-    items
+    customers
   ) {
 
-    if (!items.length) {
+    if (!customers.length) {
 
       results.innerHTML = `
 
@@ -3422,69 +3682,6 @@ function setupCheckoutYukSearch() {
     }
 
 
-    /*
-      Gabungkan berdasarkan:
-      NAMA CUSTOMER + 4 DIGIT WHATSAPP
-    */
-
-    const customerGroups = {};
-
-
-    items.forEach(
-      function(item) {
-
-        const name =
-          String(
-            item.customer_name ||
-            ""
-          ).trim();
-
-        const whatsapp =
-          String(
-            item.whatsapp_last4 ||
-            ""
-          ).trim();
-
-
-        const key =
-          normalize(name) +
-          "|" +
-          whatsapp;
-
-
-        if (
-          !customerGroups[key]
-        ) {
-
-          customerGroups[key] = {
-
-            name:
-              name,
-
-            whatsapp:
-              whatsapp,
-
-            items: []
-
-          };
-
-        }
-
-
-        customerGroups[key].items.push(
-          item
-        );
-
-      }
-    );
-
-
-    const customers =
-      Object.values(
-        customerGroups
-      );
-
-
     results.innerHTML = `
 
       <div class="checkout-yuk-member-section">
@@ -3497,7 +3694,6 @@ function setupCheckoutYukSearch() {
           Jika nama customer sama,
           pilih berdasarkan 4 digit terakhir WhatsApp.
         </p>
-
 
         <div class="checkout-yuk-member-list">
 
@@ -3518,7 +3714,6 @@ function setupCheckoutYukSearch() {
                     👤
                   </div>
 
-
                   <div
                     class="checkout-yuk-member-info"
                   >
@@ -3528,7 +3723,6 @@ function setupCheckoutYukSearch() {
                         customer.name
                       )}
                     </strong>
-
 
                     ${
                       customer.whatsapp
@@ -3543,14 +3737,12 @@ function setupCheckoutYukSearch() {
                         : ""
                     }
 
-
                     <small>
                       ${customer.items.length}
-                      barang siap checkout
+                      barang
                     </small>
 
                   </div>
-
 
                   <div
                     class="checkout-yuk-member-arrow"
@@ -3623,7 +3815,6 @@ function setupCheckoutYukSearch() {
 
       <div class="checkout-yuk-items-section">
 
-
         <button
           type="button"
           class="checkout-yuk-back-member"
@@ -3682,15 +3873,79 @@ function setupCheckoutYukSearch() {
           ${items.map(
             function(item) {
 
+              const paymentState =
+                item.checkoutPaymentState ||
+                {
+                  state: "unpaid",
+                  remaining: 0
+                };
+
+
+              let paymentMessage = "";
+
+
+              if (
+                paymentState.state ===
+                "ready"
+              ) {
+
+                paymentMessage = `
+                  <span
+                    class="checkout-yuk-payment-status checkout-yuk-payment-ready"
+                  >
+                    ✓ Lunas — Siap Checkout
+                  </span>
+                `;
+
+              } else if (
+                paymentState.state ===
+                "pending"
+              ) {
+
+                paymentMessage = `
+                  <span
+                    class="checkout-yuk-payment-status checkout-yuk-payment-pending"
+                  >
+                    ⏳ Pembayaran sedang dikonfirmasi Admin
+                  </span>
+                `;
+
+              } else {
+
+                paymentMessage = `
+                  <span
+                    class="checkout-yuk-payment-status checkout-yuk-payment-unpaid"
+                  >
+                    ⚠️ Lunasi tagihan dulu yuk!
+                  </span>
+                `;
+
+              }
+
+
+              const canCheckout =
+                paymentState.state ===
+                "ready";
+
+
               return `
 
                 <label
-                  class="checkout-yuk-item"
+                  class="checkout-yuk-item ${
+                    canCheckout
+                      ? ""
+                      : "checkout-yuk-item-disabled"
+                  }"
                 >
 
                   <input
                     type="checkbox"
                     class="checkout-yuk-item-checkbox"
+                    ${
+                      canCheckout
+                        ? ""
+                        : "disabled"
+                    }
                   >
 
 
@@ -3725,6 +3980,9 @@ function setupCheckoutYukSearch() {
                       )}
                     </span>
 
+
+                    ${paymentMessage}
+
                   </div>
 
 
@@ -3733,7 +3991,9 @@ function setupCheckoutYukSearch() {
                   >
 
                     ${rupiah(
-                      item.price || 0
+                      item.price ||
+                      item.item_price ||
+                      0
                     )}
 
                   </div>
@@ -3764,13 +4024,18 @@ function setupCheckoutYukSearch() {
         "click",
         function() {
 
-          /*
-            Kembali ke daftar customer
-          */
+          renderCustomerChoices([
+            {
+              name:
+                customerName,
 
-          renderCustomerChoices(
-            items
-          );
+              whatsapp:
+                whatsapp,
+
+              items:
+                items
+            }
+          ]);
 
         }
       );
@@ -3786,7 +4051,7 @@ function setupCheckoutYukSearch() {
 
   searchInput.addEventListener(
     "input",
-    function() {
+    async function() {
 
       const keyword =
         normalize(
@@ -3823,6 +4088,17 @@ function setupCheckoutYukSearch() {
       }
 
 
+      /*
+        Cari semua barang customer yang:
+        - sudah Arrived Admin
+        - belum Checkout Shopee
+
+        Di tahap ini JANGAN langsung
+        membuang barang yang belum lunas,
+        karena kita ingin menampilkan
+        pesan status pembayaran.
+      */
+
       const matched =
         recapData.filter(
           function(item) {
@@ -3857,8 +4133,136 @@ function setupCheckoutYukSearch() {
         );
 
 
+      if (!matched.length) {
+
+        renderCustomerChoices(
+          []
+        );
+
+        return;
+
+      }
+
+
+      /*
+        Ambil pembayaran pending
+        untuk customer yang ditemukan.
+      */
+
+      const customerNames = [
+        ...new Set(
+          matched.map(
+            function(item) {
+              return String(
+                item.customer_name ||
+                ""
+              ).trim();
+            }
+          )
+        )
+      ];
+
+
+      let pendingPayments = [];
+
+
+      for (
+        const customerName
+        of customerNames
+      ) {
+
+        const payments =
+          await getPendingPayments(
+            customerName
+          );
+
+        pendingPayments =
+          pendingPayments.concat(
+            payments
+          );
+
+      }
+
+
+      /*
+        Tentukan status pembayaran
+        setiap barang.
+      */
+
+      matched.forEach(
+        function(item) {
+
+          item.checkoutPaymentState =
+            getCheckoutPaymentState(
+              item,
+              pendingPayments
+            );
+
+        }
+      );
+
+
+      /*
+        Kelompokkan berdasarkan:
+        NAMA + 4 DIGIT WHATSAPP
+      */
+
+      const customerGroups = {};
+
+
+      matched.forEach(
+        function(item) {
+
+          const name =
+            String(
+              item.customer_name ||
+              ""
+            ).trim();
+
+          const whatsapp =
+            String(
+              item.whatsapp_last4 ||
+              ""
+            ).trim();
+
+
+          const key =
+            normalize(name) +
+            "|" +
+            whatsapp;
+
+
+          if (
+            !customerGroups[key]
+          ) {
+
+            customerGroups[key] = {
+
+              name:
+                name,
+
+              whatsapp:
+                whatsapp,
+
+              items: []
+
+            };
+
+          }
+
+
+          customerGroups[key].items.push(
+            item
+          );
+
+        }
+      );
+
+
       renderCustomerChoices(
-        matched
+        Object.values(
+          customerGroups
+        )
       );
 
     }
