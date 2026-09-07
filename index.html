@@ -4495,7 +4495,7 @@ results.innerHTML = `
 
 `;
 
-      /* =========================
+ /* =========================
    KEMBALI PILIH BARANG
 ========================= */
 
@@ -4540,11 +4540,68 @@ if (backConfirmBottom) {
   );
 
 }
-      
+
+
+/* =========================
+   KONFIRMASI CHECKOUT
+========================= */
+
+const finalCheckoutButton =
+  results.querySelector(
+    "#checkoutYukFinalButton"
+  );
+
+
+if (finalCheckoutButton) {
+
+  finalCheckoutButton.addEventListener(
+    "click",
+    function() {
+
+      const orderCodeInput =
+        results.querySelector(
+          "#checkoutYukOrderCode"
+        );
+
+      const orderCode =
+        orderCodeInput
+          ? orderCodeInput.value.trim()
+          : "";
+
+
+      if (!orderCode) {
+
+        alert(
+          "Silakan masukkan kode pesanan Shopee terlebih dahulu."
+        );
+
+        if (orderCodeInput) {
+          orderCodeInput.focus();
+        }
+
+        return;
+      }
+
+
+      console.log(
+        "Kode Pesanan Shopee:",
+        orderCode
+      );
+
+      console.log(
+        "Barang yang akan dilaporkan sudah CO:",
+        selectedItems
+      );
+
     }
   );
 
 }
+
+
+    }
+  );
+
 }
   
   /* =========================
