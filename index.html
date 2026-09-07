@@ -3404,9 +3404,9 @@ function setupCheckoutYukSearch() {
 
 console.log(
   "CHECKOUT WHATSAPP LAST4:",
-  whatsapp
+  whatsappLast4
 );
-
+    
 const paymentData =
   await supabaseClient.rpc(
     "get_public_payment_status",
