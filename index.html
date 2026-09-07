@@ -4296,11 +4296,240 @@ if (continueButton) {
         dan belum mengubah status CO.
       */
 
-      console.log(
-        "Barang yang dipilih untuk checkout:",
-        selectedItems
-      );
+      /* =========================
+   TAMPILKAN KONFIRMASI
+========================= */
 
+results.innerHTML = `
+
+  <div class="checkout-yuk-confirmation">
+
+    <button
+      type="button"
+      class="checkout-yuk-back-confirm"
+      id="checkoutYukBackConfirm"
+    >
+      ← Kembali Pilih Barang
+    </button>
+
+
+    <div class="checkout-yuk-confirmation-header">
+
+      <div>
+        <p class="eyebrow">
+          CHECKOUT
+        </p>
+
+        <h3>
+          🛒 Konfirmasi Checkout
+        </h3>
+
+        <p>
+          Pastikan barang yang dipilih sudah benar
+          sebelum melanjutkan checkout.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- CUSTOMER -->
+
+    <div class="checkout-yuk-confirmation-customer">
+
+      <div>
+        <span>Customer</span>
+
+        <strong>
+          ${display(customerName)}
+        </strong>
+      </div>
+
+      ${
+        whatsapp
+          ? `
+            <div>
+              <span>WhatsApp</span>
+
+              <strong>
+                ••••${display(whatsapp)}
+              </strong>
+            </div>
+          `
+          : ""
+      }
+
+    </div>
+
+
+    <!-- BARANG -->
+
+    <div class="checkout-yuk-confirmation-title">
+
+      <strong>
+        Barang yang Akan Checkout
+      </strong>
+
+      <span>
+        ${selectedItems.length} barang
+      </span>
+
+    </div>
+
+
+    <div class="checkout-yuk-confirmation-list">
+
+      ${selectedItems.map(
+        function(item) {
+
+          return `
+
+            <div
+              class="checkout-yuk-confirmation-row"
+            >
+
+              <div
+                class="checkout-yuk-confirmation-batch"
+              >
+                ${display(
+                  item.batch_code ||
+                  item.product_code ||
+                  "-"
+                )}
+              </div>
+
+
+              <div
+                class="checkout-yuk-confirmation-item"
+              >
+
+                <strong>
+                  ${display(
+                    item.item_name ||
+                    item.product_name ||
+                    "-"
+                  )}
+                </strong>
+
+                <span>
+                  Versi / Member:
+                  ${display(
+                    item.product_version ||
+                    "-"
+                  )}
+                </span>
+
+              </div>
+
+
+              <div
+                class="checkout-yuk-confirmation-status"
+              >
+                ✓ Siap CO
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      ).join("")}
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="checkout-yuk-confirmation-summary">
+
+      <div>
+
+        <span>
+          Total barang
+        </span>
+
+        <strong>
+          ${selectedItems.length} barang
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- ACTION -->
+
+    <div class="checkout-yuk-confirmation-actions">
+
+      <button
+        type="button"
+        id="checkoutYukBackConfirmBottom"
+        class="checkout-yuk-confirmation-back-button"
+      >
+        ← Kembali
+      </button>
+
+
+      <button
+        type="button"
+        id="checkoutYukFinalButton"
+        class="checkout-yuk-confirmation-next-button"
+      >
+        Lanjut Checkout →
+      </button>
+
+    </div>
+
+  </div>
+
+`;
+
+      /* =========================
+   KEMBALI PILIH BARANG
+========================= */
+
+function backToCheckoutItems() {
+
+  renderCheckoutItems(
+    items,
+    customerName,
+    whatsapp
+  );
+
+}
+
+
+const backConfirm =
+  results.querySelector(
+    "#checkoutYukBackConfirm"
+  );
+
+
+const backConfirmBottom =
+  results.querySelector(
+    "#checkoutYukBackConfirmBottom"
+  );
+
+
+if (backConfirm) {
+
+  backConfirm.addEventListener(
+    "click",
+    backToCheckoutItems
+  );
+
+}
+
+
+if (backConfirmBottom) {
+
+  backConfirmBottom.addEventListener(
+    "click",
+    backToCheckoutItems
+  );
+
+}
+      
     }
   );
 
