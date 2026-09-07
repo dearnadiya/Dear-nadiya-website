@@ -3478,136 +3478,199 @@ footer {
 
 @media (max-width:600px) {
 
+  /* =========================
+     TABEL GLOBAL - MOBILE
+     BISA DIGESER KE SAMPING
+  ========================= */
+
   .recap-global-order-table {
     width: 100%;
     max-width: 100%;
     margin-top: 9px;
-    border-radius: 11px;
-    overflow: hidden;
+
     box-sizing: border-box;
+
+    border: 1px solid var(--line);
+    border-radius: 11px;
+
+    /*
+      Izinkan tabel digeser kiri-kanan
+    */
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
   }
+
+
+  /*
+    Lebar isi tabel dibuat lebih lega.
+    Jadi Harga dan DP tidak dipaksa terlalu kecil.
+  */
 
   .recap-global-table-header,
   .recap-global-table-row {
-    width: 100%;
+
+    width: 820px;
+    min-width: 820px;
+
     box-sizing: border-box;
 
     display: grid;
 
-    /*
-      Batch | Barang | Versi | Harga | DP | Pembayaran | Tracking | CO
-    */
     grid-template-columns:
-      0.72fr
-      1.45fr
-      0.95fr
-      0.92fr
-      0.92fr
-      1.28fr
-      1.18fr
-      1.20fr;
-
-    padding-left: 5px;
-    padding-right: 5px;
+      85px
+      180px
+      115px
+      85px
+      85px
+      110px
+      110px
+      110px;
 
     align-items: center;
+
+    padding-left: 6px;
+    padding-right: 6px;
   }
 
-  /* HEADER */
+
+  /* =========================
+     HEADER
+  ========================= */
 
   .recap-global-table-header {
-    min-height: 34px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    min-height: 38px;
 
-    font-size: 7px;
-    line-height: 1.15;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    font-size: 8px;
+    line-height: 1.2;
   }
 
-  /* BARIS PESANAN */
+
+  /* =========================
+     BARIS
+  ========================= */
 
   .recap-global-table-row {
-    min-height: 45px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    min-height: 48px;
+
+    padding-top: 3px;
+    padding-bottom: 3px;
   }
+
 
   .recap-table-cell {
     min-width: 0;
-    padding: 5px 2px;
 
-    font-size: 7.2px;
-    line-height: 1.2;
+    padding: 6px 4px;
+
+    font-size: 8px;
+    line-height: 1.25;
 
     overflow: hidden;
     box-sizing: border-box;
   }
 
-  /* BATCH */
+
+  /* =========================
+     BATCH
+  ========================= */
 
   .recap-table-batch span {
     display: inline-block;
 
     max-width: 100%;
-    box-sizing: border-box;
 
-    padding: 3px 4px;
+    padding: 4px 6px;
 
-    border-radius: 5px;
+    border-radius: 6px;
 
-    font-size: 6.3px;
+    font-size: 7px;
     line-height: 1.1;
 
     white-space: nowrap;
+
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* NAMA BARANG */
+
+  /* =========================
+     NAMA BARANG
+  ========================= */
 
   .recap-table-item strong {
     display: block;
 
     max-width: 100%;
 
-    font-size: 7.2px;
+    font-size: 8px;
     line-height: 1.2;
 
     white-space: nowrap;
+
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* VERSI / MEMBER */
+
+  /* =========================
+     VERSI / MEMBER
+  ========================= */
 
   .recap-table-version span {
     display: block;
 
     max-width: 100%;
 
-    font-size: 6.8px;
+    font-size: 7.5px;
     line-height: 1.2;
 
     white-space: nowrap;
+
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* HARGA & DP */
 
-  .recap-table-price strong,
+  /* =========================
+     HARGA
+  ========================= */
+
+  .recap-table-price strong {
+    display: block;
+
+    font-size: 8px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* =========================
+     DP
+  ========================= */
+
   .recap-table-dp strong {
     display: block;
 
-    font-size: 6.8px;
-    line-height: 1.15;
+    font-size: 8px;
 
     white-space: nowrap;
+
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* STATUS PEMBAYARAN */
+
+  /* =========================
+     PEMBAYARAN
+  ========================= */
 
   .recap-table-payment {
     min-width: 0;
@@ -3618,19 +3681,22 @@ footer {
 
     max-width: 100%;
 
-    font-size: 6.5px;
+    font-size: 7px;
     line-height: 1.25;
 
     white-space: normal;
     overflow-wrap: anywhere;
   }
 
-  /* TRACKING */
+
+  /* =========================
+     TRACKING
+  ========================= */
 
   .recap-table-tracking {
     min-width: 0;
 
-    font-size: 6.5px;
+    font-size: 7px;
     line-height: 1.25;
 
     white-space: normal;
@@ -3638,12 +3704,15 @@ footer {
     word-break: break-word;
   }
 
-  /* CO SHOPEE */
+
+  /* =========================
+     CO SHOPEE
+  ========================= */
 
   .recap-table-co {
     min-width: 0;
 
-    font-size: 6.5px;
+    font-size: 7px;
     line-height: 1.25;
 
     white-space: normal;
