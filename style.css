@@ -3721,3 +3721,110 @@ footer {
   }
 
 }
+
+/* =========================================================
+   MOBILE — TABEL REKAP + CAROUSEL KATEGORI
+========================================================= */
+
+@media (max-width: 600px) {
+
+  /* =======================================================
+     1. TABEL REKAP CUSTOMER
+     Horizontal scroll
+  ======================================================= */
+
+  .recap-global-order-table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 9px;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--line);
+    border-radius: 11px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    /*
+      Supaya scrollbar tidak membuat layout berubah
+    */
+    scrollbar-width: thin;
+  }
+
+
+  /* Isi tabel dibuat lebih lebar dari layar */
+
+  .recap-global-table-header,
+  .recap-global-table-row {
+    width: 820px;
+    min-width: 820px;
+
+    box-sizing: border-box;
+
+    display: grid;
+
+    grid-template-columns:
+      85px
+      180px
+      115px
+      85px
+      85px
+      110px
+      110px
+      110px;
+
+    align-items: center;
+
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+
+  /* Header tabel */
+
+  .recap-global-table-header {
+    min-height: 38px;
+
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+
+  /* Baris pesanan */
+
+  .recap-global-table-row {
+    min-height: 48px;
+
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+
+
+  .recap-table-cell {
+    min-width: 0;
+
+    padding: 6px 4px;
+
+    box-sizing: border-box;
+
+    font-size: 8px;
+    line-height: 1.25;
+
+    overflow: hidden;
+  }
+
+
+  /* Batch */
+
+  .recap-table-batch span {
+    display: inline-block;
+
+    max-width: 100%;
+
+    padding:
