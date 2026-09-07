@@ -3480,30 +3480,40 @@ function setupCheckoutYukSearch() {
     );
 
   const payment =
-    (paymentData || []).find(
-      function(row) {
+  (paymentData || []).find(
+    function(row) {
 
-        const rowCode =
-          normalize(
-            row.product_code ||
-            ""
-          );
+      const rowCodes =
+        String(
+          row.product_code ||
+          ""
+        )
+          .split(",")
+          .map(function(value) {
+            return normalize(value);
+          });
 
-        const rowVersion =
-          normalize(
-            row.product_version ||
-            ""
-          );
+      const rowVersions =
+        String(
+          row.product_version ||
+          ""
+        )
+          .split(",")
+          .map(function(value) {
+            return normalize(value);
+          });
 
-        return (
-          rowCode ===
-            productCode &&
-          rowVersion ===
-            productVersion
-        );
+      return (
+        rowCodes.includes(
+          productCode
+        ) &&
+        rowVersions.includes(
+          productVersion
+        )
+      );
 
-      }
-    );
+    }
+  );
 
   const confirmedAmount =
     Number(
