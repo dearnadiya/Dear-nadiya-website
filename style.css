@@ -3827,4 +3827,224 @@ footer {
 
     max-width: 100%;
 
-    padding:
+    padding: 4px 6px;
+
+    border-radius: 6px;
+
+    font-size: 7px;
+    line-height: 1.1;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* Nama barang */
+
+  .recap-table-item strong {
+    display: block;
+
+    max-width: 100%;
+
+    font-size: 8px;
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* Versi / Member */
+
+  .recap-table-version span {
+    display: block;
+
+    max-width: 100%;
+
+    font-size: 7.5px;
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* Harga */
+
+  .recap-table-price strong {
+    display: block;
+
+    font-size: 8px;
+    line-height: 1.15;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* DP */
+
+  .recap-table-dp strong {
+    display: block;
+
+    font-size: 8px;
+    line-height: 1.15;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* Pembayaran */
+
+  .recap-table-payment {
+    min-width: 0;
+  }
+
+  .recap-table-payment .payment-status {
+    display: block;
+
+    max-width: 100%;
+
+    font-size: 7px;
+    line-height: 1.25;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+  }
+
+
+  /* Tracking */
+
+  .recap-table-tracking {
+    min-width: 0;
+
+    font-size: 7px;
+    line-height: 1.25;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+
+  /* CO Shopee */
+
+  .recap-table-co {
+    min-width: 0;
+
+    font-size: 7px;
+    line-height: 1.25;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+
+  /* =======================================================
+     2. CAROUSEL KATEGORI
+     Jangan sampai kategori ketiga terpotong aneh
+  ======================================================= */
+
+  #rekap .recap-carousel,
+  #rekap .recap-category-carousel {
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+
+    box-sizing: border-box;
+  }
+
+  #rekap .recap-carousel::-webkit-scrollbar,
+  #rekap .recap-category-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  /* Track carousel */
+
+  #rekap .recap-carousel-track,
+  #rekap .recap-category-track {
+    display: flex;
+
+    width: max-content;
+    min-width: 100%;
+
+    gap: 18px;
+
+    padding-left: 12px;
+    padding-right: 12px;
+
+    box-sizing: border-box;
+  }
+
+
+  /* Kartu kategori */
+
+  #rekap .recap-category-card,
+  #rekap .recap-carousel-card {
+    flex: 0 0 155px;
+
+    width: 155px;
+    min-width: 155px;
+    max-width: 155px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+  }
+
+
+  /* Gambar / icon kategori */
+
+  #rekap .recap-category-card img,
+  #rekap .recap-carousel-card img {
+    max-width: 70px;
+    height: auto;
+
+    object-fit: contain;
+  }
+
+
+  /* Nama kategori */
+
+  #rekap .recap-category-card .category-name,
+  #rekap .recap-carousel-card .category-name {
+    max-width: 100%;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* =======================================================
+     3. JARAK CAROUSEL DARI TABEL
+  ======================================================= */
+
+  #rekap .recap-carousel,
+  #rekap .recap-category-carousel {
+    margin-top: 12px;
+  }
+
+}
