@@ -3441,6 +3441,10 @@ function setupCheckoutYukSearch() {
   paymentData
 ) {
 
+  console.log("=== CHECKOUT PAYMENT DEBUG ===");
+  console.log("ITEM:", item);
+  console.log("PAYMENT DATA:", paymentData);
+
   const price =
     Number(
       item.price ||
