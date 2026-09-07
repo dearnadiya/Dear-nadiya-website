@@ -5376,22 +5376,21 @@ function renderRecapBatches(
 
 }
     
-  /* =========================
+/* =========================
    SEARCH RECAP
 ========================= */
 
-const searchInput =
+const recapSearchInput =
   document.getElementById(
     "searchInput"
   );
 
 
-if (searchInput) {
+if (recapSearchInput) {
 
-  searchInput.addEventListener(
+  recapSearchInput.addEventListener(
     "input",
     function () {
-
       const keyword =
         this.value
           .toLowerCase()
