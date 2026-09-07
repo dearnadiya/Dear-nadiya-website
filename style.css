@@ -4048,3 +4048,97 @@ footer {
   }
 
 }
+
+/* =========================================================
+   CAROUSEL KATEGORI REKAP — MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  /* Area carousel */
+  #rekap .recap-carousel {
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+
+    box-sizing: border-box;
+
+    padding-bottom: 4px;
+  }
+
+  #rekap .recap-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  /* Jalur kartu */
+  #rekap .recap-carousel-track {
+    display: flex;
+
+    width: max-content;
+    min-width: 100%;
+
+    gap: 10px;
+
+    padding-left: 4px;
+    padding-right: 14px;
+
+    box-sizing: border-box;
+  }
+
+
+  /* Setiap kartu kategori */
+  #rekap .recap-carousel-card {
+    flex: 0 0 118px;
+
+    width: 118px;
+    min-width: 118px;
+    max-width: 118px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+  }
+
+
+  /* Jika kartu menggunakan class recap-category-card */
+  #rekap .recap-category-card {
+    flex: 0 0 118px;
+
+    width: 118px;
+    min-width: 118px;
+    max-width: 118px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+  }
+
+
+  /* Gambar kategori */
+  #rekap .recap-carousel-card img,
+  #rekap .recap-category-card img {
+    max-width: 65px;
+    height: auto;
+
+    object-fit: contain;
+  }
+
+
+  /* Nama kategori */
+  #rekap .recap-carousel-card .category-name,
+  #rekap .recap-category-card .category-name {
+    max-width: 100%;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+}
