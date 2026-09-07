@@ -2519,14 +2519,25 @@ function setupRecapGlobalSearch() {
 
         <!-- CUSTOMER -->
 
-        <div
-          class="recap-global-customer-name"
-        >
-          ${customerName}
-        </div>
+<div
+  class="recap-global-customer-name"
+>
+  ${customerName}
+</div>
 
 
-        <!-- RINGKASAN -->
+<!-- KEMBALI KE PENCARIAN -->
+
+<button
+  type="button"
+  class="recap-global-back-button"
+  onclick="backToGlobalCustomerSearch()"
+>
+  ← Kembali ke Pencarian
+</button>
+
+
+<!-- RINGKASAN -->
 
         <div
           class="recap-global-summary"
@@ -3197,6 +3208,51 @@ customerButtons.forEach(
 /* =========================
    TUTUP SETUP GLOBAL SEARCH
 ========================= */
+
+}
+
+  /* =========================
+   KEMBALI KE PENCARIAN
+========================= */
+
+  function backToGlobalCustomerSearch() {
+
+  const results =
+    document.getElementById(
+      "recapGlobalResults"
+    );
+
+  const searchInput =
+    document.getElementById(
+      "recapGlobalSearch"
+    );
+
+  if (results) {
+    results.innerHTML = `
+      <div class="recap-search-empty">
+
+        <div class="recap-search-icon">
+          🔎
+        </div>
+
+        <strong>
+          Cari nama customer
+        </strong>
+
+        <p>
+          Ketik nama customer atau
+          4 digit terakhir WhatsApp
+          untuk melihat pesanan.
+        </p>
+
+      </div>
+    `;
+  }
+
+  if (searchInput) {
+    searchInput.value = "";
+    searchInput.focus();
+  }
 
 }
   
