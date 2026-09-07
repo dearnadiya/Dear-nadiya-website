@@ -3479,107 +3479,176 @@ footer {
 @media (max-width:600px) {
 
   .recap-global-order-table {
-    margin-top:9px;
-
-    border-radius:11px;
-
-    overflow-x:hidden;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 9px;
+    border-radius: 11px;
+    overflow: hidden;
+    box-sizing: border-box;
   }
-
-
-  /*
-    MOBILE:
-    tetap model tabel,
-    tetapi dibuat lebih padat
-  */
 
   .recap-global-table-header,
   .recap-global-table-row {
+    width: 100%;
+    box-sizing: border-box;
 
+    display: grid;
+
+    /*
+      Batch | Barang | Versi | Harga | DP | Pembayaran | Tracking | CO
+    */
     grid-template-columns:
-      0.8fr
-      1.35fr
-      1fr
-      0.9fr
-      0.9fr
-      1.15fr
-      1.2fr
-      1.2fr;
+      0.72fr
+      1.45fr
+      0.95fr
+      0.92fr
+      0.92fr
+      1.28fr
+      1.18fr
+      1.20fr;
 
-    padding-left:6px;
-    padding-right:6px;
+    padding-left: 5px;
+    padding-right: 5px;
+
+    align-items: center;
   }
-
 
   /* HEADER */
 
   .recap-global-table-header {
-    min-height:34px;
+    min-height: 34px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 
-    font-size:7px;
+    font-size: 7px;
+    line-height: 1.15;
   }
 
-
-  /* ROW */
+  /* BARIS PESANAN */
 
   .recap-global-table-row {
-    min-height:43px;
+    min-height: 45px;
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
-
-
-  /* CELL */
 
   .recap-table-cell {
-    padding:6px 3px;
+    min-width: 0;
+    padding: 5px 2px;
 
-    font-size:7.5px;
+    font-size: 7.2px;
+    line-height: 1.2;
 
-    line-height:1.2;
+    overflow: hidden;
+    box-sizing: border-box;
   }
-
 
   /* BATCH */
 
   .recap-table-batch span {
-    padding:3px 5px;
+    display: inline-block;
 
-    border-radius:5px;
+    max-width: 100%;
+    box-sizing: border-box;
 
-    font-size:6.5px;
+    padding: 3px 4px;
+
+    border-radius: 5px;
+
+    font-size: 6.3px;
+    line-height: 1.1;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-
-  /* NAMA */
+  /* NAMA BARANG */
 
   .recap-table-item strong {
-    font-size:7.5px;
+    display: block;
+
+    max-width: 100%;
+
+    font-size: 7.2px;
+    line-height: 1.2;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-
-  /* VERSI */
+  /* VERSI / MEMBER */
 
   .recap-table-version span {
-    font-size:7px;
+    display: block;
+
+    max-width: 100%;
+
+    font-size: 6.8px;
+    line-height: 1.2;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-
-  /* HARGA + DP */
+  /* HARGA & DP */
 
   .recap-table-price strong,
   .recap-table-dp strong {
-    font-size:7px;
+    display: block;
+
+    font-size: 6.8px;
+    line-height: 1.15;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
+  /* STATUS PEMBAYARAN */
 
-  /* STATUS */
+  .recap-table-payment {
+    min-width: 0;
+  }
 
   .recap-table-payment .payment-status {
-    font-size:6.8px;
+    display: block;
+
+    max-width: 100%;
+
+    font-size: 6.5px;
+    line-height: 1.25;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
-  .recap-table-tracking,
+  /* TRACKING */
+
+  .recap-table-tracking {
+    min-width: 0;
+
+    font-size: 6.5px;
+    line-height: 1.25;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* CO SHOPEE */
+
   .recap-table-co {
-    font-size:6.8px;
+    min-width: 0;
+
+    font-size: 6.5px;
+    line-height: 1.25;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
 }
