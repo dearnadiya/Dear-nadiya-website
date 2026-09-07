@@ -3348,6 +3348,233 @@ customerButtons.forEach(
   }
 
 }
+
+  /* =========================
+   CHECKOUT YUK
+========================= */
+
+function setupCheckoutYukSearch() {
+
+  const searchInput =
+    document.getElementById(
+      "checkoutCustomerSearch"
+    );
+
+  const results =
+    document.getElementById(
+      "checkoutYukResults"
+    );
+
+  if (
+    !searchInput ||
+    !results
+  ) {
+    return;
+  }
+
+
+  function normalize(value) {
+
+    return String(
+      value || ""
+    )
+      .toLowerCase()
+      .trim();
+
+  }
+
+
+  function renderCheckoutResults(
+    items
+  ) {
+
+    if (!items.length) {
+
+      results.innerHTML = `
+
+        <div class="checkout-yuk-empty">
+
+          <div class="checkout-yuk-icon">
+            🔎
+          </div>
+
+          <strong>
+            Barang belum tersedia
+          </strong>
+
+          <p>
+            Tidak ada barang yang saat ini
+            siap untuk checkout.
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    results.innerHTML = `
+
+      <div class="checkout-yuk-list">
+
+        ${items.map(
+          function(item) {
+
+            return `
+
+              <div
+                class="checkout-yuk-item"
+              >
+
+                <div
+                  class="checkout-yuk-item-main"
+                >
+
+                  <strong>
+                    ${display(
+                      item.item_name ||
+                      item.product_name ||
+                      "-"
+                    )}
+                  </strong>
+
+                  <span>
+                    Batch:
+                    ${display(
+                      item.batch_code ||
+                      item.product_code ||
+                      "-"
+                    )}
+                  </span>
+
+                  <span>
+                    Versi / Member:
+                    ${display(
+                      item.product_version ||
+                      "-"
+                    )}
+                  </span>
+
+                </div>
+
+
+                <div
+                  class="checkout-yuk-item-price"
+                >
+
+                  ${rupiah(
+                    item.price || 0
+                  )}
+
+                </div>
+
+
+                <div
+                  class="checkout-yuk-item-status"
+                >
+
+                  📦 Arrived Admin
+
+                </div>
+
+              </div>
+
+            `;
+
+          }
+        ).join("")}
+
+      </div>
+
+    `;
+
+  }
+
+
+  searchInput.addEventListener(
+    "input",
+    function() {
+
+      const keyword =
+        normalize(
+          this.value
+        );
+
+
+      if (!keyword) {
+
+        results.innerHTML = `
+
+          <div class="checkout-yuk-empty">
+
+            <div class="checkout-yuk-icon">
+              🛒
+            </div>
+
+            <strong>
+              Cari nama customer
+            </strong>
+
+            <p>
+              Masukkan nama customer untuk
+              melihat barang yang sudah siap
+              checkout.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      const matched =
+        recapData.filter(
+          function(item) {
+
+            const customerName =
+              normalize(
+                item.customer_name
+              );
+
+            const tracking =
+              normalize(
+                item.item_status
+              );
+
+            const customerStatus =
+              normalize(
+                item.customer_status
+              );
+
+
+            return (
+              customerName.includes(
+                keyword
+              ) &&
+              tracking ===
+                "arrived admin" &&
+              customerStatus ===
+                "belum checkout shopee"
+            );
+
+          }
+        );
+
+
+      renderCheckoutResults(
+        matched
+      );
+
+    }
+  );
+
+}
   
 /* =========================
    TAMPILKAN KATEGORI REKAP
