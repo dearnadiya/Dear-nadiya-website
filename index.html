@@ -3455,12 +3455,12 @@ function setupCheckoutYukSearch() {
     );
 
   const productCode =
-    normalize(
-      item.product_code ||
-      item.batch_code ||
-      ""
-    );
-
+  normalize(
+    item.batch_code ||
+    item.product_code ||
+    ""
+  );
+    
   const productVersion =
     normalize(
       item.product_version ||
