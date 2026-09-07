@@ -3386,7 +3386,11 @@ function setupCheckoutYukSearch() {
   }
 
 
-  function renderCheckoutResults(
+  /* =========================
+     TAMPILKAN CUSTOMER
+  ========================= */
+
+  function renderCustomerChoices(
     items
   ) {
 
@@ -3401,7 +3405,7 @@ function setupCheckoutYukSearch() {
           </div>
 
           <strong>
-            Barang belum tersedia
+            Customer tidak ditemukan
           </strong>
 
           <p>
@@ -3418,83 +3422,367 @@ function setupCheckoutYukSearch() {
     }
 
 
+    /*
+      Gabungkan berdasarkan:
+      NAMA CUSTOMER + 4 DIGIT WHATSAPP
+    */
+
+    const customerGroups = {};
+
+
+    items.forEach(
+      function(item) {
+
+        const name =
+          String(
+            item.customer_name ||
+            ""
+          ).trim();
+
+        const whatsapp =
+          String(
+            item.whatsapp_last4 ||
+            ""
+          ).trim();
+
+
+        const key =
+          normalize(name) +
+          "|" +
+          whatsapp;
+
+
+        if (
+          !customerGroups[key]
+        ) {
+
+          customerGroups[key] = {
+
+            name:
+              name,
+
+            whatsapp:
+              whatsapp,
+
+            items: []
+
+          };
+
+        }
+
+
+        customerGroups[key].items.push(
+          item
+        );
+
+      }
+    );
+
+
+    const customers =
+      Object.values(
+        customerGroups
+      );
+
+
     results.innerHTML = `
 
-      <div class="checkout-yuk-list">
+      <div class="checkout-yuk-member-section">
 
-        ${items.map(
-          function(item) {
+        <div class="checkout-yuk-member-title">
+          Pilih Customer
+        </div>
 
-            return `
+        <p class="checkout-yuk-member-description">
+          Jika nama customer sama,
+          pilih berdasarkan 4 digit terakhir WhatsApp.
+        </p>
 
-              <div
-                class="checkout-yuk-item"
-              >
 
-                <div
-                  class="checkout-yuk-item-main"
+        <div class="checkout-yuk-member-list">
+
+          ${customers.map(
+            function(customer, index) {
+
+              return `
+
+                <button
+                  type="button"
+                  class="checkout-yuk-member-card"
+                  data-customer-index="${index}"
                 >
 
-                  <strong>
-                    ${display(
-                      item.item_name ||
-                      item.product_name ||
-                      "-"
-                    )}
-                  </strong>
-
-                  <span>
-                    Batch:
-                    ${display(
-                      item.batch_code ||
-                      item.product_code ||
-                      "-"
-                    )}
-                  </span>
-
-                  <span>
-                    Versi / Member:
-                    ${display(
-                      item.product_version ||
-                      "-"
-                    )}
-                  </span>
-
-                </div>
+                  <div
+                    class="checkout-yuk-member-icon"
+                  >
+                    👤
+                  </div>
 
 
-                <div
-                  class="checkout-yuk-item-price"
-                >
+                  <div
+                    class="checkout-yuk-member-info"
+                  >
 
-                  ${rupiah(
-                    item.price || 0
-                  )}
+                    <strong>
+                      ${display(
+                        customer.name
+                      )}
+                    </strong>
 
-                </div>
+
+                    ${
+                      customer.whatsapp
+                        ? `
+                          <span>
+                            WhatsApp
+                            ••••${display(
+                              customer.whatsapp
+                            )}
+                          </span>
+                        `
+                        : ""
+                    }
 
 
-                <div
-                  class="checkout-yuk-item-status"
-                >
+                    <small>
+                      ${customer.items.length}
+                      barang siap checkout
+                    </small>
 
-                  📦 Arrived Admin
+                  </div>
 
-                </div>
 
-              </div>
+                  <div
+                    class="checkout-yuk-member-arrow"
+                  >
+                    →
+                  </div>
 
-            `;
+                </button>
 
-          }
-        ).join("")}
+              `;
+
+            }
+          ).join("")}
+
+        </div>
 
       </div>
 
     `;
 
+
+    const customerButtons =
+      results.querySelectorAll(
+        ".checkout-yuk-member-card"
+      );
+
+
+    customerButtons.forEach(
+      function(button) {
+
+        button.addEventListener(
+          "click",
+          function() {
+
+            const index =
+              Number(
+                this.dataset.customerIndex
+              );
+
+            const selectedCustomer =
+              customers[index];
+
+
+            renderCheckoutItems(
+              selectedCustomer.items,
+              selectedCustomer.name,
+              selectedCustomer.whatsapp
+            );
+
+          }
+        );
+
+      }
+    );
+
   }
 
+
+  /* =========================
+     TAMPILKAN BARANG CUSTOMER
+  ========================= */
+
+  function renderCheckoutItems(
+    items,
+    customerName,
+    whatsapp
+  ) {
+
+    results.innerHTML = `
+
+      <div class="checkout-yuk-items-section">
+
+
+        <button
+          type="button"
+          class="checkout-yuk-back-member"
+        >
+          ← Kembali ke Pilihan Customer
+        </button>
+
+
+        <div class="checkout-yuk-selected-member">
+
+          <div>
+
+            <span>
+              Customer
+            </span>
+
+            <strong>
+              ${display(
+                customerName
+              )}
+            </strong>
+
+          </div>
+
+
+          ${
+            whatsapp
+              ? `
+                <div>
+
+                  <span>
+                    WhatsApp
+                  </span>
+
+                  <strong>
+                    ••••${display(
+                      whatsapp
+                    )}
+                  </strong>
+
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        <div class="checkout-yuk-items-title">
+          Pilih Barang yang Ingin Checkout
+        </div>
+
+
+        <div class="checkout-yuk-item-list">
+
+          ${items.map(
+            function(item) {
+
+              return `
+
+                <label
+                  class="checkout-yuk-item"
+                >
+
+                  <input
+                    type="checkbox"
+                    class="checkout-yuk-item-checkbox"
+                  >
+
+
+                  <div
+                    class="checkout-yuk-item-main"
+                  >
+
+                    <strong>
+                      ${display(
+                        item.item_name ||
+                        item.product_name ||
+                        "-"
+                      )}
+                    </strong>
+
+
+                    <span>
+                      Batch:
+                      ${display(
+                        item.batch_code ||
+                        item.product_code ||
+                        "-"
+                      )}
+                    </span>
+
+
+                    <span>
+                      Versi / Member:
+                      ${display(
+                        item.product_version ||
+                        "-"
+                      )}
+                    </span>
+
+                  </div>
+
+
+                  <div
+                    class="checkout-yuk-item-price"
+                  >
+
+                    ${rupiah(
+                      item.price || 0
+                    )}
+
+                  </div>
+
+                </label>
+
+              `;
+
+            }
+          ).join("")}
+
+        </div>
+
+      </div>
+
+    `;
+
+
+    const backButton =
+      results.querySelector(
+        ".checkout-yuk-back-member"
+      );
+
+
+    if (backButton) {
+
+      backButton.addEventListener(
+        "click",
+        function() {
+
+          /*
+            Kembali ke daftar customer
+          */
+
+          renderCustomerChoices(
+            items
+          );
+
+        }
+      );
+
+    }
+
+  }
+
+
+  /* =========================
+     SEARCH CUSTOMER
+  ========================= */
 
   searchInput.addEventListener(
     "input",
@@ -3569,7 +3857,7 @@ function setupCheckoutYukSearch() {
         );
 
 
-      renderCheckoutResults(
+      renderCustomerChoices(
         matched
       );
 
