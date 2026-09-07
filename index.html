@@ -3749,334 +3749,522 @@ function setupCheckoutYukSearch() {
 
 
   /* =========================
-     TAMPILKAN BARANG CUSTOMER
-  ========================= */
+   TAMPILKAN BARANG CUSTOMER
+========================= */
 
-  function renderCheckoutItems(
-    items,
-    customerName,
-    whatsapp
-  ) {
+function renderCheckoutItems(
+  items,
+  customerName,
+  whatsapp
+) {
 
-    results.innerHTML = `
-
-      <div class="checkout-yuk-items-section">
-
-        <button
-          type="button"
-          class="checkout-yuk-back-member"
-        >
-          ← Kembali ke Pilihan Customer
-        </button>
+  const readyCount =
+    items.filter(function(item) {
+      return (
+        item.checkoutPaymentState &&
+        item.checkoutPaymentState.state === "ready"
+      );
+    }).length;
 
 
-        <div class="checkout-yuk-selected-member">
+  results.innerHTML = `
 
-          <div>
+    <div class="checkout-yuk-items-section">
 
-            <span>
-              Customer
-            </span>
-
-            <strong>
-              ${display(
-                customerName
-              )}
-            </strong>
-
-          </div>
-
-
-          ${
-            whatsapp
-              ? `
-                <div>
-
-                  <span>
-                    WhatsApp
-                  </span>
-
-                  <strong>
-                    ••••${display(
-                      whatsapp
-                    )}
-                  </strong>
-
-                </div>
-              `
-              : ""
-          }
-
-        </div>
-
-
-        <div class="checkout-yuk-items-title">
-          Pilih Barang yang Ingin Checkout
-        </div>
-
-
-        <div class="checkout-yuk-item-list">
-
-          ${items.map(
-  function(item) {
-
-    const paymentState =
-      item.checkoutPaymentState ||
-      {
-        state: "unpaid"
-      };
-
-    let paymentMessage = "";
-    let paymentClass = "";
-
-    if (
-      paymentState.state ===
-      "ready"
-    ) {
-
-      paymentMessage = `
-        <span
-          class="
-            checkout-yuk-payment-status
-            checkout-yuk-payment-ready
-          "
-        >
-          ✓ Lunas — Siap Checkout
-        </span>
-      `;
-
-      paymentClass =
-        "checkout-yuk-item-ready";
-
-    } else if (
-      paymentState.state ===
-      "pending"
-    ) {
-
-      paymentMessage = `
-        <span
-          class="
-            checkout-yuk-payment-status
-            checkout-yuk-payment-pending
-          "
-        >
-          ⏳ Pembayaran Sedang
-          Dikonfirmasi Admin
-        </span>
-      `;
-
-      paymentClass =
-        "checkout-yuk-item-disabled";
-
-    } else {
-
-      paymentMessage = `
-        <span
-          class="
-            checkout-yuk-payment-status
-            checkout-yuk-payment-unpaid
-          "
-        >
-          🔒 Lunasi Tagihan Dulu
-        </span>
-      `;
-
-      paymentClass =
-        "checkout-yuk-item-disabled";
-    }
-
-    const canCheckout =
-      paymentState.state ===
-      "ready";
-
-    /* =========================
-       IKON KATEGORI
-    ========================= */
-
-    const category =
-      String(
-        item.category || ""
-      )
-        .trim()
-        .toLowerCase();
-
-    let categoryIcon = "📦";
-
-    if (
-      category === "truz"
-    ) {
-      categoryIcon = "🧸";
-    } else if (
-      category === "treasure kr"
-    ) {
-      categoryIcon = "🇰🇷";
-    } else if (
-      category === "treasure jp"
-    ) {
-      categoryIcon = "🇯🇵";
-    } else if (
-      category === "treasure ch"
-    ) {
-      categoryIcon = "🇨🇳";
-    } else if (
-      category === "treasure thai"
-    ) {
-      categoryIcon = "🇹🇭";
-    } else if (
-      category === "treasure ina"
-    ) {
-      categoryIcon = "🇮🇩";
-    } else if (
-      category === "treasure album"
-    ) {
-      categoryIcon = "📖";
-    }
-
-    return `
-      <label
-        class="
-          checkout-yuk-item
-          ${paymentClass}
-        "
+      <button
+        type="button"
+        class="checkout-yuk-back-member"
       >
+        ← Kembali ke Pilihan Customer
+      </button>
 
-        <div
-          class="checkout-yuk-item-check"
-        >
-          <input
-            type="checkbox"
-            class="checkout-yuk-item-checkbox"
-            ${
-              canCheckout
-                ? ""
-                : "disabled"
-            }
-          >
+
+      <!-- CUSTOMER -->
+
+      <div class="checkout-yuk-selected-member">
+
+        <div>
+          <span>
+            Customer
+          </span>
+
+          <strong>
+            ${display(customerName)}
+          </strong>
         </div>
 
+        ${
+          whatsapp
+            ? `
+              <div>
+                <span>
+                  WhatsApp
+                </span>
 
-        <div
-          class="checkout-yuk-item-icon"
-        >
-          ${categoryIcon}
-        </div>
+                <strong>
+                  ••••${display(whatsapp)}
+                </strong>
+              </div>
+            `
+            : ""
+        }
 
-
-        <div
-          class="checkout-yuk-item-main"
-        >
-
-          <div
-            class="checkout-yuk-item-category"
-          >
-            ${display(
-              item.category ||
-              "Lainnya"
-            )}
-          </div>
+      </div>
 
 
-          <strong
-            class="checkout-yuk-item-name"
-          >
-            ${display(
-              item.item_name ||
-              item.product_name ||
-              "-"
-            )}
+      <!-- HEADER -->
+
+      <div class="checkout-yuk-items-header">
+
+        <div>
+          <strong>
+            Pilih Barang untuk Checkout
           </strong>
 
-
-          <div
-            class="checkout-yuk-item-batch"
-          >
-            <span>
-              Kode Batch
-            </span>
-
-            <b>
-              ${display(
-                item.batch_code ||
-                item.product_code ||
-                "-"
-              )}
-            </b>
-          </div>
-
-
-          <div
-            class="checkout-yuk-item-version"
-          >
-            <span>
-              Versi / Member
-            </span>
-
-            <b>
-              ${display(
-                item.product_version ||
-                "-"
-              )}
-            </b>
-          </div>
-
-
-          <div
-            class="checkout-yuk-item-status"
-          >
-            ${paymentMessage}
-          </div>
-
+          <span>
+            ${items.length} barang •
+            ${readyCount} siap checkout
+          </span>
         </div>
 
-      </label>
-    `;
-  }
-).join("")}
+        ${
+          readyCount > 0
+            ? `
+              <button
+                type="button"
+                class="checkout-yuk-select-all"
+                id="checkoutYukSelectAll"
+              >
+                ☑ Pilih Semua yang Siap CO
+              </button>
+            `
+            : ""
+        }
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div class="checkout-yuk-table-wrapper">
+
+        <div class="checkout-yuk-table">
+
+          <!-- TABLE HEADER -->
+
+          <div class="checkout-yuk-table-head">
+
+            <div class="checkout-col-check">
+              ✓
+            </div>
+
+            <div class="checkout-col-batch">
+              Batch
+            </div>
+
+            <div class="checkout-col-item">
+              Barang
+            </div>
+
+            <div class="checkout-col-version">
+              Versi / Member
+            </div>
+
+            <div class="checkout-col-status">
+              Status
+            </div>
+
+          </div>
+
+
+          <!-- TABLE ROW -->
+
+          <div class="checkout-yuk-table-body">
+
+            ${items.map(
+              function(item, index) {
+
+                const paymentState =
+                  item.checkoutPaymentState ||
+                  {
+                    state: "unpaid"
+                  };
+
+
+                const canCheckout =
+                  paymentState.state === "ready";
+
+
+                let paymentMessage = "";
+                let paymentClass = "";
+
+
+                if (
+                  paymentState.state ===
+                  "ready"
+                ) {
+
+                  paymentMessage =
+                    "✓ Siap CO";
+
+                  paymentClass =
+                    "checkout-yuk-status-ready";
+
+                } else if (
+                  paymentState.state ===
+                  "pending"
+                ) {
+
+                  paymentMessage =
+                    "⏳ Menunggu Konfirmasi";
+
+                  paymentClass =
+                    "checkout-yuk-status-pending";
+
+                } else {
+
+                  paymentMessage =
+                    "🔒 Belum Lunas";
+
+                  paymentClass =
+                    "checkout-yuk-status-unpaid";
+
+                }
+
+
+                return `
+
+                  <label
+                    class="
+                      checkout-yuk-table-row
+                      ${
+                        canCheckout
+                          ? ""
+                          : "checkout-yuk-table-row-disabled"
+                      }
+                    "
+                  >
+
+                    <!-- CHECKBOX -->
+
+                    <div
+                      class="checkout-col-check"
+                    >
+
+                      <input
+                        type="checkbox"
+                        class="checkout-yuk-item-checkbox"
+                        data-item-index="${index}"
+                        ${
+                          canCheckout
+                            ? ""
+                            : "disabled"
+                        }
+                      >
+
+                    </div>
+
+
+                    <!-- BATCH -->
+
+                    <div
+                      class="checkout-col-batch"
+                    >
+
+                      <strong>
+                        ${display(
+                          item.batch_code ||
+                          item.product_code ||
+                          "-"
+                        )}
+                      </strong>
+
+                    </div>
+
+
+                    <!-- BARANG -->
+
+                    <div
+                      class="checkout-col-item"
+                    >
+
+                      <strong>
+                        ${display(
+                          item.item_name ||
+                          item.product_name ||
+                          "-"
+                        )}
+                      </strong>
+
+                    </div>
+
+
+                    <!-- VERSI -->
+
+                    <div
+                      class="checkout-col-version"
+                    >
+
+                      ${display(
+                        item.product_version ||
+                        "-"
+                      )}
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div
+                      class="
+                        checkout-col-status
+                        ${paymentClass}
+                      "
+                    >
+
+                      ${paymentMessage}
+
+                    </div>
+
+                  </label>
+
+                `;
+
+              }
+            ).join("")}
+
+          </div>
 
         </div>
 
       </div>
 
-    `;
+
+      <!-- BOTTOM SUMMARY -->
+
+      <div class="checkout-yuk-selection-footer">
+
+        <div>
+
+          <span>
+            Barang dipilih
+          </span>
+
+          <strong
+            id="checkoutYukSelectedCount"
+          >
+            0 barang
+          </strong>
+
+        </div>
 
 
-    const backButton =
-      results.querySelector(
-        ".checkout-yuk-back-member"
-      );
+        <button
+          type="button"
+          id="checkoutYukContinueBtn"
+          class="checkout-yuk-continue-button"
+          disabled
+        >
+          0 Barang Dipilih →
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
 
 
-    if (backButton) {
+  /* =========================
+     KEMBALI KE CUSTOMER
+  ========================= */
 
-      backButton.addEventListener(
-        "click",
-        function() {
+  const backButton =
+    results.querySelector(
+      ".checkout-yuk-back-member"
+    );
 
-          /*
-            Kembali ke customer yang sama.
-          */
 
-          renderCustomerChoices([
-            {
-              name:
-                customerName,
+  if (backButton) {
 
-              whatsapp:
-                whatsapp,
+    backButton.addEventListener(
+      "click",
+      function() {
 
-              items:
-                items
-            }
-          ]);
+        renderCustomerChoices([
+          {
+            name:
+              customerName,
 
+            whatsapp:
+              whatsapp,
+
+            items:
+              items
+          }
+        ]);
+
+      }
+    );
+
+  }
+
+
+  /* =========================
+     CHECKBOX BARANG
+  ========================= */
+
+  const checkboxes =
+    results.querySelectorAll(
+      ".checkout-yuk-item-checkbox:not(:disabled)"
+    );
+
+
+  const selectedCount =
+    results.querySelector(
+      "#checkoutYukSelectedCount"
+    );
+
+
+  const continueButton =
+    results.querySelector(
+      "#checkoutYukContinueBtn"
+    );
+
+
+  function updateCheckoutSelection() {
+
+    const selected =
+      Array.from(
+        checkboxes
+      ).filter(
+        function(checkbox) {
+          return checkbox.checked;
         }
       );
+
+
+    const count =
+      selected.length;
+
+
+    if (selectedCount) {
+
+      selectedCount.textContent =
+        count +
+        " barang";
+
+    }
+
+
+    if (continueButton) {
+
+      continueButton.textContent =
+        count +
+        " Barang Dipilih →";
+
+      continueButton.disabled =
+        count === 0;
+
+    }
+
+
+    /*
+      Update status tombol
+      Pilih Semua
+    */
+
+    const selectAllButton =
+      results.querySelector(
+        "#checkoutYukSelectAll"
+      );
+
+
+    if (selectAllButton) {
+
+      const allChecked =
+        checkboxes.length > 0 &&
+        selected.length ===
+          checkboxes.length;
+
+
+      selectAllButton.textContent =
+        allChecked
+          ? "☑ Batalkan Pilihan Semua"
+          : "☑ Pilih Semua yang Siap CO";
 
     }
 
   }
 
 
+  checkboxes.forEach(
+    function(checkbox) {
+
+      checkbox.addEventListener(
+        "change",
+        updateCheckoutSelection
+      );
+
+    }
+  );
+
+
+  /* =========================
+     PILIH SEMUA
+  ========================= */
+
+  const selectAllButton =
+    results.querySelector(
+      "#checkoutYukSelectAll"
+    );
+
+
+  if (selectAllButton) {
+
+    selectAllButton.addEventListener(
+      "click",
+      function() {
+
+        const allChecked =
+          Array.from(
+            checkboxes
+          ).every(
+            function(checkbox) {
+              return checkbox.checked;
+            }
+          );
+
+
+        checkboxes.forEach(
+          function(checkbox) {
+
+            checkbox.checked =
+              !allChecked;
+
+          }
+        );
+
+
+        updateCheckoutSelection();
+
+      }
+    );
+
+  }
+
+
+  /*
+    Untuk tahap ini tombol Lanjut Checkout
+    belum menjalankan proses apa pun.
+
+    Kita buat UI dan seleksi barangnya dulu.
+    Logika checkout akan disambungkan
+    setelah tampilan ini berhasil dites.
+  */
+
+}
+  
   /* =========================
      SEARCH CUSTOMER
   ========================= */
