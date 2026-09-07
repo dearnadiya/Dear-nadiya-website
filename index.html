@@ -4161,11 +4161,10 @@ console.log(
       ) {
 
         const paymentData =
-          await getPaymentStatus(
-            customer.name,
-            customer.whatsapp
-          );
-
+  await getPaymentStatus(
+    selectedCustomer.name,
+    selectedCustomer.whatsapp
+  );
 
         customer.items.forEach(
           function(item) {
