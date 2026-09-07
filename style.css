@@ -4663,4 +4663,301 @@ footer {
     font-size: 11px;
   }
 
+}/* =========================================
+   CHECKOUT YUK - COMPACT ITEM LIST
+========================================= */
+
+.checkout-yuk-items-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 18px 0 12px;
+}
+
+.checkout-yuk-items-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.checkout-yuk-items-header strong {
+  font-size: 15px;
+}
+
+.checkout-yuk-items-header span {
+  font-size: 12px;
+  color: #888;
+}
+
+.checkout-yuk-select-all {
+  border: 1px solid #d8cfe0;
+  background: #fff;
+  color: #6f527c;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.checkout-yuk-select-all:hover {
+  background: #f8f4fa;
+}
+
+
+/* TABLE WRAPPER */
+
+.checkout-yuk-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #ece8ee;
+  border-radius: 12px;
+}
+
+
+/* TABLE */
+
+.checkout-yuk-table {
+  width: 100%;
+  min-width: 760px;
+}
+
+
+/* HEADER */
+
+.checkout-yuk-table-head,
+.checkout-yuk-table-row {
+  display: grid;
+  grid-template-columns:
+    48px
+    130px
+    minmax(250px, 1fr)
+    150px
+    170px;
+
+  align-items: center;
+}
+
+
+/* HEADER */
+
+.checkout-yuk-table-head {
+  min-height: 42px;
+  background: #faf8fb;
+  border-bottom: 1px solid #ece8ee;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+
+/* ROW */
+
+.checkout-yuk-table-row {
+  min-height: 56px;
+  border-bottom: 1px solid #f0edf1;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.checkout-yuk-table-row:last-child {
+  border-bottom: none;
+}
+
+.checkout-yuk-table-row:hover {
+  background: #faf8fb;
+}
+
+
+/* DISABLED */
+
+.checkout-yuk-table-row-disabled {
+  background: #fcfcfc;
+  cursor: not-allowed;
+}
+
+.checkout-yuk-table-row-disabled:hover {
+  background: #fcfcfc;
+}
+
+
+/* COLUMN */
+
+.checkout-col-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkout-col-batch,
+.checkout-col-item,
+.checkout-col-version,
+.checkout-col-status {
+  padding: 8px 10px;
+  min-width: 0;
+}
+
+
+/* CHECKBOX */
+
+.checkout-yuk-item-checkbox {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: #8c6b99;
+}
+
+.checkout-yuk-table-row-disabled
+.checkout-yuk-item-checkbox {
+  cursor: not-allowed;
+}
+
+
+/* BATCH */
+
+.checkout-col-batch strong {
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+
+/* ITEM */
+
+.checkout-col-item strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+
+/* VERSION */
+
+.checkout-col-version {
+  font-size: 12px;
+  color: #555;
+  overflow-wrap: anywhere;
+}
+
+
+/* STATUS */
+
+.checkout-col-status {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.checkout-yuk-status-ready {
+  color: #2f8a57;
+}
+
+.checkout-yuk-status-pending {
+  color: #b06b00;
+}
+
+.checkout-yuk-status-unpaid {
+  color: #999;
+}
+
+
+/* FOOTER */
+
+.checkout-yuk-selection-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #ece8ee;
+  border-radius: 10px;
+  background: #faf8fb;
+}
+
+.checkout-yuk-selection-footer > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checkout-yuk-selection-footer span {
+  font-size: 11px;
+  color: #888;
+}
+
+.checkout-yuk-selection-footer strong {
+  font-size: 13px;
+}
+
+
+.checkout-yuk-continue-button {
+  border: none;
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #7d6688;
+  color: white;
+}
+
+.checkout-yuk-continue-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .checkout-yuk-items-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checkout-yuk-select-all {
+    width: 100%;
+  }
+
+  .checkout-yuk-table {
+    min-width: 720px;
+  }
+
+  .checkout-yuk-table-head,
+  .checkout-yuk-table-row {
+    grid-template-columns:
+      42px
+      110px
+      minmax(230px, 1fr)
+      130px
+      155px;
+  }
+
+  .checkout-yuk-table-row {
+    min-height: 52px;
+  }
+
+  .checkout-col-item strong {
+    font-size: 12px;
+  }
+
+  .checkout-col-status {
+    font-size: 10px;
+  }
+
+  .checkout-yuk-selection-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .checkout-yuk-continue-button {
+    width: 100%;
+  }
+
 }
