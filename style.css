@@ -4418,3 +4418,249 @@ footer {
   }
 
 }
+
+/* =========================================
+   CHECKOUT YUK - ITEM CARD
+   ========================================= */
+
+.checkout-yuk-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 16px 18px;
+  margin-bottom: 12px;
+
+  border: 1px solid #eee5ee;
+  border-radius: 16px;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+
+
+.checkout-yuk-item:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 16px
+    rgba(80, 50, 80, .08);
+
+  border-color: #ded2de;
+}
+
+
+.checkout-yuk-item-ready:hover {
+  border-color: #cbb8d4;
+}
+
+
+/* CHECKBOX */
+
+.checkout-yuk-item-check {
+  flex: 0 0 auto;
+}
+
+
+.checkout-yuk-item-checkbox {
+  width: 19px;
+  height: 19px;
+
+  margin: 0;
+
+  accent-color: #8d6b91;
+
+  cursor: pointer;
+}
+
+
+.checkout-yuk-item-checkbox:disabled {
+  cursor: not-allowed;
+}
+
+
+/* IKON */
+
+.checkout-yuk-item-icon {
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: #f8f3f8;
+
+  font-size: 22px;
+}
+
+
+/* INFORMASI UTAMA */
+
+.checkout-yuk-item-main {
+  min-width: 0;
+  flex: 1;
+}
+
+
+.checkout-yuk-item-category {
+  margin-bottom: 3px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: .04em;
+  text-transform: uppercase;
+
+  color: #9a879b;
+}
+
+
+.checkout-yuk-item-name {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 15px;
+  line-height: 1.35;
+
+  color: #302832;
+}
+
+
+/* BATCH */
+
+.checkout-yuk-item-batch,
+.checkout-yuk-item-version {
+  display: flex;
+  align-items: baseline;
+
+  gap: 6px;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+.checkout-yuk-item-batch span,
+.checkout-yuk-item-version span {
+  color: #958c96;
+}
+
+
+.checkout-yuk-item-batch b,
+.checkout-yuk-item-version b {
+  color: #4b414d;
+}
+
+
+/* STATUS */
+
+.checkout-yuk-item-status {
+  margin-top: 9px;
+}
+
+
+.checkout-yuk-payment-status {
+  display: inline-block;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+
+.checkout-yuk-payment-ready {
+  color: #37835a;
+}
+
+
+.checkout-yuk-payment-pending {
+  color: #a66b18;
+}
+
+
+.checkout-yuk-payment-unpaid {
+  color: #9b7777;
+}
+
+
+/* ITEM TIDAK BISA CO */
+
+.checkout-yuk-item-disabled {
+  background: #faf9fa;
+
+  cursor: not-allowed;
+
+  opacity: .82;
+}
+
+
+.checkout-yuk-item-disabled:hover {
+  transform: none;
+
+  box-shadow: none;
+
+  border-color: #eee5ee;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .checkout-yuk-item {
+    gap: 10px;
+
+    padding: 13px 12px;
+
+    border-radius: 14px;
+  }
+
+
+  .checkout-yuk-item-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-basis: 38px;
+
+    border-radius: 11px;
+
+    font-size: 19px;
+  }
+
+
+  .checkout-yuk-item-name {
+    font-size: 14px;
+
+    margin-bottom: 6px;
+  }
+
+
+  .checkout-yuk-item-batch,
+  .checkout-yuk-item-version {
+    font-size: 11px;
+
+    flex-wrap: wrap;
+  }
+
+
+  .checkout-yuk-payment-status {
+    font-size: 11px;
+  }
+
+}
