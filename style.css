@@ -4142,3 +4142,53 @@ footer {
   }
 
 }
+
+/* =========================================================
+   TOMBOL KEMBALI — GLOBAL SEARCH CUSTOMER
+========================================================= */
+
+.recap-global-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  margin-top: 12px;
+  padding: 8px 12px;
+
+  border: 1px solid var(--line);
+  border-radius: 9px;
+
+  background: #fff;
+  color: #8d526d;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background .15s ease,
+    border-color .15s ease;
+}
+
+.recap-global-back-button:hover {
+  background: #fff8fb;
+  border-color: #d9a8c0;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .recap-global-back-button {
+    margin-top: 9px;
+    padding: 7px 10px;
+
+    border-radius: 8px;
+
+    font-size: 9px;
+  }
+
+}
