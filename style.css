@@ -4314,3 +4314,59 @@ footer {
   }
 
 }
+
+/* =========================================
+   MASKOT CHECKOUT YUK
+========================================= */
+
+.checkout-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.checkout-intro-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.checkout-intro-mascot {
+  width: 150px;
+  flex: 0 0 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkout-intro-mascot img {
+  display: block;
+  width: 150px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .checkout-intro {
+    gap: 10px;
+  }
+
+  .checkout-intro-mascot {
+    width: 85px;
+    flex: 0 0 85px;
+  }
+
+  .checkout-intro-mascot img {
+    width: 85px;
+    max-width: 100%;
+    height: auto;
+  }
+
+}
