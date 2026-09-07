@@ -2346,11 +2346,13 @@ async function loadRecap() {
     ========================= */
 
     renderRecapCategories(
-      recapData
-    );
+  recapData
+);
 
-    setupRecapGlobalSearch();
+setupRecapGlobalSearch();
 
+setupCheckoutYukSearch();
+    
   } catch (error) {
 
     console.error(
