@@ -3393,50 +3393,45 @@ function setupCheckoutYukSearch() {
   ========================= */
 
   async function getPaymentStatus(
-    customerName,
-    whatsappLast4
-  ) {
-
-   console.log(
-  "CHECKOUT CUSTOMER NAME:",
-  customerName
-);
-
-console.log(
-  "CHECKOUT WHATSAPP LAST4:",
+  customerName,
   whatsappLast4
-);
-    
-const paymentData =
-  await supabaseClient.rpc(
-    "get_public_payment_status",
-    {
-      p_customer_name: customerName,
-      p_whatsapp_last4: whatsappLast4
-    }
+) {
+
+  console.log(
+    "CHECKOUT CUSTOMER NAME:",
+    customerName
   );
 
-console.log(
-  "CHECKOUT RPC RESULT:",
-  paymentData
-);
+  console.log(
+    "CHECKOUT WHATSAPP LAST4:",
+    whatsappLast4
+  );
 
-    if (error) {
+  const paymentData =
+    await supabaseClient.rpc(
+      "get_public_payment_status",
+      {
+        p_customer_name: customerName,
+        p_whatsapp_last4: whatsappLast4
+      }
+    );
 
-      console.error(
-        "Gagal mengambil status pembayaran:",
-        error
-      );
+  console.log(
+    "CHECKOUT RPC RESULT:",
+    paymentData
+  );
 
-      return [];
+  if (paymentData.error) {
+    console.error(
+      "Gagal mengambil status pembayaran:",
+      paymentData.error
+    );
 
-    }
-
-
-    return data || [];
-
+    return [];
   }
 
+  return paymentData.data || [];
+}
 
   /* =========================
      CARI STATUS PEMBAYARAN
