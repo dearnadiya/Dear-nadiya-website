@@ -3437,148 +3437,234 @@ function setupCheckoutYukSearch() {
   ========================= */
 
   function findPaymentStatus(
-    item,
-    paymentData
-  ) {
+  item,
+  paymentData
+) {
 
-    const productCode =
-      normalize(
-        item.product_code ||
-        item.batch_code ||
-        ""
-      );
-
-
-    const productVersion =
-      normalize(
-        item.product_version ||
-        ""
-      );
+  const price =
+    Number(
+      item.price ||
+      item.item_price ||
+      0
+    );
 
 
-    const payment =
-      (paymentData || []).find(
-        function(row) {
-
-          const rowCode =
-            normalize(
-              row.product_code ||
-              ""
-            );
+  const remainingAmount =
+    Number(
+      item.remaining_amount ||
+      0
+    );
 
 
-          const rowVersion =
-            normalize(
-              row.product_version ||
-              ""
-            );
+  const paymentStatus =
+    normalize(
+      item.payment_status
+    );
 
 
-          return (
-            rowCode ===
-              productCode &&
-            rowVersion ===
-              productVersion
+  const productCode =
+    normalize(
+      item.product_code ||
+      item.batch_code ||
+      ""
+    );
+
+
+  const productVersion =
+    normalize(
+      item.product_version ||
+      ""
+    );
+
+
+  const payment =
+    (paymentData || []).find(
+      function(row) {
+
+        const rowCode =
+          normalize(
+            row.product_code ||
+            ""
           );
 
-        }
-      );
+
+        const rowVersion =
+          normalize(
+            row.product_version ||
+            ""
+          );
 
 
-    const confirmedAmount =
-      Number(
-        payment?.confirmed_amount ||
-        0
-      );
+        return (
+          rowCode ===
+            productCode &&
+          rowVersion ===
+            productVersion
+        );
+
+      }
+    );
 
 
-    const pendingAmount =
-      Number(
-        payment?.pending_amount ||
-        0
-      );
+  const confirmedAmount =
+    Number(
+      payment?.confirmed_amount ||
+      0
+    );
 
 
-    const price =
-      Number(
-        item.price ||
-        item.item_price ||
-        0
-      );
+  const pendingAmount =
+    Number(
+      payment?.pending_amount ||
+      0
+    );
 
 
-    /*
-      PRIORITAS STATUS:
+  /*
+    =====================================
+    1. CEK DATA REKAP TERLEBIH DAHULU
 
-      1. Confirmed sudah mencapai
-         harga barang
-         → SIAP CHECKOUT
+    Kalau rekap sudah menunjukkan:
+    - sisa tagihan = 0
+    ATAU
+    - payment_status = paid
 
-      2. Confirmed belum mencapai harga,
-         tetapi confirmed + pending
-         sudah mencapai harga
-         → sedang dikonfirmasi Admin
+    maka customer dianggap LUNAS.
+    =====================================
+  */
 
-      3. Total pembayaran belum mencapai
-         harga
-         → belum lunas
-    */
-
-
-    if (
-      price > 0 &&
-      confirmedAmount >= price
-    ) {
-
-      return {
-        state:
-          "ready",
-
-        confirmedAmount:
-          confirmedAmount,
-
-        pendingAmount:
-          pendingAmount
-      };
-
-    }
-
-
-    if (
-      price > 0 &&
-      (
-        confirmedAmount +
-        pendingAmount
-      ) >= price
-    ) {
-
-      return {
-        state:
-          "pending",
-
-        confirmedAmount:
-          confirmedAmount,
-
-        pendingAmount:
-          pendingAmount
-      };
-
-    }
-
+  if (
+    remainingAmount <= 0 &&
+    (
+      price > 0 ||
+      paymentStatus === "paid"
+    )
+  ) {
 
     return {
+
       state:
-        "unpaid",
+        "ready",
 
       confirmedAmount:
         confirmedAmount,
 
       pendingAmount:
         pendingAmount
+
     };
 
   }
 
+
+  /*
+    Beberapa data mungkin tidak mempunyai
+    remaining_amount tetapi payment_status
+    sudah menunjukkan paid.
+  */
+
+  if (
+    paymentStatus ===
+    "paid"
+  ) {
+
+    return {
+
+      state:
+        "ready",
+
+      confirmedAmount:
+        confirmedAmount,
+
+      pendingAmount:
+        pendingAmount
+
+    };
+
+  }
+
+
+  /*
+    =====================================
+    2. PEMBAYARAN SUDAH DIKONFIRMASI ADMIN
+
+    Jika RPC memberikan confirmed amount
+    yang sudah mencukupi harga.
+    =====================================
+  */
+
+  if (
+    price > 0 &&
+    confirmedAmount >= price
+  ) {
+
+    return {
+
+      state:
+        "ready",
+
+      confirmedAmount:
+        confirmedAmount,
+
+      pendingAmount:
+        pendingAmount
+
+    };
+
+  }
+
+
+  /*
+    =====================================
+    3. SUDAH BAYAR TAPI BELUM
+       DIKONFIRMASI ADMIN
+    =====================================
+  */
+
+  if (
+    price > 0 &&
+    (
+      confirmedAmount +
+      pendingAmount
+    ) >= price
+  ) {
+
+    return {
+
+      state:
+        "pending",
+
+      confirmedAmount:
+        confirmedAmount,
+
+      pendingAmount:
+        pendingAmount
+
+    };
+
+  }
+
+
+  /*
+    =====================================
+    4. BELUM LUNAS
+    =====================================
+  */
+
+  return {
+
+    state:
+      "unpaid",
+
+    confirmedAmount:
+      confirmedAmount,
+
+    pendingAmount:
+      pendingAmount
+
+  };
+
+}
 
   /* =========================
      TAMPILKAN CUSTOMER
