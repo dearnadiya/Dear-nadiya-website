@@ -3397,7 +3397,7 @@ function setupCheckoutYukSearch() {
     whatsappLast4
   ) {
 
-    console.log(
+   console.log(
   "CHECKOUT CUSTOMER NAME:",
   customerName
 );
@@ -3406,23 +3406,20 @@ console.log(
   "CHECKOUT WHATSAPP LAST4:",
   whatsapp
 );
-    
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .rpc(
-          "get_public_payment_status",
-          {
-            p_customer_name:
-              customerName,
 
-            p_whatsapp_last4:
-              whatsappLast4
-          }
-        );
+const paymentData =
+  await supabaseClient.rpc(
+    "get_public_payment_status",
+    {
+      p_customer_name: customerName,
+      p_whatsapp_last4: whatsapp
+    }
+  );
 
+console.log(
+  "CHECKOUT RPC RESULT:",
+  paymentData
+);
 
     if (error) {
 
