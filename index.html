@@ -4286,31 +4286,6 @@ if (continueButton) {
       if (!selectedItems.length) {
         return;
       }
-
-
-      const orderCodeInput =
-  results.querySelector(
-    "#checkoutYukOrderCode"
-  );
-
-const orderCode =
-  orderCodeInput
-    ? orderCodeInput.value.trim()
-    : "";
-
-if (!orderCode) {
-
-  alert(
-    "Silakan masukkan kode pesanan Shopee terlebih dahulu."
-  );
-
-  if (orderCodeInput) {
-    orderCodeInput.focus();
-  }
-
-  return;
-
-}
       
       /* =========================
    TAMPILKAN KONFIRMASI
