@@ -3115,18 +3115,30 @@ const customerMap =
 matched.forEach(
   function(item) {
 
-    const name =
-      String(
-        item.customer_name ||
-        "Customer"
-      ).trim();
+    const rawCustomerName =
+  String(
+    item.customer_name ||
+    ""
+  ).trim();
 
-    const last4 =
-      String(
-        item.whatsapp_last4 ||
-        ""
-      ).trim();
+const nameMatch =
+  rawCustomerName.match(
+    /^(.*?)\s*\((\d{4})\)$/
+  );
 
+const name =
+  nameMatch
+    ? nameMatch[1].trim()
+    : rawCustomerName;
+
+const whatsapp =
+  String(
+    item.whatsapp_last4 ||
+    (nameMatch
+      ? nameMatch[2]
+      : "")
+  ).trim();
+    
     const key =
       (
         name.toLowerCase() +
