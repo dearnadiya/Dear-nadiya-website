@@ -4104,19 +4104,31 @@ function setupCheckoutYukSearch() {
       matched.forEach(
         function(item) {
 
-          const name =
-            String(
-              item.customer_name ||
-              ""
-            ).trim();
+          const rawCustomerName =
+  String(
+    item.customer_name ||
+    ""
+  ).trim();
 
+const nameMatch =
+  rawCustomerName.match(
+    /^(.*?)\s*\((\d{4})\)$/
+  );
 
-          const whatsapp =
-            String(
-              item.whatsapp_last4 ||
-              ""
-            ).trim();
+const name =
+  nameMatch
+    ? nameMatch[1].trim()
+    : rawCustomerName;
 
+const whatsapp =
+  String(
+    item.whatsapp_last4 ||
+    (
+      nameMatch
+        ? nameMatch[2]
+        : ""
+    )
+  ).trim();
 
           const key =
             normalize(name) +
