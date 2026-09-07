@@ -941,11 +941,12 @@ async function findCustomerPayments(
       </h2>
 
       <p class="panel-description">
-        Pilih barang yang sudah sampai di Admin
-        dan siap untuk checkout Shopee. 
-        Jangan checkout barang oang lain ya,pasti ketahuan loh!
-      </p>
-
+  Pilih barang yang sudah sampai di Admin
+  dan siap untuk checkout Shopee.
+  Jangan checkout barang orang lain ya,
+  pasti ketahuan loh! 😆
+</p>
+      
     </div>
 
 
@@ -3387,11 +3388,13 @@ function setupCheckoutYukSearch() {
 
 
   /* =========================
-     CEK PEMBAYARAN PENDING
+     AMBIL STATUS PEMBAYARAN
+     DARI RPC PUBLIC
   ========================= */
 
-  async function getPendingPayments(
-    customerName
+  async function getPaymentStatus(
+    customerName,
+    whatsappLast4
   ) {
 
     const {
@@ -3399,29 +3402,22 @@ function setupCheckoutYukSearch() {
       error
     } =
       await supabaseClient
-        .from("dn_payment_submissions")
-        .select(`
-          customer_name,
-          whatsapp_last4,
-          product_code,
-          product_version,
-          amount,
-          status
-        `)
-        .eq(
-          "customer_name",
-          customerName
-        )
-        .eq(
-          "status",
-          "pending"
+        .rpc(
+          "get_public_payment_status",
+          {
+            p_customer_name:
+              customerName,
+
+            p_whatsapp_last4:
+              whatsappLast4
+          }
         );
 
 
     if (error) {
 
       console.error(
-        "Gagal mengambil pembayaran pending:",
+        "Gagal mengambil status pembayaran:",
         error
       );
 
@@ -3436,13 +3432,72 @@ function setupCheckoutYukSearch() {
 
 
   /* =========================
-     CEK STATUS PEMBAYARAN ITEM
+     CARI STATUS PEMBAYARAN
+     UNTUK SATU ITEM
   ========================= */
 
-  function getCheckoutPaymentState(
+  function findPaymentStatus(
     item,
-    pendingPayments
+    paymentData
   ) {
+
+    const productCode =
+      normalize(
+        item.product_code ||
+        item.batch_code ||
+        ""
+      );
+
+
+    const productVersion =
+      normalize(
+        item.product_version ||
+        ""
+      );
+
+
+    const payment =
+      (paymentData || []).find(
+        function(row) {
+
+          const rowCode =
+            normalize(
+              row.product_code ||
+              ""
+            );
+
+
+          const rowVersion =
+            normalize(
+              row.product_version ||
+              ""
+            );
+
+
+          return (
+            rowCode ===
+              productCode &&
+            rowVersion ===
+              productVersion
+          );
+
+        }
+      );
+
+
+    const confirmedAmount =
+      Number(
+        payment?.confirmed_amount ||
+        0
+      );
+
+
+    const pendingAmount =
+      Number(
+        payment?.pending_amount ||
+        0
+      );
+
 
     const price =
       Number(
@@ -3452,195 +3507,74 @@ function setupCheckoutYukSearch() {
       );
 
 
-    const remainingValue =
-      item.remaining_amount;
-
-
     /*
-      Jika remaining_amount tersedia,
-      gunakan nilai tersebut.
+      PRIORITAS STATUS:
 
-      Jika tidak tersedia,
-      hitung dari harga - DP - pelunasan.
+      1. Confirmed sudah mencapai
+         harga barang
+         → SIAP CHECKOUT
+
+      2. Confirmed belum mencapai harga,
+         tetapi confirmed + pending
+         sudah mencapai harga
+         → sedang dikonfirmasi Admin
+
+      3. Total pembayaran belum mencapai
+         harga
+         → belum lunas
     */
 
-    let remaining;
 
     if (
-      remainingValue !== undefined &&
-      remainingValue !== null &&
-      remainingValue !== ""
-    ) {
-
-      remaining =
-        Number(
-          remainingValue
-        );
-
-    } else {
-
-      const dp =
-        Number(
-          item.dp ||
-          item.dp_amount ||
-          0
-        );
-
-      const pelunasan =
-        Number(
-          item.pelunasan ||
-          0
-        );
-
-      remaining =
-        Math.max(
-          0,
-          price -
-          dp -
-          pelunasan
-        );
-
-    }
-
-
-    /*
-      Jika tagihan sudah 0,
-      berarti sudah lunas berdasarkan
-      data rekap yang sudah dikonfirmasi Admin.
-    */
-
-    if (
-      remaining <= 0
+      price > 0 &&
+      confirmedAmount >= price
     ) {
 
       return {
-        state: "ready",
-        remaining: 0
+        state:
+          "ready",
+
+        confirmedAmount:
+          confirmedAmount,
+
+        pendingAmount:
+          pendingAmount
       };
 
     }
 
 
-    /*
-      Cari pembayaran pending yang
-      cocok dengan barang ini.
-    */
-
-    const productCode =
-      normalize(
-        item.product_code ||
-        item.batch_code
-      );
-
-    const productVersion =
-      normalize(
-        item.product_version ||
-        ""
-      );
-
-    const itemWhatsapp =
-      String(
-        item.whatsapp_last4 ||
-        ""
-      ).trim();
-
-
-    const matchedPending =
-      (pendingPayments || [])
-        .filter(
-          function(payment) {
-
-            const paymentCode =
-              normalize(
-                payment.product_code
-              );
-
-            const paymentVersion =
-              normalize(
-                payment.product_version ||
-                ""
-              );
-
-            const paymentWhatsapp =
-              String(
-                payment.whatsapp_last4 ||
-                ""
-              ).trim();
-
-
-            const sameProduct =
-              paymentCode ===
-              productCode;
-
-            const sameVersion =
-              !productVersion ||
-              !paymentVersion ||
-              paymentVersion ===
-                productVersion;
-
-            const sameWhatsapp =
-              !itemWhatsapp ||
-              !paymentWhatsapp ||
-              paymentWhatsapp ===
-                itemWhatsapp;
-
-
-            return (
-              sameProduct &&
-              sameVersion &&
-              sameWhatsapp
-            );
-
-          }
-        );
-
-
-    const pendingAmount =
-      matchedPending.reduce(
-        function(total, payment) {
-
-          return (
-            total +
-            Number(
-              payment.amount ||
-              0
-            )
-          );
-
-        },
-        0
-      );
-
-
-    /*
-      Jika pembayaran pending sudah
-      mencukupi seluruh tagihan,
-      berarti customer sudah membayar
-      tetapi Admin belum konfirmasi.
-    */
-
     if (
-      pendingAmount >=
-      remaining
+      price > 0 &&
+      (
+        confirmedAmount +
+        pendingAmount
+      ) >= price
     ) {
 
       return {
-        state: "pending",
-        remaining:
-          remaining
+        state:
+          "pending",
+
+        confirmedAmount:
+          confirmedAmount,
+
+        pendingAmount:
+          pendingAmount
       };
 
     }
 
-
-    /*
-      Masih ada tagihan yang belum lunas.
-    */
 
     return {
-      state: "unpaid",
-      remaining:
-        remaining
+      state:
+        "unpaid",
+
+      confirmedAmount:
+        confirmedAmount,
+
+      pendingAmount:
+        pendingAmount
     };
 
   }
@@ -3714,6 +3648,7 @@ function setupCheckoutYukSearch() {
                     👤
                   </div>
 
+
                   <div
                     class="checkout-yuk-member-info"
                   >
@@ -3723,6 +3658,7 @@ function setupCheckoutYukSearch() {
                         customer.name
                       )}
                     </strong>
+
 
                     ${
                       customer.whatsapp
@@ -3737,12 +3673,14 @@ function setupCheckoutYukSearch() {
                         : ""
                     }
 
+
                     <small>
                       ${customer.items.length}
                       barang
                     </small>
 
                   </div>
+
 
                   <div
                     class="checkout-yuk-member-arrow"
@@ -3781,6 +3719,7 @@ function setupCheckoutYukSearch() {
               Number(
                 this.dataset.customerIndex
               );
+
 
             const selectedCustomer =
               customers[index];
@@ -3876,12 +3815,13 @@ function setupCheckoutYukSearch() {
               const paymentState =
                 item.checkoutPaymentState ||
                 {
-                  state: "unpaid",
-                  remaining: 0
+                  state:
+                    "unpaid"
                 };
 
 
-              let paymentMessage = "";
+              let paymentMessage =
+                "";
 
 
               if (
@@ -3890,11 +3830,13 @@ function setupCheckoutYukSearch() {
               ) {
 
                 paymentMessage = `
+
                   <span
                     class="checkout-yuk-payment-status checkout-yuk-payment-ready"
                   >
                     ✓ Lunas — Siap Checkout
                   </span>
+
                 `;
 
               } else if (
@@ -3903,21 +3845,25 @@ function setupCheckoutYukSearch() {
               ) {
 
                 paymentMessage = `
+
                   <span
                     class="checkout-yuk-payment-status checkout-yuk-payment-pending"
                   >
                     ⏳ Pembayaran sedang dikonfirmasi Admin
                   </span>
+
                 `;
 
               } else {
 
                 paymentMessage = `
+
                   <span
                     class="checkout-yuk-payment-status checkout-yuk-payment-unpaid"
                   >
                     ⚠️ Lunasi tagihan dulu yuk!
                   </span>
+
                 `;
 
               }
@@ -3931,11 +3877,14 @@ function setupCheckoutYukSearch() {
               return `
 
                 <label
-                  class="checkout-yuk-item ${
-                    canCheckout
-                      ? ""
-                      : "checkout-yuk-item-disabled"
-                  }"
+                  class="
+                    checkout-yuk-item
+                    ${
+                      canCheckout
+                        ? ""
+                        : "checkout-yuk-item-disabled"
+                    }
+                  "
                 >
 
                   <input
@@ -4024,6 +3973,10 @@ function setupCheckoutYukSearch() {
         "click",
         function() {
 
+          /*
+            Kembali ke customer yang sama.
+          */
+
           renderCustomerChoices([
             {
               name:
@@ -4089,14 +4042,10 @@ function setupCheckoutYukSearch() {
 
 
       /*
-        Cari semua barang customer yang:
-        - sudah Arrived Admin
-        - belum Checkout Shopee
-
-        Di tahap ini JANGAN langsung
-        membuang barang yang belum lunas,
-        karena kita ingin menampilkan
-        pesan status pembayaran.
+        Cari berdasarkan:
+        - Nama customer
+        - Arrived Admin
+        - Belum Checkout Shopee
       */
 
       const matched =
@@ -4108,10 +4057,12 @@ function setupCheckoutYukSearch() {
                 item.customer_name
               );
 
+
             const tracking =
               normalize(
                 item.item_status
               );
+
 
             const customerStatus =
               normalize(
@@ -4145,65 +4096,7 @@ function setupCheckoutYukSearch() {
 
 
       /*
-        Ambil pembayaran pending
-        untuk customer yang ditemukan.
-      */
-
-      const customerNames = [
-        ...new Set(
-          matched.map(
-            function(item) {
-              return String(
-                item.customer_name ||
-                ""
-              ).trim();
-            }
-          )
-        )
-      ];
-
-
-      let pendingPayments = [];
-
-
-      for (
-        const customerName
-        of customerNames
-      ) {
-
-        const payments =
-          await getPendingPayments(
-            customerName
-          );
-
-        pendingPayments =
-          pendingPayments.concat(
-            payments
-          );
-
-      }
-
-
-      /*
-        Tentukan status pembayaran
-        setiap barang.
-      */
-
-      matched.forEach(
-        function(item) {
-
-          item.checkoutPaymentState =
-            getCheckoutPaymentState(
-              item,
-              pendingPayments
-            );
-
-        }
-      );
-
-
-      /*
-        Kelompokkan berdasarkan:
+        Kelompokkan customer berdasarkan:
         NAMA + 4 DIGIT WHATSAPP
       */
 
@@ -4218,6 +4111,7 @@ function setupCheckoutYukSearch() {
               item.customer_name ||
               ""
             ).trim();
+
 
           const whatsapp =
             String(
@@ -4259,10 +4153,46 @@ function setupCheckoutYukSearch() {
       );
 
 
-      renderCustomerChoices(
+      /*
+        Ambil status pembayaran
+        per customer.
+      */
+
+      const customers =
         Object.values(
           customerGroups
-        )
+        );
+
+
+      for (
+        const customer
+        of customers
+      ) {
+
+        const paymentData =
+          await getPaymentStatus(
+            customer.name,
+            customer.whatsapp
+          );
+
+
+        customer.items.forEach(
+          function(item) {
+
+            item.checkoutPaymentState =
+              findPaymentStatus(
+                item,
+                paymentData
+              );
+
+          }
+        );
+
+      }
+
+
+      renderCustomerChoices(
+        customers
       );
 
     }
