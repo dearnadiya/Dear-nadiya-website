@@ -4254,15 +4254,57 @@ function renderCheckoutItems(
   }
 
 
-  /*
-    Untuk tahap ini tombol Lanjut Checkout
-    belum menjalankan proses apa pun.
+  /* =========================
+   LANJUT CHECKOUT
+========================= */
 
-    Kita buat UI dan seleksi barangnya dulu.
-    Logika checkout akan disambungkan
-    setelah tampilan ini berhasil dites.
-  */
+if (continueButton) {
 
+  continueButton.addEventListener(
+    "click",
+    function() {
+
+      const selectedItems =
+        Array.from(
+          checkboxes
+        )
+        .filter(function(checkbox) {
+          return checkbox.checked;
+        })
+        .map(function(checkbox) {
+
+          const index =
+            Number(
+              checkbox.dataset.itemIndex
+            );
+
+          return items[index];
+
+        });
+
+
+      if (!selectedItems.length) {
+        return;
+      }
+
+
+      /*
+        Untuk tahap ini kita tampilkan
+        barang yang dipilih di console.
+
+        Belum mengubah database
+        dan belum mengubah status CO.
+      */
+
+      console.log(
+        "Barang yang dipilih untuk checkout:",
+        selectedItems
+      );
+
+    }
+  );
+
+}
 }
   
   /* =========================
