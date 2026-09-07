@@ -4288,14 +4288,30 @@ if (continueButton) {
       }
 
 
-      /*
-        Untuk tahap ini kita tampilkan
-        barang yang dipilih di console.
+      const orderCodeInput =
+  results.querySelector(
+    "#checkoutYukOrderCode"
+  );
 
-        Belum mengubah database
-        dan belum mengubah status CO.
-      */
+const orderCode =
+  orderCodeInput
+    ? orderCodeInput.value.trim()
+    : "";
 
+if (!orderCode) {
+
+  alert(
+    "Silakan masukkan kode pesanan Shopee terlebih dahulu."
+  );
+
+  if (orderCodeInput) {
+    orderCodeInput.focus();
+  }
+
+  return;
+
+}
+      
       /* =========================
    TAMPILKAN KONFIRMASI
 ========================= */
