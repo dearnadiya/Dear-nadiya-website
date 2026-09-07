@@ -3818,149 +3818,220 @@ function setupCheckoutYukSearch() {
         <div class="checkout-yuk-item-list">
 
           ${items.map(
-            function(item) {
+  function(item) {
 
-              const paymentState =
-                item.checkoutPaymentState ||
-                {
-                  state:
-                    "unpaid"
-                };
+    const paymentState =
+      item.checkoutPaymentState ||
+      {
+        state: "unpaid"
+      };
 
+    let paymentMessage = "";
+    let paymentClass = "";
 
-              let paymentMessage =
-                "";
+    if (
+      paymentState.state ===
+      "ready"
+    ) {
 
+      paymentMessage = `
+        <span
+          class="
+            checkout-yuk-payment-status
+            checkout-yuk-payment-ready
+          "
+        >
+          ✓ Lunas — Siap Checkout
+        </span>
+      `;
 
-              if (
-                paymentState.state ===
-                "ready"
-              ) {
+      paymentClass =
+        "checkout-yuk-item-ready";
 
-                paymentMessage = `
+    } else if (
+      paymentState.state ===
+      "pending"
+    ) {
 
-                  <span
-                    class="checkout-yuk-payment-status checkout-yuk-payment-ready"
-                  >
-                    ✓ Lunas — Siap Checkout
-                  </span>
+      paymentMessage = `
+        <span
+          class="
+            checkout-yuk-payment-status
+            checkout-yuk-payment-pending
+          "
+        >
+          ⏳ Pembayaran Sedang
+          Dikonfirmasi Admin
+        </span>
+      `;
 
-                `;
+      paymentClass =
+        "checkout-yuk-item-disabled";
 
-              } else if (
-                paymentState.state ===
-                "pending"
-              ) {
+    } else {
 
-                paymentMessage = `
+      paymentMessage = `
+        <span
+          class="
+            checkout-yuk-payment-status
+            checkout-yuk-payment-unpaid
+          "
+        >
+          🔒 Lunasi Tagihan Dulu
+        </span>
+      `;
 
-                  <span
-                    class="checkout-yuk-payment-status checkout-yuk-payment-pending"
-                  >
-                    ⏳ Pembayaran sedang dikonfirmasi Admin
-                  </span>
+      paymentClass =
+        "checkout-yuk-item-disabled";
+    }
 
-                `;
+    const canCheckout =
+      paymentState.state ===
+      "ready";
 
-              } else {
+    /* =========================
+       IKON KATEGORI
+    ========================= */
 
-                paymentMessage = `
+    const category =
+      String(
+        item.category || ""
+      )
+        .trim()
+        .toLowerCase();
 
-                  <span
-                    class="checkout-yuk-payment-status checkout-yuk-payment-unpaid"
-                  >
-                    ⚠️ Lunasi tagihan dulu yuk!
-                  </span>
+    let categoryIcon = "📦";
 
-                `;
+    if (
+      category === "truz"
+    ) {
+      categoryIcon = "🧸";
+    } else if (
+      category === "treasure kr"
+    ) {
+      categoryIcon = "🇰🇷";
+    } else if (
+      category === "treasure jp"
+    ) {
+      categoryIcon = "🇯🇵";
+    } else if (
+      category === "treasure ch"
+    ) {
+      categoryIcon = "🇨🇳";
+    } else if (
+      category === "treasure thai"
+    ) {
+      categoryIcon = "🇹🇭";
+    } else if (
+      category === "treasure ina"
+    ) {
+      categoryIcon = "🇮🇩";
+    } else if (
+      category === "treasure album"
+    ) {
+      categoryIcon = "📖";
+    }
 
-              }
+    return `
+      <label
+        class="
+          checkout-yuk-item
+          ${paymentClass}
+        "
+      >
 
-
-              const canCheckout =
-                paymentState.state ===
-                "ready";
-
-
-              return `
-
-                <label
-                  class="
-                    checkout-yuk-item
-                    ${
-                      canCheckout
-                        ? ""
-                        : "checkout-yuk-item-disabled"
-                    }
-                  "
-                >
-
-                  <input
-                    type="checkbox"
-                    class="checkout-yuk-item-checkbox"
-                    ${
-                      canCheckout
-                        ? ""
-                        : "disabled"
-                    }
-                  >
-
-
-                  <div
-                    class="checkout-yuk-item-main"
-                  >
-
-                    <strong>
-                      ${display(
-                        item.item_name ||
-                        item.product_name ||
-                        "-"
-                      )}
-                    </strong>
-
-
-                    <span>
-                      Batch:
-                      ${display(
-                        item.batch_code ||
-                        item.product_code ||
-                        "-"
-                      )}
-                    </span>
-
-
-                    <span>
-                      Versi / Member:
-                      ${display(
-                        item.product_version ||
-                        "-"
-                      )}
-                    </span>
-
-
-                    ${paymentMessage}
-
-                  </div>
-
-
-                  <div
-                    class="checkout-yuk-item-price"
-                  >
-
-                    ${rupiah(
-                      item.price ||
-                      item.item_price ||
-                      0
-                    )}
-
-                  </div>
-
-                </label>
-
-              `;
-
+        <div
+          class="checkout-yuk-item-check"
+        >
+          <input
+            type="checkbox"
+            class="checkout-yuk-item-checkbox"
+            ${
+              canCheckout
+                ? ""
+                : "disabled"
             }
-          ).join("")}
+          >
+        </div>
+
+
+        <div
+          class="checkout-yuk-item-icon"
+        >
+          ${categoryIcon}
+        </div>
+
+
+        <div
+          class="checkout-yuk-item-main"
+        >
+
+          <div
+            class="checkout-yuk-item-category"
+          >
+            ${display(
+              item.category ||
+              "Lainnya"
+            )}
+          </div>
+
+
+          <strong
+            class="checkout-yuk-item-name"
+          >
+            ${display(
+              item.item_name ||
+              item.product_name ||
+              "-"
+            )}
+          </strong>
+
+
+          <div
+            class="checkout-yuk-item-batch"
+          >
+            <span>
+              Kode Batch
+            </span>
+
+            <b>
+              ${display(
+                item.batch_code ||
+                item.product_code ||
+                "-"
+              )}
+            </b>
+          </div>
+
+
+          <div
+            class="checkout-yuk-item-version"
+          >
+            <span>
+              Versi / Member
+            </span>
+
+            <b>
+              ${display(
+                item.product_version ||
+                "-"
+              )}
+            </b>
+          </div>
+
+
+          <div
+            class="checkout-yuk-item-status"
+          >
+            ${paymentMessage}
+          </div>
+
+        </div>
+
+      </label>
+    `;
+  }
+).join("")}
 
         </div>
 
