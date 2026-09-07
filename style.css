@@ -4370,3 +4370,51 @@ footer {
   }
 
 }
+
+/* =========================
+   CHECKOUT YUK - PAYMENT STATUS
+========================= */
+
+.checkout-yuk-payment-status {
+  display: block;
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.checkout-yuk-payment-ready {
+  color: #4f8a67;
+}
+
+.checkout-yuk-payment-pending {
+  color: #b07a2a;
+}
+
+.checkout-yuk-payment-unpaid {
+  color: #b85c5c;
+}
+
+.checkout-yuk-item-disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.checkout-yuk-item-disabled
+.checkout-yuk-item-main {
+  cursor: not-allowed;
+}
+
+.checkout-yuk-item-disabled
+.checkout-yuk-item-price {
+  opacity: 0.75;
+}
+
+@media (max-width: 600px) {
+
+  .checkout-yuk-payment-status {
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+}
