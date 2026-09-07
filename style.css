@@ -4961,3 +4961,247 @@ footer {
   }
 
 }
+
+/* =========================================
+   CHECKOUT YUK - KONFIRMASI
+========================================= */
+
+.checkout-yuk-confirmation {
+  width: 100%;
+}
+
+.checkout-yuk-back-confirm {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 18px;
+  color: #765b82;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.checkout-yuk-confirmation-header {
+  margin-bottom: 18px;
+}
+
+.checkout-yuk-confirmation-header h3 {
+  margin: 4px 0 6px;
+  font-size: 20px;
+}
+
+.checkout-yuk-confirmation-header p:last-child {
+  margin: 0;
+  color: #888;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* CUSTOMER */
+
+.checkout-yuk-confirmation-customer {
+  display: flex;
+  gap: 30px;
+  padding: 13px 15px;
+  margin-bottom: 18px;
+  border: 1px solid #ece8ee;
+  border-radius: 10px;
+  background: #faf8fb;
+}
+
+.checkout-yuk-confirmation-customer > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.checkout-yuk-confirmation-customer span {
+  font-size: 10px;
+  color: #999;
+}
+
+.checkout-yuk-confirmation-customer strong {
+  font-size: 13px;
+}
+
+
+/* TITLE */
+
+.checkout-yuk-confirmation-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkout-yuk-confirmation-title strong {
+  font-size: 14px;
+}
+
+.checkout-yuk-confirmation-title span {
+  font-size: 11px;
+  color: #888;
+}
+
+
+/* LIST */
+
+.checkout-yuk-confirmation-list {
+  border: 1px solid #ece8ee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+
+/* ROW */
+
+.checkout-yuk-confirmation-row {
+  display: grid;
+  grid-template-columns:
+    110px
+    minmax(250px, 1fr)
+    110px;
+
+  align-items: center;
+  min-height: 55px;
+  border-bottom: 1px solid #f0edf1;
+}
+
+.checkout-yuk-confirmation-row:last-child {
+  border-bottom: none;
+}
+
+
+/* BATCH */
+
+.checkout-yuk-confirmation-batch {
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+
+/* ITEM */
+
+.checkout-yuk-confirmation-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  min-width: 0;
+}
+
+.checkout-yuk-confirmation-item strong {
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.checkout-yuk-confirmation-item span {
+  font-size: 10px;
+  color: #888;
+  overflow-wrap: anywhere;
+}
+
+
+/* STATUS */
+
+.checkout-yuk-confirmation-status {
+  padding: 8px 10px;
+  color: #2f8a57;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* SUMMARY */
+
+.checkout-yuk-confirmation-summary {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.checkout-yuk-confirmation-summary > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkout-yuk-confirmation-summary span {
+  font-size: 11px;
+  color: #888;
+}
+
+.checkout-yuk-confirmation-summary strong {
+  font-size: 13px;
+}
+
+
+/* ACTION */
+
+.checkout-yuk-confirmation-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.checkout-yuk-confirmation-back-button,
+.checkout-yuk-confirmation-next-button {
+  border-radius: 9px;
+  padding: 10px 15px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.checkout-yuk-confirmation-back-button {
+  border: 1px solid #ddd5e0;
+  background: white;
+  color: #765b82;
+}
+
+.checkout-yuk-confirmation-next-button {
+  border: none;
+  background: #7d6688;
+  color: white;
+  font-weight: 600;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .checkout-yuk-confirmation-header h3 {
+    font-size: 18px;
+  }
+
+  .checkout-yuk-confirmation-customer {
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .checkout-yuk-confirmation-list {
+    overflow-x: auto;
+  }
+
+  .checkout-yuk-confirmation-row {
+    min-width: 620px;
+    grid-template-columns:
+      100px
+      minmax(300px, 1fr)
+      110px;
+  }
+
+  .checkout-yuk-confirmation-actions {
+    flex-direction: column-reverse;
+  }
+
+  .checkout-yuk-confirmation-back-button,
+  .checkout-yuk-confirmation-next-button {
+    width: 100%;
+  }
+
+}
