@@ -3758,10 +3758,10 @@ footer {
   /* Isi tabel dibuat lebih lebar dari layar */
 
   .recap-global-table-header,
-  .recap-global-table-row {
-    width: 820px;
-    min-width: 820px;
-
+.recap-global-table-row {
+    width: 880px;
+    min-width: 880px;
+  
     box-sizing: border-box;
 
     display: grid;
