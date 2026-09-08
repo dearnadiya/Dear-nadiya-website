@@ -4607,23 +4607,14 @@ if (
 }
 
 
-const {
-  error: checkoutUpdateError
-} =
-  await supabaseClient
-    .from("purchase_recap")
-    .update({
-      customer_status:
-        "Sudah Checkout Shopee",
-
-      shopee_order_code:
-        orderCode
-    })
-    .in(
-      "id",
-      recapIds
-    );
-
+const { data: updatedCount, error: updateError } =
+  await supabaseClient.rpc(
+    "report_checkout_shopee",
+    {
+      p_recap_ids: recapIds,
+      p_order_code: orderCode
+    }
+  );
 
 if (checkoutUpdateError) {
 
