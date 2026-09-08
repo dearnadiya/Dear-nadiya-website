@@ -4656,6 +4656,13 @@ console.log(
 alert(
   "Checkout berhasil dilaporkan. Terima kasih!"
 );
+
+      results.innerHTML = "";
+
+if (searchInput) {
+  searchInput.value = "";
+  searchInput.focus();
+}
     }
   );
 
