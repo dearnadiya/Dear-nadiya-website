@@ -5248,3 +5248,27 @@ footer {
   color: #999;
   line-height: 1.4;
 }
+
+/* =========================
+   REKAP GLOBAL - 9 KOLOM
+   ========================= */
+
+.recap-global-table-header,
+.recap-global-table-row {
+  display: grid;
+  grid-template-columns:
+    90px
+    180px
+    130px
+    100px
+    100px
+    145px
+    155px
+    170px
+    110px;
+  align-items: center;
+}
+
+.recap-table-checkout-date {
+  white-space: nowrap;
+}
