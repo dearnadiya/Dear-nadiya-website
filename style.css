@@ -5253,19 +5253,23 @@ footer {
    REKAP GLOBAL - 9 KOLOM
    ========================= */
 
+/* =========================
+   REKAP GLOBAL - 9 KOLOM
+   ========================= */
+
 .recap-global-table-header,
 .recap-global-table-row {
   display: grid;
   grid-template-columns:
+    80px
+    160px
+    120px
     90px
-    180px
+    90px
     130px
-    100px
-    100px
-    145px
-    155px
-    170px
-    110px;
+    135px
+    150px
+    90px;
   align-items: center;
 }
 
