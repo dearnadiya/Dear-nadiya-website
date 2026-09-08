@@ -4682,21 +4682,24 @@ if (updateError) {
   return;
 }
 
-
 console.log(
-  "Checkout Yuk berhasil disimpan:",
-  {
-    orderCode:
-      orderCode,
-
-    recapIds:
-      recapIds,
-
-    updatedCount:
-      updatedCount
-  }
+  "Checkout Yuk berhasil disimpan"
 );
 
+console.log(
+  "Order Code:",
+  orderCode
+);
+
+console.log(
+  "Recap IDs:",
+  recapIds
+);
+
+console.log(
+  "UPDATED COUNT:",
+  updatedCount
+);
 alert(
   "Checkout berhasil dilaporkan. Terima kasih!"
 );
