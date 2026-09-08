@@ -5276,3 +5276,16 @@ footer {
 .recap-table-checkout-date {
   white-space: nowrap;
 }
+
+/* =========================================
+   REKAP GLOBAL - BACKGROUND MENGIKUTI TABEL
+   ========================================= */
+
+.recap-global-customer {
+  overflow-x: auto;
+}
+
+.recap-global-order-table {
+  width: max-content;
+  min-width: 100%;
+}
