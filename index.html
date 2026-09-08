@@ -4556,7 +4556,7 @@ if (finalCheckoutButton) {
 
   finalCheckoutButton.addEventListener(
     "click",
-    function() {
+    async function() {
 
       const orderCodeInput =
         results.querySelector(
@@ -4583,16 +4583,79 @@ if (finalCheckoutButton) {
       }
 
 
-      console.log(
-        "Kode Pesanan Shopee:",
+      const recapIds =
+  selectedItems
+    .map(function(item) {
+      return item.recap_id;
+    })
+    .filter(function(id) {
+      return id !== null &&
+             id !== undefined &&
+             id !== "";
+    });
+
+
+if (
+  recapIds.length !==
+  selectedItems.length
+) {
+
+  alert(
+    "Data barang tidak lengkap. Silakan ulangi proses Checkout Yuk."
+  );
+
+  return;
+}
+
+
+const {
+  error: checkoutUpdateError
+} =
+  await supabaseClient
+    .from("purchase_recap")
+    .update({
+      customer_status:
+        "Sudah Checkout Shopee",
+
+      shopee_order_code:
         orderCode
-      );
+    })
+    .in(
+      "id",
+      recapIds
+    );
 
-      console.log(
-        "Barang yang akan dilaporkan sudah CO:",
-        selectedItems
-      );
 
+if (checkoutUpdateError) {
+
+  console.error(
+    "Gagal menyimpan Checkout Yuk:",
+    checkoutUpdateError
+  );
+
+  alert(
+    "Gagal menyimpan data Checkout Yuk. Silakan coba lagi."
+  );
+
+  return;
+}
+
+
+console.log(
+  "Checkout Yuk berhasil disimpan:",
+  {
+    orderCode:
+      orderCode,
+
+    recapIds:
+      recapIds
+  }
+);
+
+
+alert(
+  "Checkout berhasil dilaporkan. Terima kasih!"
+);
     }
   );
 
