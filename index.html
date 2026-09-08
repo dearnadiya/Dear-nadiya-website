@@ -3140,12 +3140,11 @@ const whatsapp =
   ).trim();
     
     const key =
-      (
-        name.toLowerCase() +
-        "|" +
-        last4
-      );
-
+  (
+    name.toLowerCase() +
+    "|" +
+    whatsapp
+  );
 
     if (
       !customerMap.has(key)
@@ -3158,7 +3157,7 @@ const whatsapp =
             name,
 
           last4:
-            last4,
+  whatsapp,
 
           items:
             []
