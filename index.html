@@ -1994,6 +1994,49 @@ function getTrackingDisplay(status) {
   `;
 }
 
+   /* =========================
+   STATUS CHECKOUT DATE
+========================= */
+
+  function getCheckoutDateDisplay(item) {
+
+  if (
+    String(
+      item.customer_status ||
+      ""
+    ).trim() !==
+    "Sudah Checkout Shopee"
+  ) {
+    return "-";
+  }
+
+  if (!item.checkout_at) {
+    return "-";
+  }
+
+  const date =
+    new Date(
+      item.checkout_at
+    );
+
+  if (
+    isNaN(
+      date.getTime()
+    )
+  ) {
+    return "-";
+  }
+
+  return date.toLocaleDateString(
+    "id-ID",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }
+  );
+}
+
   /* =========================
    SEARCH CUSTOMER IN RECAP
 ========================= */
@@ -2783,6 +2826,10 @@ function setupRecapGlobalSearch() {
               CO Shopee
             </div>
 
+            <div>
+  Tanggal CO
+</div>
+
           </div>
 
 
@@ -2904,6 +2951,14 @@ function setupRecapGlobalSearch() {
                       )}
 
                     </div>
+
+                    <div
+  class="recap-table-cell recap-table-checkout-date"
+>
+  ${getCheckoutDateDisplay(
+    item
+  )}
+</div>
 
                   </div>
 
