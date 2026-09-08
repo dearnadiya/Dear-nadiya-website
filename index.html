@@ -4787,78 +4787,71 @@ const whatsapp =
     customer.whatsapp
   );
         
-        customer.items.forEach(
-  function(item) {
+                customer.items.forEach(
+          function(item) {
 
-    /*
-      STATUS UTAMA DIAMBIL DARI REKAP GO
-      purchase_recap.payment_status
-    */
+            /*
+              STATUS UTAMA DIAMBIL DARI REKAP GO
+              purchase_recap.payment_status
+            */
 
-    if (
-      String(
-        item.payment_status ||
-        ""
-      ).toLowerCase() === "paid"
-    ) {
+            if (
+              String(
+                item.payment_status ||
+                ""
+              ).toLowerCase() === "paid"
+            ) {
 
-      item.checkoutPaymentState = {
-        state:
-          "ready"
-      };
+              item.checkoutPaymentState = {
+                state: "ready"
+              };
 
-      return;
-
-    }
+              return;
+            }
 
 
-    /*
-      Jika Rekap GO belum lunas,
-      cek apakah masih ada pembayaran
-      yang sedang menunggu konfirmasi Admin.
-    */
+            /*
+              Jika Rekap GO belum lunas,
+              cek apakah masih ada pembayaran
+              yang sedang menunggu konfirmasi Admin.
+            */
 
-    const rpcPaymentState =
-      findPaymentStatus(
-        item,
-        paymentData
-      );
-
-
-    if (
-      rpcPaymentState.state ===
-      "pending"
-    ) {
-
-      item.checkoutPaymentState = {
-        state:
-          "pending",
-
-        confirmedAmount:
-          rpcPaymentState.confirmedAmount,
-
-        pendingAmount:
-          rpcPaymentState.pendingAmount
-      };
-
-      return;
-
-    }
+            const rpcPaymentState =
+              findPaymentStatus(
+                item,
+                paymentData
+              );
 
 
-    /*
-      Selain itu dianggap belum lunas.
-    */
+            if (
+              rpcPaymentState.state ===
+              "pending"
+            ) {
 
-    item.checkoutPaymentState = {
-      state:
-        "unpaid"
-    };
+              item.checkoutPaymentState = {
+                state: "pending",
 
-  }
-);
-      }
+                confirmedAmount:
+                  rpcPaymentState.confirmedAmount,
 
+                pendingAmount:
+                  rpcPaymentState.pendingAmount
+              };
+
+              return;
+            }
+
+
+            /*
+              Selain itu dianggap belum lunas.
+            */
+
+            item.checkoutPaymentState = {
+              state: "unpaid"
+            };
+
+          }
+        );
 
       renderCustomerChoices(
         customers
