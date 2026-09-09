@@ -7264,6 +7264,7 @@ async function loadPOCustomer() {
           title,
           image_url,
           po_type,
+          order_mode,
           price_text,
           dp_text,
           close_date,
@@ -7463,16 +7464,37 @@ function showPODetail(index) {
         ${
           rows.map(row => {
 
-            const customer =
-              row.customer &&
-              String(row.customer).trim()
-                ? display(row.customer)
-                : `
-                    <span class="po-available">
-                      Tersedia
-                    </span>
-                  `;
+            const isClaimPO =
+  po.order_mode === "claim";
 
+const isClaimed =
+  row.customer &&
+  String(row.customer).trim();
+
+const customer =
+  isClaimPO
+    ? (
+        isClaimed
+          ? `
+              <span class="po-claimed">
+                🔵 Sudah di-claim
+              </span>
+            `
+          : `
+              <span class="po-available">
+                🟢 Masih Bisa Claim
+              </span>
+            `
+      )
+    : (
+        isClaimed
+          ? display(row.customer)
+          : `
+              <span class="po-available">
+                Tersedia
+              </span>
+            `
+      );
 
             return `
 
