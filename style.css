@@ -6996,3 +6996,32 @@ footer {
   }
 
 }
+
+/* =========================
+   MOBILE - GLOBAL REKAP CUSTOMER
+========================= */
+
+@media (max-width: 700px) {
+
+  #recapGlobalResults {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .recap-global-customer {
+    width: 100% !important;
+    max-width: none !important;
+
+    box-sizing: border-box;
+
+    background: #fff5fb;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    padding: 20px 0 30px;
+
+    border-radius: 0 !important;
+  }
+
+}
