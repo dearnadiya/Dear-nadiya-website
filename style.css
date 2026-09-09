@@ -6970,3 +6970,29 @@ footer {
   }
 
 }
+
+/* =========================
+   STATUS CLAIM - 1 BARIS
+========================= */
+
+@media (max-width: 700px) {
+
+  .po-available,
+  .po-claimed {
+    display: inline-flex !important;
+
+    width: fit-content !important;
+    max-width: none !important;
+
+    white-space: nowrap !important;
+
+    flex-wrap: nowrap !important;
+
+    text-align: center;
+
+    padding: 6px 10px !important;
+
+    line-height: 1.2 !important;
+  }
+
+}
