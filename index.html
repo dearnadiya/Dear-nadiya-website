@@ -7544,20 +7544,27 @@ const customer =
           <div class="po-item-claim">
 
             <a
-              href="https://wa.me/62895339878010?text=${encodeURIComponent(
-                "Halo Admin Dear Nadiya, saya ingin claim member " +
-                String(row.member).trim() +
-                " untuk PO " +
-                String(po.title || "").trim() +
-                "."
-              )}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="po-claim-button"
-            >
-              🎟️ Claim Member
-            </a>
-
+  href="https://wa.me/62895339878010?text=${encodeURIComponent(
+    "Halo Admin Dear Nadiya,\n\n" +
+    "Saya ingin claim member:\n\n" +
+    "PO       : " +
+    String(po.title || "").trim() +
+    "\n" +
+    "Member   : " +
+    String(row.member || "").trim() +
+    "\n" +
+    "Qty      : " +
+    String(row.quantity || 1) +
+    "\n\n" +
+    "Mohon dibantu proses claim.\n" +
+    "Terima kasih ♥"
+  )}"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="po-claim-button"
+>
+  🎟️ Claim Member
+</a>
           </div>
         `
         : ""
