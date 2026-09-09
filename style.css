@@ -6818,3 +6818,14 @@ footer {
 .po-claim-category {
   margin-top: 32px;
 }
+
+/* =========================
+   PO DETAIL NOTICE
+========================= */
+
+.po-detail-notice {
+  margin: 8px 0 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #777;
+}
