@@ -7027,24 +7027,51 @@ footer {
 }
 
 /* =========================
-   GLOBAL REKAP - BACKGROUND BARIS
+   GLOBAL REKAP - FULL PINK TABLE
 ========================= */
 
 @media (max-width: 700px) {
 
   #recapGlobalResults
-  .recap-global-table-row {
-    background: #fff5fb !important;
-  }
+  .recap-global-order-table,
+
+  #recapGlobalResults
+  .recap-global-table-header,
+
+  #recapGlobalResults
+  .recap-global-table-body,
+
+  #recapGlobalResults
+  .recap-global-table-row,
 
   #recapGlobalResults
   .recap-table-cell {
     background: #fff5fb !important;
   }
 
+
+  /* TANGGAL CO */
+
   #recapGlobalResults
   .recap-table-checkout-date {
     background: #fff5fb !important;
+    color: #555 !important;
+  }
+
+
+  /* CO SHOPEE */
+
+  #recapGlobalResults
+  .recap-table-co {
+    background: #fff5fb !important;
+  }
+
+
+  /* SEMUA CELL */
+
+  #recapGlobalResults
+  .recap-table-cell {
+    box-shadow: none !important;
   }
 
 }
