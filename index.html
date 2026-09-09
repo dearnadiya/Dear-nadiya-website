@@ -7855,6 +7855,23 @@ const customer =
   }
 </span>
 
+  ${
+  po.close_date &&
+  new Date(po.close_date) < new Date()
+    ? `
+      <p class="po-detail-notice">
+        PO sudah ditutup, tetapi masih ada
+        member yang tersedia untuk di-claim.
+      </p>
+    `
+    : `
+      <p class="po-detail-notice">
+        PO sedang berlangsung dan masih menerima
+        pesanan.
+      </p>
+    `
+}
+
         <h2>
           ${display(po.title)}
         </h2>
