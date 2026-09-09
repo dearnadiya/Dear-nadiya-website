@@ -7541,15 +7541,30 @@ footer {
 }
 
 /* =========================================================
-   REKAP CUSTOMER MOBILE - FINAL LAYOUT
+   REKAP GO CUSTOMER MOBILE
+   FINAL LAYOUT
    TYPE → KATEGORI → BATCH
 ========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
+
 
   /* =======================================================
-     REKAP CAROUSEL UTAMA
+     AREA UTAMA REKAP
   ======================================================= */
+
+  #rekap {
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    overflow: hidden !important;
+  }
+
 
   #recapCarouselTrack {
 
@@ -7565,18 +7580,172 @@ footer {
     padding: 0 !important;
 
     overflow: visible !important;
+
+    transform: none !important;
   }
 
 
+
   /* =======================================================
-     HEADER TYPE / KATEGORI / BATCH
+     =======================================================
+     1. TYPE REKAP
+     4 TYPE / BEBERAPA TYPE DALAM 1 BARIS
+     BISA DIGESER HORIZONTAL
+     =======================================================
+     ======================================================= */
 
-     TOMBOL KEMBALI
-     = KANAN ATAS
 
-     JUDUL
-     = KIRI
+  #recapCarouselTrack
+  .recap-type-card {
+
+    flex: 0 0 90px !important;
+
+    width: 90px !important;
+
+    min-width: 90px !important;
+
+    max-width: 90px !important;
+
+    margin: 0 !important;
+
+    padding: 8px 4px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    justify-content: flex-start !important;
+
+    text-align: center !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-type-icon {
+
+    display: block !important;
+
+    width: auto !important;
+
+    margin: 0 0 5px 0 !important;
+
+    font-size: 24px !important;
+
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-type-name {
+
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    font-size: 11px !important;
+
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+
+    white-space: normal !important;
+
+    word-break: normal !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-type-count {
+
+    width: 100% !important;
+
+    margin-top: 3px !important;
+
+    font-size: 9px !important;
+
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-type-arrow {
+
+    margin-top: 3px !important;
+
+    font-size: 12px !important;
+
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+  }
+
+
+
+  /* =======================================================
+     TYPE REKAP TRACK
+     HARUS HORIZONTAL
   ======================================================= */
+
+  #recapCarouselTrack:has(.recap-type-card) {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    align-items: flex-start !important;
+
+    justify-content: flex-start !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    gap: 10px !important;
+
+    padding: 5px 10px 15px !important;
+
+    box-sizing: border-box !important;
+
+    overflow-x: auto !important;
+
+    overflow-y: hidden !important;
+
+    -webkit-overflow-scrolling: touch !important;
+
+    scrollbar-width: none !important;
+  }
+
+
+  #recapCarouselTrack:has(.recap-type-card)::-webkit-scrollbar {
+
+    display: none !important;
+  }
+
+
+
+  /* =======================================================
+     =======================================================
+     2. HEADER KATEGORI
+     
+     TOMBOL KEMBALI DI KANAN ATAS
+     NAMA TYPE DI KIRI
+     =======================================================
+     ======================================================= */
+
 
   #recapCarouselTrack
   .recap-batch-header {
@@ -7586,48 +7755,47 @@ footer {
     display: block !important;
 
     width: 100% !important;
+
     max-width: 100% !important;
 
     min-width: 0 !important;
 
     height: auto !important;
 
-    box-sizing: border-box !important;
-
     margin: 0 0 14px 0 !important;
 
-    padding: 0 0 8px 0 !important;
+    padding: 0 0 4px 0 !important;
 
-    overflow: visible !important;
+    box-sizing: border-box !important;
 
     background: transparent !important;
 
     border: none !important;
 
     box-shadow: none !important;
+
+    overflow: visible !important;
   }
 
 
-  /* =======================================================
-     JUDUL TYPE / KATEGORI
-  ======================================================= */
+  /* NAMA TYPE / KATEGORI */
 
   #recapCarouselTrack
   .recap-current-category {
 
     display: block !important;
 
-    width: calc(100% - 145px) !important;
+    width: calc(100% - 125px) !important;
 
-    max-width: calc(100% - 145px) !important;
+    max-width: calc(100% - 125px) !important;
 
     min-width: 0 !important;
-
-    box-sizing: border-box !important;
 
     margin: 0 !important;
 
     padding: 4px 0 !important;
+
+    box-sizing: border-box !important;
 
     font-size: 20px !important;
 
@@ -7637,18 +7805,15 @@ footer {
 
     text-align: left !important;
 
-    white-space: normal !important;
+    white-space: nowrap !important;
 
-    word-break: normal !important;
+    overflow: hidden !important;
 
-    overflow-wrap: normal !important;
+    text-overflow: ellipsis !important;
   }
 
 
-  /* =======================================================
-     TOMBOL KEMBALI
-     POJOK KANAN ATAS
-  ======================================================= */
+  /* TOMBOL KEMBALI */
 
   #recapCarouselTrack
   .recap-back-category {
@@ -7656,20 +7821,20 @@ footer {
     position: absolute !important;
 
     top: 0 !important;
+
     right: 0 !important;
 
     display: inline-flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
     width: auto !important;
 
+    max-width: 120px !important;
+
     min-width: 0 !important;
-
-    max-width: 140px !important;
-
-    height: auto !important;
 
     margin: 0 !important;
 
@@ -7679,22 +7844,24 @@ footer {
 
     border-radius: 10px !important;
 
-    font-size: 12px !important;
+    font-size: 11px !important;
 
     line-height: 1.2 !important;
 
     white-space: nowrap !important;
 
-    z-index: 5 !important;
+    z-index: 10 !important;
   }
 
 
-  /* =======================================================
-     LEVEL TYPE → KATEGORI
 
-     KATEGORI 1 BARIS
-     BISA GESER HORIZONTAL
-  ======================================================= */
+  /* =======================================================
+     =======================================================
+     3. KATEGORI
+     1 BARIS + HORIZONTAL SCROLL
+     =======================================================
+     ======================================================= */
+
 
   #recapCarouselTrack
   .recap-category-list {
@@ -7719,7 +7886,7 @@ footer {
 
     margin: 0 !important;
 
-    padding: 4px 2px 12px 2px !important;
+    padding: 5px 2px 12px !important;
 
     gap: 12px !important;
 
@@ -7729,44 +7896,41 @@ footer {
 
     white-space: nowrap !important;
 
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch !important;
 
     scrollbar-width: none !important;
   }
 
+
   #recapCarouselTrack
   .recap-category-list::-webkit-scrollbar {
+
     display: none !important;
   }
 
 
-  /* =======================================================
-     KARTU KATEGORI
-
-     TIDAK LAGI 2 KOLOM
-     SEMUA 1 BARIS
-  ======================================================= */
+  /* KARTU KATEGORI */
 
   #recapCarouselTrack
   .recap-category-card {
 
-    flex: 0 0 125px !important;
+    flex: 0 0 105px !important;
 
-    width: 125px !important;
+    width: 105px !important;
 
-    min-width: 125px !important;
+    min-width: 105px !important;
 
-    max-width: 125px !important;
+    max-width: 105px !important;
 
     height: auto !important;
 
-    min-height: 120px !important;
-
-    box-sizing: border-box !important;
+    min-height: 100px !important;
 
     margin: 0 !important;
 
-    padding: 10px 8px !important;
+    padding: 8px 5px !important;
+
+    box-sizing: border-box !important;
 
     display: flex !important;
 
@@ -7784,64 +7948,44 @@ footer {
   }
 
 
-  /* =======================================================
-     ICON KATEGORI
-  ======================================================= */
-
   #recapCarouselTrack
   .recap-category-icon {
 
-    flex: 0 0 auto !important;
+    margin: 0 0 4px 0 !important;
 
-    margin: 0 0 5px 0 !important;
-
-    font-size: 30px !important;
+    font-size: 24px !important;
 
     line-height: 1 !important;
-
-    white-space: nowrap !important;
   }
 
-
-  /* =======================================================
-     NAMA KATEGORI
-  ======================================================= */
 
   #recapCarouselTrack
   .recap-category-name {
 
     width: 100% !important;
 
-    min-width: 0 !important;
-
     margin: 0 !important;
 
-    font-size: 14px !important;
+    font-size: 11px !important;
 
-    line-height: 1.3 !important;
+    line-height: 1.2 !important;
 
     text-align: center !important;
 
     white-space: normal !important;
 
     word-break: normal !important;
-
-    overflow-wrap: normal !important;
   }
 
-
-  /* =======================================================
-     JUMLAH PESANAN
-  ======================================================= */
 
   #recapCarouselTrack
   .recap-category-count {
 
     width: 100% !important;
 
-    margin-top: 4px !important;
+    margin-top: 3px !important;
 
-    font-size: 12px !important;
+    font-size: 9px !important;
 
     line-height: 1.2 !important;
 
@@ -7851,28 +7995,66 @@ footer {
   }
 
 
-  /* =======================================================
-     PANAH KATEGORI
-  ======================================================= */
-
   #recapCarouselTrack
   .recap-category-arrow {
 
-    margin-top: 5px !important;
+    margin-top: 4px !important;
 
-    font-size: 15px !important;
+    font-size: 12px !important;
 
     line-height: 1 !important;
-
-    white-space: nowrap !important;
   }
 
 
-  /* =======================================================
-     LEVEL KATEGORI → BATCH
 
-     LIST BATCH
-  ======================================================= */
+  /* =======================================================
+     =======================================================
+     4. SEARCH BATCH
+     =======================================================
+     ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-search {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin: 8px 0 10px 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-batch-search input {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: 38px !important;
+
+    padding: 8px 12px !important;
+
+    box-sizing: border-box !important;
+
+    font-size: 12px !important;
+  }
+
+
+
+  /* =======================================================
+     =======================================================
+     5. BATCH LIST
+     
+     VERTICAL LIST
+     BUKAN GRID
+     =======================================================
+     ======================================================= */
+
 
   #recapCarouselTrack
   .recap-batch-list {
@@ -7881,13 +8063,13 @@ footer {
 
     flex-direction: column !important;
 
+    flex-wrap: nowrap !important;
+
     width: 100% !important;
 
     max-width: 100% !important;
 
     min-width: 0 !important;
-
-    box-sizing: border-box !important;
 
     margin: 0 !important;
 
@@ -7895,8 +8077,11 @@ footer {
 
     gap: 0 !important;
 
+    box-sizing: border-box !important;
+
     overflow: visible !important;
   }
+
 
 
   /* =======================================================
@@ -7905,6 +8090,7 @@ footer {
      HANYA:
      KODE | NAMA BARANG | →
   ======================================================= */
+
 
   #recapCarouselTrack
   .recap-batch-card {
@@ -7923,21 +8109,17 @@ footer {
 
     min-width: 0 !important;
 
+    min-height: 48px !important;
+
     height: auto !important;
-
-    min-height: 52px !important;
-
-    box-sizing: border-box !important;
 
     margin: 0 !important;
 
-    padding: 10px 12px !important;
+    padding: 9px 10px !important;
+
+    box-sizing: border-box !important;
 
     border-radius: 0 !important;
-
-    border-left: none !important;
-
-    border-right: none !important;
 
     box-shadow: none !important;
 
@@ -7947,21 +8129,20 @@ footer {
   }
 
 
-  /* =======================================================
-     GARIS ANTAR BATCH
-  ======================================================= */
+  /* GARIS ANTAR BATCH */
 
   #recapCarouselTrack
   .recap-batch-card + .recap-batch-card {
 
-    border-top: 1px solid #eee !important;
+    border-top: 1px solid rgba(100, 70, 120, 0.12) !important;
 
     margin-top: 0 !important;
   }
 
 
+
   /* =======================================================
-     HILANGKAN ICON 📦
+     HILANGKAN ICON BATCH
   ======================================================= */
 
   #recapCarouselTrack
@@ -7971,8 +8152,9 @@ footer {
   }
 
 
+
   /* =======================================================
-     BAGIAN INFO BATCH
+     INFO BATCH
   ======================================================= */
 
   #recapCarouselTrack
@@ -7992,14 +8174,15 @@ footer {
 
     max-width: none !important;
 
-    gap: 12px !important;
-
     margin: 0 !important;
 
     padding: 0 !important;
 
+    gap: 12px !important;
+
     overflow: hidden !important;
   }
+
 
 
   /* =======================================================
@@ -8021,7 +8204,7 @@ footer {
 
     padding: 0 !important;
 
-    font-size: 14px !important;
+    font-size: 13px !important;
 
     font-weight: 700 !important;
 
@@ -8033,6 +8216,7 @@ footer {
 
     text-overflow: ellipsis !important;
   }
+
 
 
   /* =======================================================
@@ -8054,7 +8238,7 @@ footer {
 
     padding: 0 !important;
 
-    font-size: 13px !important;
+    font-size: 12px !important;
 
     font-weight: 400 !important;
 
@@ -8068,76 +8252,48 @@ footer {
   }
 
 
+
   /* =======================================================
-     PANAH BATCH
+     PANAH
   ======================================================= */
 
   #recapCarouselTrack
   .recap-batch-arrow {
 
+    display: block !important;
+
     flex: 0 0 auto !important;
 
-    width: auto !important;
+    width: 25px !important;
 
-    min-width: 24px !important;
+    min-width: 25px !important;
 
-    margin: 0 0 0 8px !important;
+    margin: 0 !important;
 
     padding: 0 !important;
 
-    font-size: 18px !important;
+    font-size: 17px !important;
 
     line-height: 1 !important;
 
-    text-align: right !important;
+    text-align: center !important;
 
     white-space: nowrap !important;
   }
 
 
+
   /* =======================================================
-     SEARCH BATCH
-     
-     TETAP ADA, TAPI DI BAWAH JUDUL
+     JANGAN TAMPILKAN DETAIL CUSTOMER
+     SEBELUM BATCH DIKLIK
   ======================================================= */
 
   #recapCarouselTrack
-  .recap-batch-search {
+  .recap-batch-card
+  .product-table-wrapper {
 
-    width: 100% !important;
-
-    max-width: 100% !important;
-
-    min-width: 0 !important;
-
-    box-sizing: border-box !important;
-
-    margin: 10px 0 12px 0 !important;
+    display: none !important;
   }
 
-  #recapCarouselTrack
-  .recap-batch-search input {
-
-    width: 100% !important;
-
-    max-width: 100% !important;
-
-    box-sizing: border-box !important;
-  }
-
-
-  /* =======================================================
-     EMPTY
-  ======================================================= */
-
-  #recapCarouselTrack
-  .empty {
-
-    width: 100% !important;
-
-    max-width: 100% !important;
-
-    box-sizing: border-box !important;
-  }
 
 }
