@@ -6744,3 +6744,77 @@ footer {
 
   white-space: nowrap;
 }
+
+/* =========================
+   KATEGORI PO CUSTOMER
+========================= */
+
+.po-customer-category {
+  margin-top: 24px;
+}
+
+.po-customer-category-header {
+  margin-bottom: 12px;
+}
+
+.po-customer-category-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.po-customer-category-header p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #777;
+}
+
+
+/* =========================
+   STATUS CARD PO
+========================= */
+
+.po-mini-status,
+.po-claim-mini-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+
+/* PO BERJALAN */
+
+.po-mini-status {
+  background: #eaf8ee;
+  border: 1px solid #b9dfc0;
+}
+
+
+/* MASIH BISA CLAIM */
+
+.po-claim-mini-status {
+  background: #fff4e5;
+  border: 1px solid #f0d29b;
+}
+
+
+/* =========================
+   JARAK ANTAR KATEGORI
+========================= */
+
+.po-claim-category {
+  margin-top: 32px;
+}
