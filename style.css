@@ -6686,3 +6686,61 @@ footer {
 .po-claim-button:hover {
   opacity: 0.85;
 }
+
+/* ==========================================
+   CUSTOMER PO CATEGORY
+   ========================================== */
+
+.po-customer-category {
+  margin-top: 24px;
+}
+
+.po-customer-category:first-child {
+  margin-top: 0;
+}
+
+.po-customer-category-header {
+  margin-bottom: 12px;
+}
+
+.po-customer-category-header h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.po-customer-category-header p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+
+/* ==========================================
+   MASIH BISA CLAIM
+   ========================================== */
+
+.po-claim-category {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.po-claim-mini-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #eaf8ee;
+  border: 1px solid #b9dfc0;
+
+  color: #236b43;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
