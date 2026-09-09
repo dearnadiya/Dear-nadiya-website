@@ -5315,7 +5315,7 @@ footer {
 }
 
 /* =========================================================
-   MOBILE REKAP PESANAN - VERSI RINGKAS
+   REKAP PESANAN - MOBILE FINAL
    ========================================================= */
 
 @media (max-width: 700px) {
@@ -5334,18 +5334,18 @@ footer {
 
   #rekap.panel,
   #rekapDetail.panel {
-    padding: 16px 12px;
+    padding: 14px 12px;
   }
 
-  .recap-intro,
-  .recap-global-search,
-  .recap-carousel,
-  #recapGlobalResults,
-  #recapDetailContent {
+  #rekapCarouselTrack {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+
+    display: block !important;
+
     box-sizing: border-box;
+    overflow: visible !important;
   }
 
 
@@ -5354,7 +5354,13 @@ footer {
      ======================================================= */
 
   .recap-intro {
-    margin-bottom: 14px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    margin-bottom: 12px;
   }
 
   .recap-intro-text {
@@ -5362,16 +5368,15 @@ footer {
     width: 100%;
   }
 
-  .recap-intro-text h2,
-  #recapDetailTitle {
-    font-size: 22px;
+  .recap-intro-text h2 {
+    font-size: 21px;
     line-height: 1.25;
+
     overflow-wrap: anywhere;
     word-break: break-word;
   }
 
-  .recap-intro-text .panel-description,
-  #recapDetailSubtitle {
+  .recap-intro-text .panel-description {
     font-size: 12px;
     line-height: 1.45;
   }
@@ -5383,9 +5388,8 @@ footer {
 
   .recap-intro-mascot img {
     width: auto;
-    max-width: 105px;
+    max-width: 100px;
     height: auto;
-    object-fit: contain;
   }
 
 
@@ -5394,9 +5398,15 @@ footer {
      ======================================================= */
 
   .recap-global-search {
-    margin: 12px 0 16px;
+    width: 100%;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    margin: 10px 0 14px;
     padding: 12px;
-    border-radius: 14px;
+
+    border-radius: 13px;
   }
 
   .recap-global-search-title {
@@ -5407,6 +5417,7 @@ footer {
   .recap-global-search p {
     font-size: 11px;
     line-height: 1.4;
+
     margin: 5px 0 8px;
   }
 
@@ -5414,6 +5425,7 @@ footer {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+
     box-sizing: border-box;
 
     padding: 11px 12px;
@@ -5422,56 +5434,50 @@ footer {
 
 
   /* =======================================================
-     TRACK
+     TYPE REKAP
      ======================================================= */
 
   .recap-carousel-track {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-
     display: grid !important;
 
-    /* 2 kolom rapat */
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
 
-    gap: 8px;
+    gap: 7px;
 
-    overflow: visible !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
   }
-
-
-  /* =======================================================
-     TYPE REKAP
-     LEBIH KECIL DAN PADAT
-     ======================================================= */
 
   .recap-type-card {
     width: 100%;
-    min-width: 0;
     max-width: 100%;
+    min-width: 0;
+
     box-sizing: border-box;
 
-    padding: 11px 8px !important;
+    padding: 10px 7px !important;
 
     min-height: 0;
 
-    border-radius: 13px;
+    border-radius: 12px;
+
+    overflow: hidden;
 
     display: flex;
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
-    gap: 3px;
-
-    overflow: hidden;
+    gap: 2px;
   }
 
   .recap-type-icon {
-    font-size: 25px !important;
+    font-size: 24px !important;
     line-height: 1;
 
     margin: 0 0 3px !important;
@@ -5482,7 +5488,7 @@ footer {
     min-width: 0;
 
     font-size: 12px !important;
-    line-height: 1.25;
+    line-height: 1.2;
 
     text-align: center;
 
@@ -5494,13 +5500,13 @@ footer {
     font-size: 9px !important;
     line-height: 1.2;
 
-    margin: 1px 0 0 !important;
+    margin: 2px 0 0 !important;
 
     opacity: .7;
   }
 
   .recap-type-arrow {
-    font-size: 15px !important;
+    font-size: 14px !important;
     line-height: 1;
 
     margin: 2px 0 0 !important;
@@ -5508,8 +5514,89 @@ footer {
 
 
   /* =======================================================
-     KATEGORI
-     2 KOLOM - OTOMATIS TURUN KE BAWAH
+     HEADER KATEGORI / BATCH
+     
+     PENTING:
+     HEADER HARUS FULL WIDTH
+     ======================================================= */
+
+  .recap-batch-header {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    align-items: stretch !important;
+
+    margin: 0 0 12px;
+
+    overflow: visible;
+  }
+
+
+  /* =======================================================
+     TOMBOL KEMBALI
+     KECIL DI POJOK KANAN
+     ======================================================= */
+
+  .recap-back-category {
+    width: auto !important;
+    max-width: max-content;
+
+    min-height: 32px !important;
+
+    align-self: flex-end;
+
+    margin: 0 0 8px auto !important;
+
+    padding: 6px 11px !important;
+
+    border-radius: 9px !important;
+
+    font-size: 11px !important;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+  }
+
+
+  /* =======================================================
+     NAMA KATEGORI / BATCH
+     DI BAWAH TOMBOL KEMBALI
+     ======================================================= */
+
+  .recap-current-category {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+
+    font-weight: 700;
+
+    text-align: left;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+
+  /* =======================================================
+     CATEGORY LIST
+     
+     2 KOLOM
+     OTOMATIS TURUN KE BAWAH
      ======================================================= */
 
   .recap-category-list {
@@ -5519,43 +5606,52 @@ footer {
 
     box-sizing: border-box;
 
-    display: grid;
+    display: grid !important;
 
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
 
-    gap: 8px;
+    gap: 7px;
 
-    overflow: visible;
+    margin-top: 0;
   }
 
   .recap-category-card {
     width: 100%;
-    min-width: 0;
     max-width: 100%;
+    min-width: 0;
 
     box-sizing: border-box;
 
-    padding: 13px 9px !important;
+    padding: 12px 7px !important;
 
-    border-radius: 13px;
+    border-radius: 12px;
 
     overflow: hidden;
 
     word-break: break-word;
     overflow-wrap: anywhere;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
   }
 
   .recap-category-icon {
-    font-size: 25px !important;
+    font-size: 24px !important;
     line-height: 1;
 
     margin-bottom: 5px;
   }
 
   .recap-category-name {
+    width: 100%;
+    min-width: 0;
+
     font-size: 12px !important;
-    line-height: 1.25;
+    line-height: 1.2;
 
     text-align: center;
 
@@ -5565,13 +5661,36 @@ footer {
 
 
   /* =======================================================
-     BATCH
-     LIST SEPERTI EXCEL
+     SEARCH BATCH
+     ======================================================= */
+
+  .recap-batch-search {
+    width: 100%;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    margin: 0 0 10px;
+  }
+
+  #recapBatchSearch {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    padding: 10px 12px;
+
+    font-size: 13px;
+  }
+
+
+  /* =======================================================
+     BATCH LIST
      
-     KOLOM:
-     1. KODE BATCH
-     2. NAMA BARANG
-     3. PANAH
+     FULL WIDTH
+     SEPERTI EXCEL
      ======================================================= */
 
   .recap-batch-list {
@@ -5581,15 +5700,28 @@ footer {
 
     box-sizing: border-box;
 
-    display: flex;
+    display: flex !important;
     flex-direction: column;
 
     gap: 0;
 
+    margin: 0;
+    padding: 0;
+
     overflow: hidden;
 
-    border-radius: 12px;
+    border-radius: 11px;
   }
+
+
+  /* =======================================================
+     BARIS BATCH
+     
+     3 KOLOM:
+     1. KODE
+     2. NAMA BARANG
+     3. PANAH
+     ======================================================= */
 
   .recap-batch-card {
     width: 100%;
@@ -5598,21 +5730,21 @@ footer {
 
     box-sizing: border-box;
 
-    margin: 0 !important;
-    padding: 11px 8px !important;
-
-    border-radius: 0 !important;
-
     display: grid !important;
 
     grid-template-columns:
       minmax(75px, .8fr)
       minmax(0, 2fr)
-      30px;
+      32px;
 
     align-items: center;
 
     column-gap: 7px;
+
+    margin: 0 !important;
+    padding: 10px 9px !important;
+
+    border-radius: 0 !important;
 
     overflow: hidden;
 
@@ -5624,17 +5756,19 @@ footer {
   }
 
 
-  /* ICON BATCH TIDAK DIPAKAI DI MOBILE */
+  /* ICON TIDAK DITAMPILKAN */
 
-  .recap-batch-card .recap-batch-icon {
+  .recap-batch-icon {
     display: none !important;
   }
 
 
-  /* INFORMASI BATCH */
+  /* =======================================================
+     INFO BATCH
+     ======================================================= */
 
   .recap-batch-info {
-    display: contents;
+    display: contents !important;
   }
 
   .recap-batch-code {
@@ -5642,9 +5776,9 @@ footer {
     max-width: 100%;
 
     font-size: 12px !important;
-    font-weight: 700;
-
     line-height: 1.25;
+
+    font-weight: 700;
 
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -5662,57 +5796,51 @@ footer {
   }
 
 
-  /* PANAH */
+  /* =======================================================
+     PANAH BATCH
+     ======================================================= */
 
-  .recap-batch-card .recap-batch-arrow,
-  .recap-batch-card .recap-arrow,
-  .recap-batch-card .arrow {
-    width: 30px;
-    min-width: 30px;
+  .recap-batch-arrow {
+    width: 32px;
+    min-width: 32px;
 
-    display: flex;
+    display: flex !important;
+
     align-items: center;
     justify-content: center;
 
     font-size: 18px;
+
+    line-height: 1;
 
     cursor: pointer;
   }
 
 
   /* =======================================================
-     HEADER BATCH
+     HASIL GLOBAL CUSTOMER
      ======================================================= */
 
-  .recap-batch-header {
+  #recapGlobalResults {
     width: 100%;
     max-width: 100%;
     min-width: 0;
 
     box-sizing: border-box;
+  }
 
-    margin-bottom: 12px;
+  .recap-global-customer {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
 
     overflow: hidden;
   }
 
-  .recap-back-category {
-    width: 100%;
-    max-width: 100%;
-    min-height: 40px;
-
-    box-sizing: border-box;
-
-    font-size: 12px;
-
-    margin-bottom: 9px;
-  }
-
-  .recap-current-category {
-    width: 100%;
-    min-width: 0;
-
-    font-size: 18px;
+  .recap-global-customer-name {
+    font-size: 16px;
     line-height: 1.3;
 
     overflow-wrap: anywhere;
@@ -5721,7 +5849,48 @@ footer {
 
 
   /* =======================================================
-     DETAIL REKAP
+     SUMMARY
+     ======================================================= */
+
+  .recap-global-summary {
+    width: 100%;
+    max-width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 5px;
+  }
+
+  .recap-global-summary-card {
+    min-width: 0;
+
+    padding: 8px 4px;
+
+    border-radius: 9px;
+
+    text-align: center;
+  }
+
+  .recap-global-summary-card strong {
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  .recap-global-summary-card span {
+    display: block;
+
+    font-size: 8px;
+    line-height: 1.2;
+
+    overflow-wrap: anywhere;
+  }
+
+
+  /* =======================================================
+     DETAIL HEADER
      ======================================================= */
 
   .recap-detail-header {
@@ -5736,23 +5905,33 @@ footer {
 
     align-items: stretch;
 
-    gap: 9px;
+    gap: 8px;
   }
 
   .recap-back-button {
-    width: 100%;
-    min-height: 42px;
+    width: auto !important;
+    max-width: max-content;
 
-    box-sizing: border-box;
+    min-height: 32px !important;
 
-    font-size: 12px;
+    align-self: flex-end;
+
+    padding: 6px 11px !important;
+
+    font-size: 11px !important;
+
+    border-radius: 9px !important;
   }
 
   #recapDetailTitle {
+    width: 100%;
+
     margin: 0;
 
     font-size: 20px;
     line-height: 1.25;
+
+    overflow-wrap: anywhere;
   }
 
   #recapDetailSubtitle {
@@ -5762,7 +5941,7 @@ footer {
 
 
   /* =======================================================
-     SEARCH CUSTOMER
+     SEARCH DETAIL
      ======================================================= */
 
   .recap-search-box {
@@ -5771,7 +5950,7 @@ footer {
 
     box-sizing: border-box;
 
-    margin: 12px 0;
+    margin: 10px 0;
   }
 
   .recap-search-box input,
@@ -5782,7 +5961,7 @@ footer {
 
     box-sizing: border-box;
 
-    padding: 11px 12px;
+    padding: 10px 12px;
 
     font-size: 13px;
   }
@@ -5792,6 +5971,16 @@ footer {
      DETAIL CARD
      ======================================================= */
 
+  #recapDetailContent {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+  }
+
   .recap-detail-card {
     width: 100%;
     max-width: 100%;
@@ -5799,9 +5988,9 @@ footer {
 
     box-sizing: border-box;
 
-    padding: 13px !important;
+    padding: 12px !important;
 
-    margin-bottom: 9px;
+    margin-bottom: 8px;
 
     overflow: hidden;
   }
@@ -5810,7 +5999,7 @@ footer {
     width: 100%;
     min-width: 0;
 
-    margin-bottom: 9px;
+    margin-bottom: 8px;
 
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -5838,7 +6027,7 @@ footer {
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
 
-    gap: 6px;
+    gap: 5px;
   }
 
   .recap-detail-info > div {
@@ -5846,9 +6035,9 @@ footer {
 
     box-sizing: border-box;
 
-    padding: 8px;
+    padding: 7px;
 
-    border-radius: 9px;
+    border-radius: 8px;
 
     overflow: hidden;
   }
@@ -5864,134 +6053,6 @@ footer {
 
     overflow-wrap: anywhere;
     word-break: break-word;
-  }
-
-
-  /* =======================================================
-     HASIL PENCARIAN
-     ======================================================= */
-
-  .recap-global-customer {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-
-    box-sizing: border-box;
-
-    overflow: hidden;
-  }
-
-  .recap-global-customer-name {
-    font-size: 16px;
-    line-height: 1.3;
-
-    overflow-wrap: anywhere;
-  }
-
-  .recap-global-summary {
-    width: 100%;
-    max-width: 100%;
-
-    display: grid;
-
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
-
-    gap: 6px;
-  }
-
-  .recap-global-summary-card {
-    min-width: 0;
-
-    padding: 9px 5px;
-
-    border-radius: 10px;
-
-    text-align: center;
-  }
-
-  .recap-global-summary-card strong {
-    font-size: 16px;
-  }
-
-  .recap-global-summary-card span {
-    display: block;
-
-    font-size: 8px;
-    line-height: 1.2;
-
-    overflow-wrap: anywhere;
-  }
-
-
-  /* =======================================================
-     TABEL HASIL PENCARIAN
-     ======================================================= */
-
-  .recap-global-order-table {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-
-    box-sizing: border-box;
-
-    overflow-x: hidden;
-  }
-
-  .recap-global-table-header {
-    display: none !important;
-  }
-
-  .recap-global-table-row {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-
-    box-sizing: border-box;
-
-    display: grid;
-
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
-    gap: 6px;
-
-    padding: 10px;
-
-    margin-bottom: 7px;
-
-    border-radius: 11px;
-
-    overflow: hidden;
-  }
-
-  .recap-global-table-row > div {
-    min-width: 0;
-    max-width: 100%;
-
-    box-sizing: border-box;
-
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-
-  /* =======================================================
-     EMPTY / LOADING
-     ======================================================= */
-
-  .loading,
-  .empty {
-    width: 100%;
-    max-width: 100%;
-
-    box-sizing: border-box;
-
-    padding: 22px 12px;
-
-    text-align: center;
-
-    font-size: 12px;
   }
 
 }
@@ -6027,11 +6088,11 @@ footer {
   }
 
   .recap-category-card {
-    padding: 11px 7px !important;
+    padding: 10px 6px !important;
   }
 
   .recap-category-icon {
-    font-size: 22px !important;
+    font-size: 21px !important;
   }
 
   .recap-category-name {
@@ -6040,13 +6101,13 @@ footer {
 
   .recap-batch-card {
     grid-template-columns:
-      minmax(68px, .75fr)
+      minmax(65px, .75fr)
       minmax(0, 2fr)
-      27px;
+      28px;
 
     column-gap: 5px;
 
-    padding: 10px 6px !important;
+    padding: 9px 7px !important;
   }
 
   .recap-batch-code {
