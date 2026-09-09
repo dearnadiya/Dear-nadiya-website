@@ -5289,3 +5289,27 @@ footer {
   width: max-content;
   min-width: 100%;
 }
+
+/* =========================================
+   PERKECIL KOTAK "CARI NAMA CUSTOMER"
+   ========================================= */
+
+.recap-search-empty {
+  min-height: 120px !important;
+  padding: 28px 20px !important;
+  margin: 20px 0 !important;
+}
+
+.recap-search-empty .recap-search-icon {
+  font-size: 30px !important;
+  margin-bottom: 8px !important;
+}
+
+.recap-search-empty strong {
+  font-size: 15px !important;
+}
+
+.recap-search-empty p {
+  font-size: 12px !important;
+  margin-top: 6px !important;
+}
