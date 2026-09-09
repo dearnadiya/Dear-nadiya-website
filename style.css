@@ -9502,3 +9502,31 @@ footer {
   }
 
 }
+
+/* =========================================================
+   FIX - JUDUL TYPE REKAP TIDAK TERTUTUP TOMBOL KEMBALI
+========================================================= */
+
+@media (max-width: 768px) {
+
+  #recapCarouselTrack
+  .recap-current-category {
+    width: calc(100% - 175px) !important;
+    max-width: calc(100% - 175px) !important;
+
+    padding-right: 12px !important;
+
+    box-sizing: border-box !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #recapCarouselTrack
+  .recap-back-category {
+    right: 0 !important;
+    max-width: 125px !important;
+  }
+
+}
