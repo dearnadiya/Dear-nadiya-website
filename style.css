@@ -5314,162 +5314,144 @@ footer {
   margin-top: 6px !important;
 }
 
-/* =====================================================
-   FIX REKAP GO - MOBILE
-   ===================================================== */
+/* =========================================================
+   REKAP GO - MOBILE COMPACT
+   Tidak mengubah JS / fungsi
+   ========================================================= */
 
 @media (max-width: 768px) {
 
-  /* Area utama Rekap GO */
+  /* =====================================================
+     AREA REKAP
+     ===================================================== */
+
+  .recap-carousel {
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
   #recapCarouselTrack {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
 
-    display: block !important;
+    box-sizing: border-box !important;
 
-    overflow: visible !important;
+    overflow: hidden !important;
 
     margin: 0 !important;
-    padding: 0 16px 30px !important;
-
-    box-sizing: border-box !important;
+    padding: 0 10px 20px !important;
 
     transform: none !important;
   }
 
 
-  /* =========================================
-     KOTAK "CARI NAMA CUSTOMER"
-     ========================================= */
+  /* =====================================================
+     1. TYPE REKAP
+     4 TYPE DALAM 1 BARIS
+     ===================================================== */
 
-  .recap-search-empty {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    min-height: 115px !important;
-
-    padding: 24px 16px !important;
-    margin: 16px 0 !important;
-
-    box-sizing: border-box !important;
-  }
-
-  .recap-search-empty .recap-search-icon {
-    font-size: 30px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .recap-search-empty strong {
-    font-size: 15px !important;
-  }
-
-  .recap-search-empty p {
-    font-size: 12px !important;
-    line-height: 1.5 !important;
-    margin: 6px auto 0 !important;
-    max-width: 300px !important;
-  }
-
-
-  /* =========================================
-     KARTU KATEGORI
-     ========================================= */
-
-  .recap-category-card {
-    width: 100% !important;
-    max-width: none !important;
+  .recap-type-card {
+    width: auto !important;
     min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 8px 4px !important;
 
     box-sizing: border-box !important;
+
+    text-align: center !important;
+  }
+
+  .recap-type-card .recap-category-icon {
+    font-size: 24px !important;
+    line-height: 1 !important;
+
+    margin-bottom: 5px !important;
+  }
+
+  .recap-type-card .recap-category-name {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+
+    margin: 0 !important;
+  }
+
+  .recap-type-card .recap-category-count {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+
+    margin-top: 3px !important;
+  }
+
+  .recap-type-card .recap-category-arrow {
+    font-size: 12px !important;
+
+    margin-top: 3px !important;
   }
 
 
-  /* Jika kartu kategori berada dalam track */
-  #recapCarouselTrack {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 14px !important;
-    align-items: stretch !important;
-  }
-
+  /* =====================================================
+     2. KATEGORI
+     BERJEJER, RAPAT, IKON KECIL
+     ===================================================== */
 
   .recap-category-card {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 6px 5px !important;
+
+    box-sizing: border-box !important;
+
+    text-align: center !important;
+  }
+
+  .recap-category-icon {
+    font-size: 23px !important;
+    line-height: 1 !important;
+
+    margin-bottom: 4px !important;
+  }
+
+  .recap-category-name {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+
     margin: 0 !important;
   }
 
+  .recap-category-count {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
 
-  /* =========================================
-     HEADER BATCH
-     ========================================= */
+    margin-top: 3px !important;
+  }
 
-  .recap-batch-header {
-    width: 100% !important;
-    max-width: 100% !important;
+  .recap-category-arrow {
+    font-size: 12px !important;
 
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-
-    gap: 12px !important;
-
-    margin: 10px 0 16px !important;
-
-    box-sizing: border-box !important;
+    margin-top: 3px !important;
   }
 
 
-  .recap-back-category {
-    width: 100% !important;
-    max-width: 100% !important;
-
-    box-sizing: border-box !important;
-
-    margin: 0 !important;
-    padding: 12px 14px !important;
-
-    text-align: center !important;
-
-    font-size: 14px !important;
-  }
-
-
-  .recap-current-category {
-    width: 100% !important;
-
-    text-align: center !important;
-
-    font-size: 20px !important;
-
-    box-sizing: border-box !important;
-  }
-
-
-  /* =========================================
-     SEARCH BATCH
-     ========================================= */
-
-  .recap-batch-search {
-    width: 100% !important;
-  }
-
-  .recap-batch-search input {
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-
-  /* =========================================
-     DAFTAR BATCH
-     ========================================= */
+  /* =====================================================
+     3. BATCH
+     KECIL DAN PADAT
+     ===================================================== */
 
   .recap-batch-list {
     width: 100% !important;
 
-    display: flex !important;
-    flex-direction: column !important;
+    display: grid !important;
 
-    gap: 12px !important;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
+
+    gap: 8px !important;
 
     margin: 0 !important;
     padding: 0 !important;
@@ -5477,15 +5459,163 @@ footer {
     box-sizing: border-box !important;
   }
 
-
   .recap-batch-card {
     width: 100% !important;
-    max-width: 100% !important;
     min-width: 0 !important;
+    max-width: none !important;
 
     margin: 0 !important;
 
+    padding: 8px !important;
+
     box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 7px !important;
+  }
+
+  .recap-batch-icon {
+    width: 32px !important;
+    height: 32px !important;
+
+    min-width: 32px !important;
+
+    font-size: 20px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .recap-batch-info {
+    min-width: 0 !important;
+    flex: 1 !important;
+  }
+
+  .recap-batch-code {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .recap-batch-name {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .recap-batch-arrow {
+    font-size: 12px !important;
+
+    flex-shrink: 0 !important;
+  }
+
+
+  /* =====================================================
+     HEADER KATEGORI / BATCH
+     ===================================================== */
+
+  .recap-batch-header {
+    width: 100% !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    margin: 8px 0 10px !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .recap-back-category {
+    flex-shrink: 0 !important;
+
+    padding: 7px 10px !important;
+
+    font-size: 11px !important;
+
+    white-space: nowrap !important;
+  }
+
+  .recap-current-category {
+    min-width: 0 !important;
+
+    font-size: 18px !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+
+  /* =====================================================
+     SEARCH BATCH
+     ===================================================== */
+
+  .recap-batch-search {
+    width: 100% !important;
+
+    margin-bottom: 10px !important;
+  }
+
+  .recap-batch-search input {
+    width: 100% !important;
+
+    height: 38px !important;
+
+    padding: 8px 12px !important;
+
+    font-size: 12px !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* =====================================================
+     SEARCH CUSTOMER
+     ===================================================== */
+
+  .recap-search-empty {
+    width: 100% !important;
+
+    min-height: 105px !important;
+
+    padding: 20px 14px !important;
+
+    margin: 12px 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .recap-search-empty .recap-search-icon {
+    font-size: 26px !important;
+
+    margin-bottom: 5px !important;
+  }
+
+  .recap-search-empty strong {
+    font-size: 14px !important;
+  }
+
+  .recap-search-empty p {
+    font-size: 11px !important;
+
+    line-height: 1.4 !important;
+
+    margin-top: 5px !important;
   }
 
 }
