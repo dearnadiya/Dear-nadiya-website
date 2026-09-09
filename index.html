@@ -7725,22 +7725,31 @@ const customer =
 
     <div class="po-item-main">
 
-      <strong>
-        ${display(row.member || "—")}
-      </strong>
+  <strong>
+    ${display(row.member || "—")}
+  </strong>
 
-      ${
-        row.note
-          ? `
-            <span>
-              ${display(row.note)}
-            </span>
-          `
-          : ""
-      }
+  ${
+    isClaimPO && isClaimed
+      ? `
+        <span class="po-item-customer-name">
+          Customer: ${display(row.customer)}
+        </span>
+      `
+      : ""
+  }
 
-    </div>
+  ${
+    row.note
+      ? `
+        <span>
+          ${display(row.note)}
+        </span>
+      `
+      : ""
+  }
 
+</div>
 
     <div class="po-item-info">
 
