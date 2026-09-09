@@ -1335,6 +1335,7 @@ async function findCustomerPayments(
   ========================= */
 
   let recapData = [];
+let recapBatchData = [];
 
 
 
@@ -2413,6 +2414,108 @@ Object.keys(
 );
 
     /* =========================
+   DATA BATCH UNTUK CUSTOMER
+   SUMBER: purchase_recap
+========================= */
+
+recapBatchData = [];
+
+(recapMeta || []).forEach(
+  function(row) {
+
+    const batchCode =
+      String(
+        row.batch_code || ""
+      ).trim();
+
+    if (!batchCode) {
+      return;
+    }
+
+    const key =
+      String(
+        row.recap_type || ""
+      )
+        .trim()
+        .toLowerCase()
+      + "|" +
+      String(
+        row.category || ""
+      )
+        .trim()
+        .toLowerCase()
+      + "|" +
+      batchCode.toLowerCase();
+
+    const alreadyExists =
+      recapBatchData.some(
+        function(item) {
+
+          return (
+            String(
+              item.batch_code || ""
+            )
+              .trim()
+              .toLowerCase() ===
+            batchCode.toLowerCase()
+            &&
+            String(
+              item.recap_type || ""
+            )
+              .trim()
+              .toLowerCase() ===
+            String(
+              row.recap_type || ""
+            )
+              .trim()
+              .toLowerCase()
+            &&
+            String(
+              item.category || ""
+            )
+              .trim()
+              .toLowerCase() ===
+            String(
+              row.category || ""
+            )
+              .trim()
+              .toLowerCase()
+          );
+
+        }
+      );
+
+    if (alreadyExists) {
+      return;
+    }
+
+    recapBatchData.push({
+
+      recap_type:
+        row.recap_type ||
+        "Lainnya",
+
+      category:
+        row.category ||
+        "Lainnya",
+
+      batch_code:
+        batchCode,
+
+      item_name:
+        row.item_name ||
+        "-",
+
+      batch_completed:
+        completedBatchMap[key] ||
+        false
+
+    });
+
+  }
+);
+    
+    /* =========================
        GABUNGKAN DATA
     ========================= */
     
@@ -2497,7 +2600,7 @@ batch_completed:
     ========================= */
 
     renderRecapTypes(
-  recapData
+  recapBatchData
 );
 
 setupRecapGlobalSearch();
@@ -5405,9 +5508,9 @@ function renderRecapCategories(
         "click",
         function() {
 
-          renderRecapTypes(
-            recapDataList
-          );
+         renderRecapTypes(
+  recapBatchData
+);
 
         }
       );
@@ -5543,8 +5646,8 @@ function renderRecapCategories(
       function() {
 
         renderRecapTypes(
-          recapDataList
-        );
+  recapBatchData
+);
 
       }
     );
