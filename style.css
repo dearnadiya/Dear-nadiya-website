@@ -7025,3 +7025,26 @@ footer {
   }
 
 }
+
+/* =========================
+   GLOBAL REKAP - BACKGROUND BARIS
+========================= */
+
+@media (max-width: 700px) {
+
+  #recapGlobalResults
+  .recap-global-table-row {
+    background: #fff5fb !important;
+  }
+
+  #recapGlobalResults
+  .recap-table-cell {
+    background: #fff5fb !important;
+  }
+
+  #recapGlobalResults
+  .recap-table-checkout-date {
+    background: #fff5fb !important;
+  }
+
+}
