@@ -5543,63 +5543,7 @@ function renderRecapBatches(
 
     }
   );
-
-  /* =========================
-   FILTER BATCH YANG MASIH AKTIF
-========================= */
-
-const activeCategoryData =
-  categoryData.filter(
-    function(item) {
-
-      const batchCode =
-        String(
-          item.batch_code || ""
-        ).trim();
-
-      if (!batchCode) {
-        return false;
-      }
-
-
-      const batchRows =
-        categoryData.filter(
-          function(row) {
-
-            return (
-              String(
-                row.batch_code || ""
-              ).trim() ===
-              batchCode
-            );
-
-          }
-        );
-
-
-      const batchCompleted =
-        batchRows.length > 0 &&
-        batchRows.every(
-          function(row) {
-
-            return (
-              String(
-                row.customer_status || ""
-              )
-                .trim()
-                .toLowerCase() ===
-              "sudah checkout shopee"
-            );
-
-          }
-        );
-
-
-      return !batchCompleted;
-
-    }
-  );
-
+  
   if (!categoryData.length) {
 
   track.innerHTML = `
@@ -5650,58 +5594,115 @@ const activeCategoryData =
 }
 
   /* =========================
-     BATCH UNIK
-  ========================= */
+   BATCH UNIK
+========================= */
 
-  const batches = [];
-
-
-  activeCategoryData.forEach(
-    function(item) {
-
-      const batchCode =
-        String(
-          item.batch_code || ""
-        ).trim();
+const batches = [];
 
 
-      if (!batchCode) {
-        return;
-      }
+categoryData.forEach(
+  function(item) {
+
+    const batchCode =
+      String(
+        item.batch_code || ""
+      ).trim();
 
 
-      const alreadyExists =
-        batches.some(
-          function(batch) {
-
-            return (
-              batch.batch_code ===
-              batchCode
-            );
-
-          }
-        );
+    if (!batchCode) {
+      return;
+    }
 
 
-      if (!alreadyExists) {
+    /* =========================
+       CEK SEMUA CUSTOMER
+       DALAM BATCH INI
+    ========================= */
 
-        batches.push({
+    const batchRows =
+      categoryData.filter(
+        function(row) {
 
-          batch_code:
-            batchCode,
+          return (
+            String(
+              row.batch_code || ""
+            ).trim() ===
+            batchCode
+          );
 
-          item_name:
-            item.item_name ||
-            item.product_name ||
-            "-"
+        }
+      );
 
-        });
 
-      }
+    /*
+      Batch hanya disembunyikan
+      jika SEMUA customer sudah
+      checkout Shopee.
+    */
+
+    const batchCompleted =
+      batchRows.length > 0 &&
+      batchRows.every(
+        function(row) {
+
+          return (
+            String(
+              row.customer_status || ""
+            )
+              .trim()
+              .toLowerCase() ===
+            "sudah checkout shopee"
+          );
+
+        }
+      );
+
+
+    /* =========================
+       JIKA SEMUA SUDAH CHECKOUT
+       JANGAN TAMPILKAN
+    ========================= */
+
+    if (batchCompleted) {
+      return;
+    }
+
+
+    /* =========================
+       CEK BATCH SUDAH DITAMBAHKAN
+    ========================= */
+
+    const alreadyExists =
+      batches.some(
+        function(batch) {
+
+          return (
+            batch.batch_code ===
+            batchCode
+          );
+
+        }
+      );
+
+
+    if (!alreadyExists) {
+
+      batches.push({
+
+        batch_code:
+          batchCode,
+
+        item_name:
+          item.item_name ||
+          item.product_name ||
+          "-"
+
+      });
 
     }
-  );
 
+  }
+);
 
   /* =========================
      TAMPILKAN BATCH
