@@ -9489,3 +9489,16 @@ footer {
   }
 
 }
+
+/* =========================================================
+   FIX - PENCARIAN BATCH MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  #recapCarouselTrack
+  .recap-batch-card.recap-search-hidden {
+    display: none !important;
+  }
+
+}
