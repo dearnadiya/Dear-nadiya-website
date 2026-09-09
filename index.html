@@ -6005,11 +6005,12 @@ categoryData.forEach(
                 keyword
               );
 
-            card.style.display =
-              matched
-                ? ""
-                : "none";
-
+            if (matched) {
+  card.classList.remove("recap-search-hidden");
+} else {
+  card.classList.add("recap-search-hidden");
+}
+            
           }
         );
 
