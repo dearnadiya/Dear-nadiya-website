@@ -7539,3 +7539,605 @@ footer {
   }
 
 }
+
+/* =========================================================
+   REKAP CUSTOMER MOBILE - FINAL LAYOUT
+   TYPE → KATEGORI → BATCH
+========================================================= */
+
+@media (max-width: 700px) {
+
+  /* =======================================================
+     REKAP CAROUSEL UTAMA
+  ======================================================= */
+
+  #recapCarouselTrack {
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    overflow: visible !important;
+  }
+
+
+  /* =======================================================
+     HEADER TYPE / KATEGORI / BATCH
+
+     TOMBOL KEMBALI
+     = KANAN ATAS
+
+     JUDUL
+     = KIRI
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-header {
+
+    position: relative !important;
+
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    height: auto !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 0 14px 0 !important;
+
+    padding: 0 0 8px 0 !important;
+
+    overflow: visible !important;
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+  }
+
+
+  /* =======================================================
+     JUDUL TYPE / KATEGORI
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-current-category {
+
+    display: block !important;
+
+    width: calc(100% - 145px) !important;
+
+    max-width: calc(100% - 145px) !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+
+    padding: 4px 0 !important;
+
+    font-size: 20px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.3 !important;
+
+    text-align: left !important;
+
+    white-space: normal !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
+  }
+
+
+  /* =======================================================
+     TOMBOL KEMBALI
+     POJOK KANAN ATAS
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-back-category {
+
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 0 !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: auto !important;
+
+    min-width: 0 !important;
+
+    max-width: 140px !important;
+
+    height: auto !important;
+
+    margin: 0 !important;
+
+    padding: 7px 10px !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 10px !important;
+
+    font-size: 12px !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    z-index: 5 !important;
+  }
+
+
+  /* =======================================================
+     LEVEL TYPE → KATEGORI
+
+     KATEGORI 1 BARIS
+     BISA GESER HORIZONTAL
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-category-list {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    flex-wrap: nowrap !important;
+
+    align-items: stretch !important;
+
+    justify-content: flex-start !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+
+    padding: 4px 2px 12px 2px !important;
+
+    gap: 12px !important;
+
+    overflow-x: auto !important;
+
+    overflow-y: hidden !important;
+
+    white-space: nowrap !important;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none !important;
+  }
+
+  #recapCarouselTrack
+  .recap-category-list::-webkit-scrollbar {
+    display: none !important;
+  }
+
+
+  /* =======================================================
+     KARTU KATEGORI
+
+     TIDAK LAGI 2 KOLOM
+     SEMUA 1 BARIS
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-category-card {
+
+    flex: 0 0 125px !important;
+
+    width: 125px !important;
+
+    min-width: 125px !important;
+
+    max-width: 125px !important;
+
+    height: auto !important;
+
+    min-height: 120px !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+
+    padding: 10px 8px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    text-align: center !important;
+
+    white-space: normal !important;
+
+    overflow: hidden !important;
+  }
+
+
+  /* =======================================================
+     ICON KATEGORI
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-category-icon {
+
+    flex: 0 0 auto !important;
+
+    margin: 0 0 5px 0 !important;
+
+    font-size: 30px !important;
+
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =======================================================
+     NAMA KATEGORI
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-category-name {
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    font-size: 14px !important;
+
+    line-height: 1.3 !important;
+
+    text-align: center !important;
+
+    white-space: normal !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
+  }
+
+
+  /* =======================================================
+     JUMLAH PESANAN
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-category-count {
+
+    width: 100% !important;
+
+    margin-top: 4px !important;
+
+    font-size: 12px !important;
+
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =======================================================
+     PANAH KATEGORI
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-category-arrow {
+
+    margin-top: 5px !important;
+
+    font-size: 15px !important;
+
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =======================================================
+     LEVEL KATEGORI → BATCH
+
+     LIST BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-list {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    gap: 0 !important;
+
+    overflow: visible !important;
+  }
+
+
+  /* =======================================================
+     BATCH CARD
+     
+     HANYA:
+     KODE | NAMA BARANG | →
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-card {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: flex-start !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    height: auto !important;
+
+    min-height: 52px !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+
+    padding: 10px 12px !important;
+
+    border-radius: 0 !important;
+
+    border-left: none !important;
+
+    border-right: none !important;
+
+    box-shadow: none !important;
+
+    overflow: hidden !important;
+
+    cursor: pointer !important;
+  }
+
+
+  /* =======================================================
+     GARIS ANTAR BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-card + .recap-batch-card {
+
+    border-top: 1px solid #eee !important;
+
+    margin-top: 0 !important;
+  }
+
+
+  /* =======================================================
+     HILANGKAN ICON 📦
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-icon {
+
+    display: none !important;
+  }
+
+
+  /* =======================================================
+     BAGIAN INFO BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-info {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+
+    min-width: 0 !important;
+
+    max-width: none !important;
+
+    gap: 12px !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    overflow: hidden !important;
+  }
+
+
+  /* =======================================================
+     KODE BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-code {
+
+    flex: 0 0 auto !important;
+
+    width: auto !important;
+
+    min-width: 70px !important;
+
+    max-width: 110px !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    font-size: 14px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+  }
+
+
+  /* =======================================================
+     NAMA BARANG
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-name {
+
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+
+    min-width: 0 !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    font-size: 13px !important;
+
+    font-weight: 400 !important;
+
+    line-height: 1.3 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+  }
+
+
+  /* =======================================================
+     PANAH BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-arrow {
+
+    flex: 0 0 auto !important;
+
+    width: auto !important;
+
+    min-width: 24px !important;
+
+    margin: 0 0 0 8px !important;
+
+    padding: 0 !important;
+
+    font-size: 18px !important;
+
+    line-height: 1 !important;
+
+    text-align: right !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =======================================================
+     SEARCH BATCH
+     
+     TETAP ADA, TAPI DI BAWAH JUDUL
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-search {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    margin: 10px 0 12px 0 !important;
+  }
+
+  #recapCarouselTrack
+  .recap-batch-search input {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* =======================================================
+     EMPTY
+  ======================================================= */
+
+  #recapCarouselTrack
+  .empty {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+  }
+
+}
