@@ -7719,18 +7719,24 @@ const customer =
 
         </div>
 
-        <div class="po-order-info">
+        ${
+  po.order_mode !== "claim"
+    ? `
+      <div class="po-order-info">
 
-  <a
-    href="https://wa.me/62895339878010?text=Halo%20Admin%20Dear%20Nadiya%2C%20saya%20ingin%20order%20PO."
-    target="_blank"
-    rel="noopener noreferrer"
-    class="po-whatsapp-button"
-  >
-    💬 Hubungi Admin via WhatsApp
-  </a>
+        <a
+          href="https://wa.me/62895339878010?text=Halo%20Admin%20Dear%20Nadiya%2C%20saya%20ingin%20order%20PO."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="po-whatsapp-button"
+        >
+          💬 Hubungi Admin via WhatsApp
+        </a>
 
-</div>
+      </div>
+    `
+    : ""
+}
 
       </div>
 
