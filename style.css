@@ -7075,3 +7075,144 @@ footer {
   }
 
 }
+
+/* =========================
+   MOBILE - REKAP GO BATCH
+   1 BARIS + HORIZONTAL SCROLL
+========================= */
+
+@media (max-width: 700px) {
+
+  /* CARD BATCH */
+  .recap-batch-card {
+    margin-bottom: 10px !important;
+  }
+
+
+  /* HEADER BATCH */
+  .recap-batch-header {
+    position: relative;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 10px;
+
+    width: 100%;
+
+    padding: 10px 12px !important;
+
+    box-sizing: border-box;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    white-space: nowrap;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+  }
+
+  .recap-batch-header::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  /* KODE BATCH */
+  .recap-batch-header h3 {
+    flex: 0 0 auto;
+
+    margin: 0 !important;
+
+    font-size: 17px !important;
+
+    white-space: nowrap;
+  }
+
+
+  /* NAMA BARANG */
+  .recap-batch-header > div:first-child > p {
+    flex: 0 0 auto;
+
+    margin: 0 !important;
+
+    font-size: 14px !important;
+
+    white-space: nowrap;
+
+    overflow: visible;
+
+    text-overflow: clip;
+  }
+
+
+  /* JUMLAH CUSTOMER + TOMBOL TAMBAH */
+  .recap-batch-customer-summary {
+    flex: 0 0 auto;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 8px;
+
+    margin: 0 !important;
+
+    white-space: nowrap;
+  }
+
+
+  .recap-batch-customer-summary > span {
+    flex: 0 0 auto;
+
+    white-space: nowrap;
+
+    font-size: 13px;
+  }
+
+
+  /* TOMBOL TAMBAH MEMBER */
+  .add-recap-member-button {
+    flex: 0 0 auto;
+
+    width: auto !important;
+
+    padding: 6px 9px !important;
+
+    font-size: 12px !important;
+
+    white-space: nowrap;
+  }
+
+
+  /* =========================
+     DEADLINE TETAP TERSEMBUNYI
+     SAAT COLLAPSED
+  ========================= */
+
+  .recap-batch-card.recap-batch-collapsed
+  .product-table-wrapper,
+
+  .recap-batch-card.recap-batch-collapsed
+  .batch-tracking,
+
+  .recap-batch-card.recap-batch-collapsed
+  .recap-batch-deadlines,
+
+  .recap-batch-card.recap-batch-collapsed
+  .recap-pagination {
+    display: none !important;
+  }
+
+
+  /* =========================
+     CUSTOMER TETAP TERSEMBUNYI
+     SAMPAI BATCH DIBUKA
+  ========================= */
+
+  .recap-batch-card.recap-batch-collapsed
+  .product-table-wrapper {
+    display: none !important;
+  }
+
+}
