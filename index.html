@@ -2326,9 +2326,10 @@ async function loadRecap() {
     } =
       await supabaseClient
         .from("purchase_recap")
-        .select(
-  "recap_type, category, batch_code, item_name"
+.select(
+  "recap_type, category, batch_code, item_name, customer_status"
 );
+    
     if (metaError) {
       throw metaError;
     }
@@ -2380,7 +2381,12 @@ async function loadRecap() {
 
   item_name:
     meta?.item_name ||
-    item.product_name
+    item.product_name,
+
+  customer_status:
+    meta?.customer_status ||
+    item.customer_status ||
+    "Belum Checkout Shopee"
 };
         }
       );
@@ -5005,112 +5011,81 @@ function renderRecapTypes(
     return;
   }
 
+  const recapDataList =
+    data || [];
 
-  const recapTypeList = [
-
+  const recapTypes = [
     {
       name: "Treasure",
       label: "Rekap Treasure",
       icon: "💎"
     },
-
     {
       name: "Multi Group",
       label: "Rekap Multi Group",
       icon: "👥"
     },
-
     {
       name: "Tabungan",
       label: "Rekap Tabungan",
       icon: "💰"
     },
-
     {
       name: "Jastip",
       label: "Rekap Jastip",
       icon: "📦"
     }
-
   ];
 
-
-  const recapDataList =
-    data || [];
-
-
-  /* =========================
-     TAMPILKAN TYPE
-  ========================= */
-
   track.innerHTML =
-    recapTypeList
+    recapTypes
       .map(
         function(type) {
 
-          const total =
+          const typeData =
             recapDataList.filter(
               function(item) {
 
                 return (
                   String(
-                    item.recap_type ||
-                    ""
+                    item.recap_type || ""
                   )
                     .trim()
                     .toLowerCase() ===
-                  type.name
-                    .toLowerCase()
+                  type.name.toLowerCase()
                 );
 
               }
-            ).length;
-
+            );
 
           return `
-
             <article
-              class="recap-category-card"
+              class="recap-type-card"
               data-recap-type="${type.name}"
             >
 
-              <div
-                class="recap-category-icon"
-              >
+              <div class="recap-type-icon">
                 ${type.icon}
               </div>
 
-
-              <div
-                class="recap-category-name"
-              >
-                ${display(
-                  type.label
-                )}
+              <div class="recap-type-name">
+                ${display(type.label)}
               </div>
 
-
-              <div
-                class="recap-category-count"
-              >
-                ${total} pesanan
+              <div class="recap-type-count">
+                ${typeData.length} pesanan
               </div>
 
-
-              <div
-                class="recap-category-arrow"
-              >
+              <div class="recap-type-arrow">
                 →
               </div>
 
             </article>
-
           `;
 
         }
       )
       .join("");
-
 
   /* =========================
      KLIK TYPE REKAP
@@ -5118,7 +5093,7 @@ function renderRecapTypes(
 
   track
     .querySelectorAll(
-      ".recap-category-card"
+      ".recap-type-card"
     )
     .forEach(
       function(card) {
@@ -5129,7 +5104,6 @@ function renderRecapTypes(
 
             const recapType =
               this.dataset.recapType;
-
 
             renderRecapCategories(
               recapDataList,
@@ -5152,7 +5126,7 @@ function renderRecapCategories(
   data,
   recapType
 ) {
-
+  
   const track =
     document.getElementById(
       "recapCarouselTrack"
@@ -5164,35 +5138,30 @@ function renderRecapCategories(
 
 
   const recapDataList =
-    data || [];
+  (data || []).filter(
+    function(item) {
 
+      return (
+        String(
+          item.recap_type || ""
+        )
+          .trim()
+          .toLowerCase() ===
+        String(
+          recapType || ""
+        )
+          .trim()
+          .toLowerCase()
+      );
+
+    }
+  );
 
   /* =========================
      DATA SESUAI TYPE
   ========================= */
 
-  const typeData =
-    recapDataList.filter(
-      function(item) {
-
-        return (
-          String(
-            item.recap_type ||
-            ""
-          )
-            .trim()
-            .toLowerCase() ===
-          String(
-            recapType ||
-            ""
-          )
-            .trim()
-            .toLowerCase()
-        );
-
-      }
-    );
-
+  const typeData = recapDataList;
 
   /* =========================
      ICON KATEGORI
@@ -5571,6 +5540,62 @@ function renderRecapBatches(
           .trim()
           .toLowerCase()
       );
+
+    }
+  );
+
+  /* =========================
+   FILTER BATCH YANG MASIH AKTIF
+========================= */
+
+const activeCategoryData =
+  categoryData.filter(
+    function(item) {
+
+      const batchCode =
+        String(
+          item.batch_code || ""
+        ).trim();
+
+      if (!batchCode) {
+        return false;
+      }
+
+
+      const batchRows =
+        categoryData.filter(
+          function(row) {
+
+            return (
+              String(
+                row.batch_code || ""
+              ).trim() ===
+              batchCode
+            );
+
+          }
+        );
+
+
+      const batchCompleted =
+        batchRows.length > 0 &&
+        batchRows.every(
+          function(row) {
+
+            return (
+              String(
+                row.customer_status || ""
+              )
+                .trim()
+                .toLowerCase() ===
+              "sudah checkout shopee"
+            );
+
+          }
+        );
+
+
+      return !batchCompleted;
 
     }
   );
