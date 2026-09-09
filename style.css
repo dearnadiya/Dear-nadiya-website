@@ -7015,171 +7015,151 @@ footer {
 
 }
 
-/* =========================
-   MOBILE - REKAP GO BATCH
-   1 BARIS + HORIZONTAL SCROLL
-========================= */
-
-@media (max-width: 700px) {
-
-  /* CARD BATCH */
-  .recap-batch-card {
-    margin-bottom: 10px !important;
-  }
-
-
-  /* HEADER BATCH */
-  .recap-batch-header {
-    position: relative;
-
-    display: flex !important;
-    align-items: center !important;
-
-    gap: 10px;
-
-    width: 100%;
-
-    padding: 10px 12px !important;
-
-    box-sizing: border-box;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    white-space: nowrap;
-
-    -webkit-overflow-scrolling: touch;
-
-    scrollbar-width: none;
-  }
-
-  .recap-batch-header::-webkit-scrollbar {
-    display: none;
-  }
-
-
-  /* KODE BATCH */
-  .recap-batch-header h3 {
-    flex: 0 0 auto;
-
-    margin: 0 !important;
-
-    font-size: 17px !important;
-
-    white-space: nowrap;
-  }
-
-
-  /* NAMA BARANG */
-  .recap-batch-header > div:first-child > p {
-    flex: 0 0 auto;
-
-    margin: 0 !important;
-
-    font-size: 14px !important;
-
-    white-space: nowrap;
-
-    overflow: visible;
-
-    text-overflow: clip;
-  }
-
-
-  /* JUMLAH CUSTOMER + TOMBOL TAMBAH */
-  .recap-batch-customer-summary {
-    flex: 0 0 auto;
-
-    display: flex !important;
-    align-items: center !important;
-
-    gap: 8px;
-
-    margin: 0 !important;
-
-    white-space: nowrap;
-  }
-
-
-  .recap-batch-customer-summary > span {
-    flex: 0 0 auto;
-
-    white-space: nowrap;
-
-    font-size: 13px;
-  }
-
-
-  /* TOMBOL TAMBAH MEMBER */
-  .add-recap-member-button {
-    flex: 0 0 auto;
-
-    width: auto !important;
-
-    padding: 6px 9px !important;
-
-    font-size: 12px !important;
-
-    white-space: nowrap;
-  }
-
-
-  /* =========================
-     DEADLINE TETAP TERSEMBUNYI
-     SAAT COLLAPSED
-  ========================= */
-
-  .recap-batch-card.recap-batch-collapsed
-  .product-table-wrapper,
-
-  .recap-batch-card.recap-batch-collapsed
-  .batch-tracking,
-
-  .recap-batch-card.recap-batch-collapsed
-  .recap-batch-deadlines,
-
-  .recap-batch-card.recap-batch-collapsed
-  .recap-pagination {
-    display: none !important;
-  }
-
-
-  /* =========================
-     CUSTOMER TETAP TERSEMBUNYI
-     SAMPAI BATCH DIBUKA
-  ========================= */
-
-  .recap-batch-card.recap-batch-collapsed
-  .product-table-wrapper {
-    display: none !important;
-  }
-
-}
-
 /* =========================================================
-   FINAL FIX - REKAP GO MOBILE
-   SEMUA INFORMASI BATCH = 1 BARIS
-   HORIZONTAL SCROLL
+   PEMULIHAN TAMPILAN CUSTOMER MOBILE
+   REKAP PESANAN
+   JANGAN UBAH JAVASCRIPT
 ========================================================= */
 
 @media (max-width: 700px) {
 
-  /* =========================
-     CARD BATCH
-  ========================= */
+  /* =====================================================
+     AREA REKAP
+     FULL WIDTH + BACKGROUND PINK
+  ===================================================== */
 
-  .recap-batch-card {
-    display: block !important;
+  #rekap {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    box-sizing: border-box !important;
+
+    background: #fff5fb !important;
+  }
+
+
+  /* =====================================================
+     GLOBAL SEARCH
+  ===================================================== */
+
+  .recap-global-search {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .recap-global-search input {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* =====================================================
+     HASIL PENCARIAN CUSTOMER
+  ===================================================== */
+
+  #recapGlobalResults {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    overflow: visible !important;
+  }
+
+
+  /* =====================================================
+     CUSTOMER RESULT CARD
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-global-customer {
 
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
 
-    height: auto !important;
-    min-height: 0 !important;
+    box-sizing: border-box !important;
 
-    margin: 0 0 5px 0 !important;
-    padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    overflow: visible !important;
+  }
+
+
+  /* =====================================================
+     NAMA CUSTOMER
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-global-customer-name {
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+
+    overflow-wrap: anywhere !important;
+  }
+
+
+  /* =====================================================
+     TOMBOL KEMBALI
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-global-back-button {
+
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     RINGKASAN CUSTOMER
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-global-summary {
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 8px !important;
+  }
+
+
+  #recapGlobalResults
+  .recap-global-summary-card {
+
+    min-width: 0 !important;
+
+    width: 100% !important;
 
     box-sizing: border-box !important;
 
@@ -7187,77 +7167,95 @@ footer {
   }
 
 
-  /* =========================
-     HEADER = 1 BARIS
-  ========================= */
+  /* =====================================================
+     TABEL PESANAN
+     
+     TABEL BOLEH SCROLL HORIZONTAL,
+     TAPI CONTAINER TIDAK BOLEH MENJADI SEMPIT
+  ===================================================== */
 
-  .recap-batch-header {
-
-    display: flex !important;
-
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-
-    align-items: center !important;
+  #recapGlobalResults
+  .recap-global-order-table {
 
     width: 100% !important;
-    max-width: none !important;
+
+    max-width: 100% !important;
+
     min-width: 0 !important;
-
-    height: auto !important;
-
-    margin: 0 !important;
-    padding: 7px 9px !important;
-
-    gap: 10px !important;
 
     box-sizing: border-box !important;
 
     overflow-x: auto !important;
     overflow-y: hidden !important;
 
-    white-space: nowrap !important;
-
-    scrollbar-width: none !important;
-
     -webkit-overflow-scrolling: touch;
-  }
-
-  .recap-batch-header::-webkit-scrollbar {
-    display: none !important;
   }
 
 
   /* =====================================================
-     PENTING:
-     DIV PEMBUNGKUS H3 + P + CUSTOMER
-     JANGAN LAGI MENJADI COLUMN
+     TABLE HEADER + BODY
+     
+     JANGAN BIARKAN GRID MENGECILKAN KOLOM
   ===================================================== */
 
-  .recap-batch-header > div:first-child {
+  #recapGlobalResults
+  .recap-global-table-header,
 
-    display: contents !important;
+  #recapGlobalResults
+  .recap-global-table-body {
+
+    min-width: 850px !important;
+
+    width: max-content !important;
+
+    box-sizing: border-box !important;
   }
 
 
-  /* =========================
-     KODE BATCH
-  ========================= */
+  /* =====================================================
+     SETIAP BARIS
+  ===================================================== */
 
-  .recap-batch-header h3 {
-
-    display: block !important;
-
-    flex: 0 0 auto !important;
+  #recapGlobalResults
+  .recap-global-table-row {
 
     width: max-content !important;
-    min-width: max-content !important;
 
-    margin: 0 !important;
-    padding: 0 !important;
+    min-width: 850px !important;
 
-    font-size: 13px !important;
-    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+
+    background: #fff5fb !important;
+  }
+
+
+  /* =====================================================
+     CELL
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-table-cell {
+
+    box-sizing: border-box !important;
+
+    min-width: 0 !important;
+
+    background: #fff5fb !important;
+
+    white-space: nowrap !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
+  }
+
+
+  /* =====================================================
+     BATCH
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-table-batch {
 
     white-space: nowrap !important;
 
@@ -7265,202 +7263,279 @@ footer {
   }
 
 
-  /* =========================
+  /* =====================================================
      NAMA BARANG
-  ========================= */
+  ===================================================== */
 
-  .recap-batch-header p {
-
-    display: block !important;
-
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    font-size: 12px !important;
-    line-height: 1.2 !important;
+  #recapGlobalResults
+  .recap-table-item {
 
     white-space: nowrap !important;
 
-    overflow: visible !important;
+    word-break: normal !important;
 
-    text-overflow: clip !important;
+    overflow-wrap: normal !important;
   }
 
 
-  /* =========================
-     JUMLAH CUSTOMER
-  ========================= */
-
-  .recap-batch-customer-summary {
-
-    display: flex !important;
-
-    flex-direction: row !important;
-
-    align-items: center !important;
-
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    gap: 7px !important;
+  #recapGlobalResults
+  .recap-table-item strong {
 
     white-space: nowrap !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
   }
 
-  .recap-batch-customer-summary > span {
 
-    display: block !important;
+  /* =====================================================
+     VERSI / MEMBER
+  ===================================================== */
 
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
-
-    margin: 0 !important;
-
-    font-size: 12px !important;
+  #recapGlobalResults
+  .recap-table-version {
 
     white-space: nowrap !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
   }
 
 
-  /* =========================
-     TAMBAH MEMBER / VERSI
-  ========================= */
+  /* =====================================================
+     HARGA + DP
+  ===================================================== */
 
-  .add-recap-member-button {
+  #recapGlobalResults
+  .recap-table-price,
 
-    display: inline-flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
-
-    height: auto !important;
-
-    margin: 0 !important;
-
-    padding: 5px 8px !important;
-
-    font-size: 11px !important;
-    line-height: 1.2 !important;
-
-    white-space: nowrap !important;
-  }
-
-
-  /* =========================
-     KLIK UNTUK BUKA
-  ========================= */
-
-  .batch-tracking {
-
-    display: flex !important;
-
-    flex-direction: row !important;
-
-    align-items: center !important;
-
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    white-space: nowrap !important;
-  }
-
-
-  .batch-tracking * {
-
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
+  #recapGlobalResults
+  .recap-table-dp {
 
     white-space: nowrap !important;
   }
 
 
   /* =====================================================
-     PENTING:
-     CSS LAMA MENYEMBUNYIKAN TRACKING SAAT COLLAPSED.
-     KITA TAMPILKAN KEMBALI.
+     PAYMENT
   ===================================================== */
 
-  .recap-batch-card.recap-batch-collapsed
-  .batch-tracking {
+  #recapGlobalResults
+  .recap-table-payment {
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     TRACKING
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-table-tracking {
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     CO SHOPEE
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-table-co {
+
+    background: #fff5fb !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     TANGGAL CO
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-table-checkout-date {
+
+    background: #fff5fb !important;
+
+    color: #555 !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     HILANGKAN BAYANGAN / BLOK PUTIH YANG TERPOTONG
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-global-order-table,
+
+  #recapGlobalResults
+  .recap-global-table-header,
+
+  #recapGlobalResults
+  .recap-global-table-body,
+
+  #recapGlobalResults
+  .recap-global-table-row,
+
+  #recapGlobalResults
+  .recap-table-cell {
+
+    box-shadow: none !important;
+  }
+
+
+  /* =====================================================
+     KATEGORI REKAP
+     2 KOLOM SEPERTI TAMPILAN SEBELUMNYA
+  ===================================================== */
+
+  #recapCarouselTrack {
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
+
+    gap: 28px 18px !important;
+
+    padding: 0 10px !important;
+
+    margin: 0 !important;
+
+    overflow: visible !important;
+  }
+
+
+  /* =====================================================
+     KARTU TYPE REKAP
+  ===================================================== */
+
+  #recapCarouselTrack
+  .recap-type-card {
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+
+    padding: 8px 4px !important;
 
     display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    justify-content: flex-start !important;
+
+    overflow: visible !important;
   }
 
 
-  /* =========================
-     DEADLINE TETAP TERSEMBUNYI
-     ========================= */
+  /* =====================================================
+     ICON TYPE
+  ===================================================== */
 
-  .recap-batch-card.recap-batch-collapsed
-  .recap-batch-deadlines {
+  #recapCarouselTrack
+  .recap-type-icon {
 
-    display: none !important;
+    width: auto !important;
+    max-width: 100% !important;
+
+    margin-bottom: 6px !important;
+
+    text-align: center !important;
+
+    white-space: nowrap !important;
   }
 
 
-  /* =========================
-     CUSTOMER / TABEL
-     TETAP TERSEMBUNYI
-     SAAT BATCH BELUM DIBUKA
-  ========================= */
+  /* =====================================================
+     NAMA TYPE
+  ===================================================== */
 
-  .recap-batch-card.recap-batch-collapsed
-  .product-table-wrapper {
-
-    display: none !important;
-  }
-
-
-  /* =========================
-     SAAT BATCH DIBUKA
-  ========================= */
-
-  .recap-batch-card:not(.recap-batch-collapsed)
-  .product-table-wrapper {
-
-    display: block !important;
+  #recapCarouselTrack
+  .recap-type-name {
 
     width: 100% !important;
 
-    max-width: 100% !important;
+    min-width: 0 !important;
 
-    overflow-x: auto !important;
+    text-align: center !important;
 
-    -webkit-overflow-scrolling: touch;
+    white-space: normal !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
   }
 
 
-  /* =========================
-     JARAK ANTAR BATCH
-  ========================= */
+  /* =====================================================
+     JUMLAH PESANAN
+  ===================================================== */
 
-  .recap-batch-card + .recap-batch-card {
+  #recapCarouselTrack
+  .recap-type-count {
 
-    margin-top: 3px !important;
+    width: 100% !important;
+
+    text-align: center !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     PANAH
+  ===================================================== */
+
+  #recapCarouselTrack
+  .recap-type-arrow {
+
+    width: 100% !important;
+
+    text-align: center !important;
+
+    margin-top: 6px !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     EMPTY SEARCH CARD
+  ===================================================== */
+
+  #recapGlobalResults
+  .recap-search-empty {
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    overflow: hidden !important;
   }
 
 }
