@@ -2334,11 +2334,88 @@ async function loadRecap() {
       throw metaError;
     }
 
+    /* =========================
+   STATUS BATCH
+========================= */
+
+const batchStatusMap = {};
+
+
+(recapMeta || []).forEach(
+  function(row) {
+
+    const key =
+      String(row.recap_type || "")
+        .trim()
+        .toLowerCase()
+      + "|" +
+      String(row.category || "")
+        .trim()
+        .toLowerCase()
+      + "|" +
+      String(row.batch_code || "")
+        .trim()
+        .toLowerCase();
+
+
+    if (!key || key === "||") {
+      return;
+    }
+
+
+    if (!batchStatusMap[key]) {
+      batchStatusMap[key] = [];
+    }
+
+
+    batchStatusMap[key].push(
+      String(
+        row.customer_status || ""
+      )
+        .trim()
+        .toLowerCase()
+    );
+
+  }
+);
+
+
+/* =========================
+   TENTUKAN BATCH SELESAI
+========================= */
+
+const completedBatchMap = {};
+
+
+Object.keys(
+  batchStatusMap
+).forEach(
+  function(key) {
+
+    const statuses =
+      batchStatusMap[key];
+
+
+    completedBatchMap[key] =
+      statuses.length > 0 &&
+      statuses.every(
+        function(status) {
+
+          return (
+            status ===
+            "sudah checkout shopee"
+          );
+
+        }
+      );
+
+  }
+);
 
     /* =========================
        GABUNGKAN DATA
     ========================= */
-
+    
     recapData =
       (publicData || []).map(
         function(item) {
@@ -2384,9 +2461,33 @@ async function loadRecap() {
     item.product_name,
 
   customer_status:
-    meta?.customer_status ||
-    item.customer_status ||
-    "Belum Checkout Shopee"
+  meta?.customer_status ||
+  item.customer_status ||
+  "Belum Checkout Shopee",
+
+
+batch_completed:
+  completedBatchMap[
+    String(
+      meta?.recap_type || ""
+    )
+      .trim()
+      .toLowerCase()
+    + "|" +
+    String(
+      meta?.category || ""
+    )
+      .trim()
+      .toLowerCase()
+    + "|" +
+    String(
+      meta?.batch_code ||
+      item.product_code ||
+      ""
+    )
+      .trim()
+      .toLowerCase()
+  ] || false
 };
         }
       );
@@ -5593,7 +5694,7 @@ function renderRecapBatches(
   return;
 }
 
-  /* =========================
+ /* =========================
    BATCH UNIK
 ========================= */
 
@@ -5615,61 +5716,17 @@ categoryData.forEach(
 
 
     /* =========================
-       CEK SEMUA CUSTOMER
-       DALAM BATCH INI
-    ========================= */
-
-    const batchRows =
-      categoryData.filter(
-        function(row) {
-
-          return (
-            String(
-              row.batch_code || ""
-            ).trim() ===
-            batchCode
-          );
-
-        }
-      );
-
-
-    /*
-      Batch hanya disembunyikan
-      jika SEMUA customer sudah
-      checkout Shopee.
-    */
-
-    const batchCompleted =
-      batchRows.length > 0 &&
-      batchRows.every(
-        function(row) {
-
-          return (
-            String(
-              row.customer_status || ""
-            )
-              .trim()
-              .toLowerCase() ===
-            "sudah checkout shopee"
-          );
-
-        }
-      );
-
-
-    /* =========================
-       JIKA SEMUA SUDAH CHECKOUT
+       BATCH SUDAH SELESAI
        JANGAN TAMPILKAN
     ========================= */
 
-    if (batchCompleted) {
+    if (item.batch_completed === true) {
       return;
     }
 
 
     /* =========================
-       CEK BATCH SUDAH DITAMBAHKAN
+       CEK BATCH SUDAH ADA
     ========================= */
 
     const alreadyExists =
@@ -5703,7 +5760,7 @@ categoryData.forEach(
 
   }
 );
-
+  
   /* =========================
      TAMPILKAN BATCH
   ========================= */
