@@ -5512,32 +5512,6 @@ footer {
     margin: 2px 0 0 !important;
   }
 
-
-  /* =======================================================
-     HEADER KATEGORI / BATCH
-     
-     PENTING:
-     HEADER HARUS FULL WIDTH
-     ======================================================= */
-
-  .recap-batch-header {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-
-    box-sizing: border-box;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    align-items: stretch !important;
-
-    margin: 0 0 12px;
-
-    overflow: visible;
-  }
-
-
   /* =======================================================
      TOMBOL KEMBALI
      KECIL DI POJOK KANAN
@@ -6138,41 +6112,6 @@ footer {
     min-width: 0;
     box-sizing: border-box;
   }
-
-
-  /* =======================================================
-     SAAT SUDAH MASUK KATEGORI / BATCH
-     
-     Karena ada .recap-batch-header,
-     track TIDAK BOLEH lagi menjadi grid.
-     ======================================================= */
-
-  #recapCarouselTrack:has(.recap-batch-header) {
-    display: block !important;
-  }
-
-
-  /* =======================================================
-     HEADER KATEGORI / BATCH
-     FULL WIDTH
-     ======================================================= */
-
-  #recapCarouselTrack:has(.recap-batch-header)
-  .recap-batch-header {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    align-items: stretch !important;
-
-    box-sizing: border-box;
-
-    margin: 0 0 12px !important;
-  }
-
 
   /* =======================================================
      TOMBOL KEMBALI
