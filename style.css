@@ -6966,51 +6966,38 @@ footer {
 }
 
 /* =========================
-   GLOBAL REKAP - FULL PINK TABLE
+   GLOBAL REKAP - FIX BACKGROUND
 ========================= */
 
 @media (max-width: 700px) {
 
+  /* BARIS DATA CUSTOMER */
   #recapGlobalResults
-  .recap-global-order-table,
-
-  #recapGlobalResults
-  .recap-global-table-header,
-
-  #recapGlobalResults
-  .recap-global-table-body,
-
-  #recapGlobalResults
-  .recap-global-table-row,
-
-  #recapGlobalResults
-  .recap-table-cell {
+  .recap-global-table-row {
     background: #fff5fb !important;
   }
 
+  /* CELL DATA CUSTOMER */
+  #recapGlobalResults
+  .recap-global-table-row
+  .recap-table-cell {
+    background: #fff5fb !important;
+    box-shadow: none !important;
+  }
 
   /* TANGGAL CO */
-
   #recapGlobalResults
+  .recap-global-table-row
   .recap-table-checkout-date {
     background: #fff5fb !important;
     color: #555 !important;
   }
 
-
   /* CO SHOPEE */
-
   #recapGlobalResults
+  .recap-global-table-row
   .recap-table-co {
     background: #fff5fb !important;
-  }
-
-
-  /* SEMUA CELL */
-
-  #recapGlobalResults
-  .recap-table-cell {
-    box-shadow: none !important;
   }
 
 }
