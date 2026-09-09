@@ -6645,3 +6645,44 @@ footer {
   background: #e8f1ff;
   border: 1px solid #b9d2ff;
 }
+
+/* =========================
+   TOMBOL CLAIM MEMBER
+========================= */
+
+.po-item-claim {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.po-claim-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  border: 1px solid #b9dfc0;
+  background: #eaf8ee;
+
+  color: #236b43;
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  line-height: 1.2;
+  white-space: nowrap;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+}
+
+.po-claim-button:hover {
+  opacity: 0.85;
+}
