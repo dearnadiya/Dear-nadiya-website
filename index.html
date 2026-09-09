@@ -7847,9 +7847,13 @@ const customer =
       <div class="po-detail-content">
 
         <span class="po-detail-status">
-          PO BERJALAN
-        </span>
-
+  ${
+    po.close_date &&
+    new Date(po.close_date) < new Date()
+      ? "🎟️ MASIH BISA CLAIM"
+      : "📦 PO BERJALAN"
+  }
+</span>
 
         <h2>
           ${display(po.title)}
