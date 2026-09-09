@@ -5313,3 +5313,179 @@ footer {
   font-size: 12px !important;
   margin-top: 6px !important;
 }
+
+/* =====================================================
+   FIX REKAP GO - MOBILE
+   ===================================================== */
+
+@media (max-width: 768px) {
+
+  /* Area utama Rekap GO */
+  #recapCarouselTrack {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    display: block !important;
+
+    overflow: visible !important;
+
+    margin: 0 !important;
+    padding: 0 16px 30px !important;
+
+    box-sizing: border-box !important;
+
+    transform: none !important;
+  }
+
+
+  /* =========================================
+     KOTAK "CARI NAMA CUSTOMER"
+     ========================================= */
+
+  .recap-search-empty {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 115px !important;
+
+    padding: 24px 16px !important;
+    margin: 16px 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .recap-search-empty .recap-search-icon {
+    font-size: 30px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .recap-search-empty strong {
+    font-size: 15px !important;
+  }
+
+  .recap-search-empty p {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    margin: 6px auto 0 !important;
+    max-width: 300px !important;
+  }
+
+
+  /* =========================================
+     KARTU KATEGORI
+     ========================================= */
+
+  .recap-category-card {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* Jika kartu kategori berada dalam track */
+  #recapCarouselTrack {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+    align-items: stretch !important;
+  }
+
+
+  .recap-category-card {
+    margin: 0 !important;
+  }
+
+
+  /* =========================================
+     HEADER BATCH
+     ========================================= */
+
+  .recap-batch-header {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+
+    gap: 12px !important;
+
+    margin: 10px 0 16px !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  .recap-back-category {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+    padding: 12px 14px !important;
+
+    text-align: center !important;
+
+    font-size: 14px !important;
+  }
+
+
+  .recap-current-category {
+    width: 100% !important;
+
+    text-align: center !important;
+
+    font-size: 20px !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* =========================================
+     SEARCH BATCH
+     ========================================= */
+
+  .recap-batch-search {
+    width: 100% !important;
+  }
+
+  .recap-batch-search input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+
+  /* =========================================
+     DAFTAR BATCH
+     ========================================= */
+
+  .recap-batch-list {
+    width: 100% !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 12px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  .recap-batch-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+}
