@@ -7156,102 +7156,130 @@ footer {
 
 }
 
-/* =======================================================
-   FIX FINAL MOBILE REKAP GO
-   SEMUA INFO BATCH 1 BARIS + GESER HORIZONTAL
-======================================================= */
+/* =========================================================
+   FINAL FIX - REKAP GO MOBILE
+   SEMUA INFORMASI BATCH = 1 BARIS
+   HORIZONTAL SCROLL
+========================================================= */
 
 @media (max-width: 700px) {
 
-  /* JANGAN buat batch menjadi kartu tinggi */
-  .recap-batch-card {
-    width: 100% !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    height: auto !important;
+  /* =========================
+     CARD BATCH
+  ========================= */
 
-    margin: 0 0 6px !important;
+  .recap-batch-card {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+
+    margin: 0 0 5px 0 !important;
     padding: 0 !important;
+
+    box-sizing: border-box !important;
 
     overflow: hidden !important;
   }
 
-  /* BARIS BATCH */
+
+  /* =========================
+     HEADER = 1 BARIS
+  ========================= */
+
   .recap-batch-header {
+
     display: flex !important;
+
     flex-direction: row !important;
+    flex-wrap: nowrap !important;
+
     align-items: center !important;
 
     width: 100% !important;
-    min-width: 0 !important;
     max-width: none !important;
+    min-width: 0 !important;
+
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 7px 9px !important;
 
     gap: 10px !important;
 
-    margin: 0 !important;
-    padding: 8px 10px !important;
+    box-sizing: border-box !important;
 
     overflow-x: auto !important;
     overflow-y: hidden !important;
 
     white-space: nowrap !important;
 
-    flex-wrap: nowrap !important;
-
-    box-sizing: border-box !important;
+    scrollbar-width: none !important;
 
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
   }
 
   .recap-batch-header::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
 
 
-  /* WRAPPER INFORMASI BATCH
-     HARUS IKUT 1 BARIS */
+  /* =====================================================
+     PENTING:
+     DIV PEMBUNGKUS H3 + P + CUSTOMER
+     JANGAN LAGI MENJADI COLUMN
+  ===================================================== */
+
   .recap-batch-header > div:first-child {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
+
+    display: contents !important;
+  }
+
+
+  /* =========================
+     KODE BATCH
+  ========================= */
+
+  .recap-batch-header h3 {
+
+    display: block !important;
+
+    flex: 0 0 auto !important;
 
     width: max-content !important;
     min-width: max-content !important;
-
-    gap: 10px !important;
 
     margin: 0 !important;
     padding: 0 !important;
 
-    flex: 0 0 auto !important;
-  }
-
-
-  /* KODE BATCH */
-  .recap-batch-header h3 {
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
-
-    margin: 0 !important;
-
-    font-size: 14px !important;
+    font-size: 13px !important;
     line-height: 1.2 !important;
 
     white-space: nowrap !important;
+
+    word-break: normal !important;
   }
 
 
-  /* NAMA BARANG */
-  .recap-batch-header > div:first-child > p {
+  /* =========================
+     NAMA BARANG
+  ========================= */
+
+  .recap-batch-header p {
+
+    display: block !important;
+
     flex: 0 0 auto !important;
 
     width: max-content !important;
     min-width: max-content !important;
 
     margin: 0 !important;
+    padding: 0 !important;
 
     font-size: 12px !important;
     line-height: 1.2 !important;
@@ -7259,109 +7287,180 @@ footer {
     white-space: nowrap !important;
 
     overflow: visible !important;
+
     text-overflow: clip !important;
   }
 
 
-  /* JUMLAH CUSTOMER + TAMBAH MEMBER */
+  /* =========================
+     JUMLAH CUSTOMER
+  ========================= */
+
   .recap-batch-customer-summary {
+
     display: flex !important;
+
     flex-direction: row !important;
+
     align-items: center !important;
+
+    flex: 0 0 auto !important;
 
     width: max-content !important;
     min-width: max-content !important;
-
-    gap: 8px !important;
 
     margin: 0 !important;
     padding: 0 !important;
 
-    flex: 0 0 auto !important;
+    gap: 7px !important;
 
     white-space: nowrap !important;
   }
 
-
-  /* JUMLAH CUSTOMER */
   .recap-batch-customer-summary > span {
+
+    display: block !important;
+
     flex: 0 0 auto !important;
 
     width: max-content !important;
     min-width: max-content !important;
 
-    white-space: nowrap !important;
+    margin: 0 !important;
 
     font-size: 12px !important;
-  }
-
-
-  /* TOMBOL TAMBAH MEMBER */
-  .add-recap-member-button {
-    flex: 0 0 auto !important;
-
-    width: max-content !important;
-    min-width: max-content !important;
-
-    margin: 0 !important;
-
-    padding: 6px 9px !important;
-
-    font-size: 11px !important;
 
     white-space: nowrap !important;
   }
 
 
-  /* KLIK UNTUK BUKA / TRACKING */
-  .batch-tracking {
-    display: flex !important;
-    flex-direction: row !important;
+  /* =========================
+     TAMBAH MEMBER / VERSI
+  ========================= */
+
+  .add-recap-member-button {
+
+    display: inline-flex !important;
+
     align-items: center !important;
+    justify-content: center !important;
+
+    flex: 0 0 auto !important;
 
     width: max-content !important;
     min-width: max-content !important;
 
+    height: auto !important;
+
+    margin: 0 !important;
+
+    padding: 5px 8px !important;
+
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =========================
+     KLIK UNTUK BUKA
+  ========================= */
+
+  .batch-tracking {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
     flex: 0 0 auto !important;
+
+    width: max-content !important;
+    min-width: max-content !important;
 
     margin: 0 !important;
     padding: 0 !important;
-  }
-
-
-  .batch-tracking select,
-  .batch-tracking button {
-    width: max-content !important;
-    min-width: max-content !important;
-
-    margin: 0 !important;
 
     white-space: nowrap !important;
   }
 
 
-  /* CUSTOMER TETAP TERSEMBUNYI */
+  .batch-tracking * {
+
+    flex: 0 0 auto !important;
+
+    width: max-content !important;
+    min-width: max-content !important;
+
+    white-space: nowrap !important;
+  }
+
+
+  /* =====================================================
+     PENTING:
+     CSS LAMA MENYEMBUNYIKAN TRACKING SAAT COLLAPSED.
+     KITA TAMPILKAN KEMBALI.
+  ===================================================== */
+
   .recap-batch-card.recap-batch-collapsed
-  .product-table-wrapper {
+  .batch-tracking {
+
+    display: flex !important;
+  }
+
+
+  /* =========================
+     DEADLINE TETAP TERSEMBUNYI
+     ========================= */
+
+  .recap-batch-card.recap-batch-collapsed
+  .recap-batch-deadlines {
+
     display: none !important;
   }
 
 
-  /* SAAT DIBUKA, CUSTOMER BOLEH MUNCUL */
+  /* =========================
+     CUSTOMER / TABEL
+     TETAP TERSEMBUNYI
+     SAAT BATCH BELUM DIBUKA
+  ========================= */
+
+  .recap-batch-card.recap-batch-collapsed
+  .product-table-wrapper {
+
+    display: none !important;
+  }
+
+
+  /* =========================
+     SAAT BATCH DIBUKA
+  ========================= */
+
   .recap-batch-card:not(.recap-batch-collapsed)
   .product-table-wrapper {
+
     display: block !important;
 
     width: 100% !important;
 
+    max-width: 100% !important;
+
     overflow-x: auto !important;
+
     -webkit-overflow-scrolling: touch;
   }
 
 
-  /* JARAK ANTAR BATCH RAPAT */
+  /* =========================
+     JARAK ANTAR BATCH
+  ========================= */
+
   .recap-batch-card + .recap-batch-card {
-    margin-top: 4px !important;
+
+    margin-top: 3px !important;
   }
 
 }
