@@ -2327,9 +2327,8 @@ async function loadRecap() {
       await supabaseClient
         .from("purchase_recap")
         .select(
-          "category, batch_code, item_name"
-        );
-
+  "recap_type, category, batch_code, item_name"
+);
     if (metaError) {
       throw metaError;
     }
@@ -2365,23 +2364,24 @@ async function loadRecap() {
 
 
           return {
+  ...item,
 
-            ...item,
+  recap_type:
+    meta?.recap_type ||
+    "Lainnya",
 
-            category:
-              meta?.category ||
-              "Lainnya",
+  category:
+    meta?.category ||
+    "Lainnya",
 
-            batch_code:
-              meta?.batch_code ||
-              item.product_code,
+  batch_code:
+    meta?.batch_code ||
+    item.product_code,
 
-            item_name:
-              meta?.item_name ||
-              item.product_name
-
-          };
-
+  item_name:
+    meta?.item_name ||
+    item.product_name
+};
         }
       );
   
@@ -2389,7 +2389,7 @@ async function loadRecap() {
        TAMPILKAN KATEGORI
     ========================= */
 
-    renderRecapCategories(
+    renderRecapTypes(
   recapData
 );
 
@@ -4987,12 +4987,12 @@ const whatsapp =
   );
 
 }
-  
-/* =========================
-   TAMPILKAN KATEGORI REKAP
+
+  /* =========================
+   TAMPILKAN TYPE REKAP
 ========================= */
 
-function renderRecapCategories(
+function renderRecapTypes(
   data
 ) {
 
@@ -5001,51 +5001,35 @@ function renderRecapCategories(
       "recapCarouselTrack"
     );
 
-
   if (!track) {
     return;
   }
 
 
-  /* =========================
-     DAFTAR KATEGORI
-  ========================= */
-
-  const categoryList = [
+  const recapTypeList = [
 
     {
-      name: "Truz",
-      icon: "🧸"
+      name: "Treasure",
+      label: "Rekap Treasure",
+      icon: "💎"
     },
 
     {
-      name: "Treasure KR",
-      icon: "🇰🇷"
+      name: "Multi Group",
+      label: "Rekap Multi Group",
+      icon: "👥"
     },
 
     {
-      name: "Treasure JP",
-      icon: "🇯🇵"
+      name: "Tabungan",
+      label: "Rekap Tabungan",
+      icon: "💰"
     },
 
     {
-      name: "Treasure CH",
-      icon: "🇨🇳"
-    },
-
-    {
-      name: "Treasure Thai",
-      icon: "🇹🇭"
-    },
-
-    {
-      name: "Treasure INA",
-      icon: "🇮🇩"
-    },
-
-    {
-      name: "Treasure Album",
-      icon: "📖"
+      name: "Jastip",
+      label: "Rekap Jastip",
+      icon: "📦"
     }
 
   ];
@@ -5056,14 +5040,13 @@ function renderRecapCategories(
 
 
   /* =========================
-     TAMPILKAN KATEGORI
+     TAMPILKAN TYPE
   ========================= */
 
   track.innerHTML =
-
-    categoryList
+    recapTypeList
       .map(
-        function(category) {
+        function(type) {
 
           const total =
             recapDataList.filter(
@@ -5071,11 +5054,12 @@ function renderRecapCategories(
 
                 return (
                   String(
-                    item.category || ""
+                    item.recap_type ||
+                    ""
                   )
                     .trim()
                     .toLowerCase() ===
-                  category.name
+                  type.name
                     .toLowerCase()
                 );
 
@@ -5087,28 +5071,31 @@ function renderRecapCategories(
 
             <article
               class="recap-category-card"
-              data-category="${category.name}"
+              data-recap-type="${type.name}"
             >
 
               <div
                 class="recap-category-icon"
               >
-                ${category.icon}
+                ${type.icon}
               </div>
+
 
               <div
                 class="recap-category-name"
               >
                 ${display(
-                  category.name
+                  type.label
                 )}
               </div>
+
 
               <div
                 class="recap-category-count"
               >
                 ${total} pesanan
               </div>
+
 
               <div
                 class="recap-category-arrow"
@@ -5123,6 +5110,377 @@ function renderRecapCategories(
         }
       )
       .join("");
+
+
+  /* =========================
+     KLIK TYPE REKAP
+  ========================= */
+
+  track
+    .querySelectorAll(
+      ".recap-category-card"
+    )
+    .forEach(
+      function(card) {
+
+        card.addEventListener(
+          "click",
+          function() {
+
+            const recapType =
+              this.dataset.recapType;
+
+
+            renderRecapCategories(
+              recapDataList,
+              recapType
+            );
+
+          }
+        );
+
+      }
+    );
+
+}
+  
+/* =========================
+   TAMPILKAN KATEGORI REKAP
+========================= */
+
+function renderRecapCategories(
+  data,
+  recapType
+) {
+
+  const track =
+    document.getElementById(
+      "recapCarouselTrack"
+    );
+
+  if (!track) {
+    return;
+  }
+
+
+  const recapDataList =
+    data || [];
+
+
+  /* =========================
+     DATA SESUAI TYPE
+  ========================= */
+
+  const typeData =
+    recapDataList.filter(
+      function(item) {
+
+        return (
+          String(
+            item.recap_type ||
+            ""
+          )
+            .trim()
+            .toLowerCase() ===
+          String(
+            recapType ||
+            ""
+          )
+            .trim()
+            .toLowerCase()
+        );
+
+      }
+    );
+
+
+  /* =========================
+     ICON KATEGORI
+  ========================= */
+
+  const categoryIcons = {
+
+    "Truz": "🧸",
+
+    "Treasure KR": "🇰🇷",
+
+    "Treasure JP": "🇯🇵",
+
+    "Treasure CH": "🇨🇳",
+
+    "Treasure Thai": "🇹🇭",
+
+    "Treasure INA": "🇮🇩",
+
+    "Treasure Album": "📖"
+
+  };
+
+
+  /* =========================
+     AMBIL KATEGORI UNIK
+  ========================= */
+
+  const categories = [];
+
+
+  typeData.forEach(
+    function(item) {
+
+      const category =
+        String(
+          item.category ||
+          ""
+        ).trim();
+
+
+      if (!category) {
+        return;
+      }
+
+
+      const exists =
+        categories.some(
+          function(existing) {
+
+            return (
+              existing.toLowerCase() ===
+              category.toLowerCase()
+            );
+
+          }
+        );
+
+
+      if (!exists) {
+        categories.push(
+          category
+        );
+      }
+
+    }
+  );
+
+
+  /* =========================
+     HEADER TYPE
+  ========================= */
+
+  const typeLabelMap = {
+
+    "Treasure":
+      "💎 Rekap Treasure",
+
+    "Multi Group":
+      "👥 Rekap Multi Group",
+
+    "Tabungan":
+      "💰 Rekap Tabungan",
+
+    "Jastip":
+      "📦 Rekap Jastip"
+
+  };
+
+
+  const typeLabel =
+    typeLabelMap[
+      recapType
+    ] ||
+    recapType;
+
+
+  /* =========================
+     JIKA BELUM ADA KATEGORI
+  ========================= */
+
+  if (!categories.length) {
+
+    track.innerHTML = `
+
+      <div class="recap-batch-header">
+
+        <button
+          type="button"
+          class="recap-back-category"
+          id="recapBackType"
+        >
+          ← Kembali ke Type Rekap
+        </button>
+
+
+        <div class="recap-current-category">
+          ${display(typeLabel)}
+        </div>
+
+      </div>
+
+
+      <div class="empty">
+        Belum ada kategori pada type rekap ini.
+      </div>
+
+    `;
+
+
+    const backButton =
+      document.getElementById(
+        "recapBackType"
+      );
+
+
+    if (backButton) {
+
+      backButton.addEventListener(
+        "click",
+        function() {
+
+          renderRecapTypes(
+            recapDataList
+          );
+
+        }
+      );
+
+    }
+
+
+    return;
+  }
+
+
+  /* =========================
+     TAMPILKAN KATEGORI
+  ========================= */
+
+  track.innerHTML = `
+
+    <div class="recap-batch-header">
+
+      <button
+        type="button"
+        class="recap-back-category"
+        id="recapBackType"
+      >
+        ← Kembali ke Type Rekap
+      </button>
+
+
+      <div class="recap-current-category">
+        ${display(typeLabel)}
+      </div>
+
+    </div>
+
+
+    <div class="recap-category-list">
+
+      ${categories
+        .map(
+          function(category) {
+
+            const total =
+              typeData.filter(
+                function(item) {
+
+                  return (
+                    String(
+                      item.category ||
+                      ""
+                    )
+                      .trim()
+                      .toLowerCase() ===
+                    category
+                      .toLowerCase()
+                  );
+
+                }
+              ).length;
+
+
+            const icon =
+              categoryIcons[
+                category
+              ] ||
+              "📁";
+
+
+            return `
+
+              <article
+                class="recap-category-card"
+                data-category="${display(
+                  category
+                )}"
+              >
+
+                <div
+                  class="recap-category-icon"
+                >
+                  ${icon}
+                </div>
+
+
+                <div
+                  class="recap-category-name"
+                >
+                  ${display(
+                    category
+                  )}
+                </div>
+
+
+                <div
+                  class="recap-category-count"
+                >
+                  ${total} pesanan
+                </div>
+
+
+                <div
+                  class="recap-category-arrow"
+                >
+                  →
+                </div>
+
+              </article>
+
+            `;
+
+          }
+        )
+        .join("")}
+
+    </div>
+
+  `;
+
+
+  /* =========================
+     KEMBALI KE TYPE
+  ========================= */
+
+  const backButton =
+    document.getElementById(
+      "recapBackType"
+    );
+
+
+  if (backButton) {
+
+    backButton.addEventListener(
+      "click",
+      function() {
+
+        renderRecapTypes(
+          recapDataList
+        );
+
+      }
+    );
+
+  }
+
 
   /* =========================
      KLIK KATEGORI
@@ -5144,8 +5502,9 @@ function renderRecapCategories(
 
 
             renderRecapBatches(
-              recapDataList,
-              category
+              typeData,
+              category,
+              recapType
             );
 
           }
@@ -5155,17 +5514,17 @@ function renderRecapCategories(
     );
 
 }
-
-
+  
 /* =========================
    TAMPILKAN BATCH REKAP
 ========================= */
 
 function renderRecapBatches(
   data,
-  category
+  category,
+  recapType
 ) {
-
+  
   const track =
     document.getElementById(
       "recapCarouselTrack"
@@ -5182,17 +5541,39 @@ function renderRecapBatches(
   ========================= */
 
   const categoryData =
-    data.filter(
-      function(item) {
+  data.filter(
+    function(item) {
 
-        return (
-          item.category ===
-          category
-        );
+      return (
+        String(
+          item.recap_type ||
+          ""
+        )
+          .trim()
+          .toLowerCase() ===
+        String(
+          recapType ||
+          ""
+        )
+          .trim()
+          .toLowerCase()
+        &&
+        String(
+          item.category ||
+          ""
+        )
+          .trim()
+          .toLowerCase() ===
+        String(
+          category ||
+          ""
+        )
+          .trim()
+          .toLowerCase()
+      );
 
-      }
-    );
-
+    }
+  );
 
   if (!categoryData.length) {
 
@@ -5232,9 +5613,9 @@ function renderRecapBatches(
       function() {
 
         renderRecapCategories(
-          data
-        );
-
+  data,
+  recapType
+);
       }
     );
 
@@ -5449,9 +5830,9 @@ function renderRecapBatches(
       function() {
 
         renderRecapCategories(
-          data
-        );
-
+  data,
+  recapType
+);
       }
     );
 
