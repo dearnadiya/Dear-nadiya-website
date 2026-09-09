@@ -7288,7 +7288,7 @@ async function loadPOCustomer() {
 
       container.innerHTML = `
         <div class="empty">
-          Belum ada PO yang sedang berjalan.
+          Belum ada PO.
         </div>
       `;
 
@@ -7297,78 +7297,296 @@ async function loadPOCustomer() {
 
 
     /* =========================
-       SIMPAN DATA PO
+       PISAHKAN PO
     ========================= */
 
-    window.customerPOData = data;
+    const now =
+      new Date();
+
+
+    const poBerjalan =
+      [];
+
+    const poMasihClaim =
+      [];
+
+
+    data.forEach(function (po) {
+
+      let rows = [];
+
+      if (Array.isArray(po.list_data)) {
+
+        rows =
+          po.list_data;
+
+      } else if (po.list_data) {
+
+        try {
+
+          rows =
+            typeof po.list_data === "string"
+              ? JSON.parse(po.list_data)
+              : [];
+
+        } catch (error) {
+
+          rows = [];
+
+        }
+
+      }
+
+
+      const isClosed =
+        po.close_date &&
+        new Date(po.close_date) < now;
+
+
+      const hasAvailableMember =
+        rows.some(function (row) {
+
+          const hasMember =
+            row.member &&
+            String(row.member).trim();
+
+          const hasCustomer =
+            row.customer &&
+            String(row.customer).trim();
+
+          return (
+            hasMember &&
+            !hasCustomer
+          );
+
+        });
+
+
+      /* =========================
+         PO BERJALAN
+      ========================= */
+
+      if (!isClosed) {
+
+        poBerjalan.push(po);
+
+        return;
+
+      }
+
+
+      /* =========================
+         MASIH BISA CLAIM
+      ========================= */
+
+      if (
+        po.order_mode === "claim" &&
+        hasAvailableMember
+      ) {
+
+        poMasihClaim.push(po);
+
+      }
+
+    });
 
 
     /* =========================
-       TAMPILKAN CAROUSEL
+       GABUNG DATA UNTUK DETAIL
+    ========================= */
+
+    const combinedData =
+      [
+        ...poBerjalan,
+        ...poMasihClaim
+      ];
+
+
+    window.customerPOData =
+      combinedData;
+
+
+    /* =========================
+       HELPER CARD
+    ========================= */
+
+    function renderPOCards(
+      list,
+      statusText,
+      statusClass,
+      startIndex
+    ) {
+
+      if (!list.length) {
+
+        return `
+          <div class="empty">
+            Belum ada PO.
+          </div>
+        `;
+
+      }
+
+
+      return `
+        <div class="po-carousel">
+
+          <div class="po-carousel-track">
+
+            ${
+              list.map(
+                function (po, index) {
+
+                  return `
+                    <article
+                      class="po-mini-card"
+                      onclick="showPODetail(${startIndex + index})"
+                    >
+
+                      ${
+                        po.image_url
+                          ? `
+                            <img
+                              src="${display(po.image_url)}"
+                              alt="${display(po.title)}"
+                              class="po-mini-image"
+                            >
+                          `
+                          : `
+                            <div class="po-mini-placeholder">
+                              Dear Nadiya
+                            </div>
+                          `
+                      }
+
+                      <div class="po-mini-content">
+
+                        <h3>
+                          ${display(po.title)}
+                        </h3>
+
+                        <span
+                          class="${statusClass}"
+                        >
+                          ${statusText}
+                        </span>
+
+                      </div>
+
+                    </article>
+                  `;
+
+                }
+              ).join("")
+            }
+
+          </div>
+
+
+          ${
+            list.length > 1
+              ? `
+                <div class="po-carousel-hint">
+                  Geser untuk melihat PO lainnya
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+      `;
+
+    }
+
+
+    /* =========================
+       TAMPILKAN CUSTOMER
     ========================= */
 
     container.innerHTML = `
 
-      <div class="po-carousel">
+      <!-- =========================
+           PO BERJALAN
+      ========================= -->
 
-        <div class="po-carousel-track">
+      <div class="po-customer-category">
 
-          ${
-            data.map((po, index) => `
+        <div class="po-customer-category-header">
 
-              <article
-                class="po-mini-card"
-                onclick="showPODetail(${index})"
-              >
+          <div>
 
-                ${
-                  po.image_url
-                    ? `
-                      <img
-                        src="${display(po.image_url)}"
-                        alt="${display(po.title)}"
-                        class="po-mini-image"
-                      >
-                    `
-                    : `
-                      <div class="po-mini-placeholder">
-                        Dear Nadiya
-                      </div>
-                    `
-                }
+            <h3>
+              📦 PO Berjalan
+            </h3>
 
+            <p>
+              PO yang sedang berlangsung
+            </p>
 
-                <div class="po-mini-content">
-
-                  <h3>
-                    ${display(po.title)}
-                  </h3>
-
-                  <span class="po-mini-status">
-                    PO Berjalan
-                  </span>
-
-                </div>
-
-              </article>
-
-            `).join("")
-          }
+          </div>
 
         </div>
 
 
         ${
-          data.length > 1
-            ? `
-              <div class="po-carousel-hint">
-                Geser untuk melihat PO lainnya
-              </div>
-            `
-            : ""
+          renderPOCards(
+            poBerjalan,
+            "PO Berjalan",
+            "po-mini-status",
+            0
+          )
         }
 
       </div>
+
+
+      <!-- =========================
+           MASIH BISA CLAIM
+      ========================= -->
+
+      ${
+        poMasihClaim.length
+          ? `
+
+            <div
+              class="po-customer-category po-claim-category"
+            >
+
+              <div
+                class="po-customer-category-header"
+              >
+
+                <div>
+
+                  <h3>
+                    🎟️ Masih Bisa Claim
+                  </h3>
+
+                  <p>
+                    PO sudah ditutup,
+                    tetapi masih tersedia
+                    member yang belum di-claim.
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              ${
+                renderPOCards(
+                  poMasihClaim,
+                  "Masih Bisa Claim",
+                  "po-claim-mini-status",
+                  poBerjalan.length
+                )
+              }
+
+            </div>
+
+          `
+          : ""
+      }
 
 
       <!-- =========================
@@ -7382,6 +7600,7 @@ async function loadPOCustomer() {
 
     `;
 
+
   } catch (error) {
 
     console.error(
@@ -7389,18 +7608,22 @@ async function loadPOCustomer() {
       error
     );
 
+
     container.innerHTML = `
       <div class="error">
+
         PO belum dapat dimuat.
+
         <br><br>
+
         ${display(error.message)}
+
       </div>
     `;
 
   }
 
 }
-
 
 /* =========================
    TAMPILKAN DETAIL PO
