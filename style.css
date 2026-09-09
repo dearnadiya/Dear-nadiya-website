@@ -8297,3 +8297,471 @@ footer {
 
 
 }
+
+/* =========================================================
+   REKAP CUSTOMER MOBILE
+   BATCH LIST - TABLE STYLE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  /* =======================================================
+     HEADER
+  ======================================================= */
+
+  #recapCarouselTrack .recap-batch-header {
+
+    position: relative !important;
+
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin: 0 0 8px 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+
+    overflow: visible !important;
+  }
+
+
+  /* =======================================================
+     NAMA KATEGORI
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-current-category {
+
+    display: block !important;
+
+    width: calc(100% - 125px) !important;
+
+    max-width: calc(100% - 125px) !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 4px 0 !important;
+
+    box-sizing: border-box !important;
+
+    font-size: 20px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.3 !important;
+
+    text-align: left !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+  }
+
+
+  /* =======================================================
+     TOMBOL KEMBALI
+     KANAN ATAS
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-back-category {
+
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 0 !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: auto !important;
+
+    max-width: 120px !important;
+
+    margin: 0 !important;
+
+    padding: 7px 10px !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 10px !important;
+
+    font-size: 11px !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    z-index: 10 !important;
+  }
+
+
+  /* =======================================================
+     PENCARIAN
+     TETAP DI ATAS JUDUL KOLOM
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-search {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin: 8px 0 10px 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-batch-search input {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: 40px !important;
+
+    margin: 0 !important;
+
+    padding: 8px 12px !important;
+
+    box-sizing: border-box !important;
+
+    font-size: 12px !important;
+  }
+
+
+  /* =======================================================
+     CONTAINER TABLE
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-table {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    overflow: hidden !important;
+
+    border: 1px solid rgba(100, 70, 120, 0.12) !important;
+
+    border-radius: 12px !important;
+
+    background: #fff !important;
+  }
+
+
+  /* =======================================================
+     JUDUL KOLOM
+     MUNCUL SATU KALI
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-table-header {
+
+    display: grid !important;
+
+    grid-template-columns:
+      105px
+      minmax(0, 1fr)
+      35px !important;
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+
+    min-height: 40px !important;
+
+    background: #faf7fb !important;
+
+    border-bottom: 1px solid rgba(100, 70, 120, 0.15) !important;
+  }
+
+
+  /* =======================================================
+     JUDUL KOLOM
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-table-code,
+
+  #recapCarouselTrack
+  .recap-batch-table-name,
+
+  #recapCarouselTrack
+  .recap-batch-table-arrow {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    box-sizing: border-box !important;
+
+    padding: 7px 8px !important;
+
+    font-size: 10px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+  }
+
+
+  /* GARIS VERTIKAL HEADER */
+
+  #recapCarouselTrack
+  .recap-batch-table-name {
+
+    border-left: 1px solid rgba(100, 70, 120, 0.15) !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-batch-table-arrow {
+
+    justify-content: center !important;
+
+    border-left: 1px solid rgba(100, 70, 120, 0.15) !important;
+  }
+
+
+  /* =======================================================
+     LIST BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-list {
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    gap: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* =======================================================
+     SATU BARIS BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-card {
+
+    display: grid !important;
+
+    grid-template-columns:
+      105px
+      minmax(0, 1fr)
+      35px !important;
+
+    align-items: center !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    min-height: 45px !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+
+    border: none !important;
+
+    border-radius: 0 !important;
+
+    background: #fff !important;
+
+    box-shadow: none !important;
+
+    overflow: hidden !important;
+
+    cursor: pointer !important;
+  }
+
+
+  /* =======================================================
+     GARIS ANTAR BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-card + .recap-batch-card {
+
+    border-top: 1px solid rgba(100, 70, 120, 0.12) !important;
+  }
+
+
+  /* =======================================================
+     KODE BATCH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-card
+  .recap-batch-code {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    height: 100% !important;
+
+    padding: 8px !important;
+
+    box-sizing: border-box !important;
+
+    font-size: 12px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+  }
+
+
+  /* =======================================================
+     NAMA BARANG
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-card
+  .recap-batch-name {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    height: 100% !important;
+
+    padding: 8px !important;
+
+    box-sizing: border-box !important;
+
+    font-size: 11px !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+    border-left: 1px solid rgba(100, 70, 120, 0.12) !important;
+  }
+
+
+  /* =======================================================
+     PANAH
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-card
+  .recap-batch-arrow {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    height: 100% !important;
+
+    box-sizing: border-box !important;
+
+    font-size: 15px !important;
+
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+
+    border-left: 1px solid rgba(100, 70, 120, 0.12) !important;
+  }
+
+
+  /* =======================================================
+     HILANGKAN ICON JIKA MASIH TERSEDIA DARI CSS LAMA
+  ======================================================= */
+
+  #recapCarouselTrack
+  .recap-batch-icon {
+
+    display: none !important;
+  }
+
+
+  #recapCarouselTrack
+  .recap-batch-info {
+
+    display: contents !important;
+  }
+
+}
