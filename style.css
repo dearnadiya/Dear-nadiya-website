@@ -6621,3 +6621,27 @@ footer {
   }
 
 }
+
+/* =========================
+   STATUS PO CLAIM
+========================= */
+
+.po-available,
+.po-claimed {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.po-available {
+  background: #eaf8ee;
+  border: 1px solid #b9dfc0;
+}
+
+.po-claimed {
+  background: #e8f1ff;
+  border: 1px solid #b9d2ff;
+}
