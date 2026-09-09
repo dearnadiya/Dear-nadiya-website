@@ -7498,43 +7498,74 @@ const customer =
 
             return `
 
-              <div class="po-item-card">
+  <div class="po-item-card">
 
-                <div class="po-item-main">
+    <div class="po-item-main">
 
-                  <strong>
-                    ${display(row.member || "—")}
-                  </strong>
+      <strong>
+        ${display(row.member || "—")}
+      </strong>
 
-                  ${
-                    row.note
-                      ? `
-                        <span>
-                          ${display(row.note)}
-                        </span>
-                      `
-                      : ""
-                  }
+      ${
+        row.note
+          ? `
+            <span>
+              ${display(row.note)}
+            </span>
+          `
+          : ""
+      }
 
-                </div>
+    </div>
 
 
-                <div class="po-item-info">
+    <div class="po-item-info">
 
-                  <span>
-                    ${customer}
-                  </span>
+      <span>
+        ${customer}
+      </span>
 
-                  <span>
-                    Qty ${display(row.quantity || 1)}
-                  </span>
+      <span>
+        Qty ${display(row.quantity || 1)}
+      </span>
 
-                </div>
+    </div>
 
-              </div>
 
-            `;
+    ${
+      po.order_mode === "claim" &&
+      row.member &&
+      String(row.member).trim() &&
+      !(
+        row.customer &&
+        String(row.customer).trim()
+      )
+        ? `
+          <div class="po-item-claim">
 
+            <a
+              href="https://wa.me/62895339878010?text=${encodeURIComponent(
+                "Halo Admin Dear Nadiya, saya ingin claim member " +
+                String(row.member).trim() +
+                " untuk PO " +
+                String(po.title || "").trim() +
+                "."
+              )}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="po-claim-button"
+            >
+              🎟️ Claim Member
+            </a>
+
+          </div>
+        `
+        : ""
+    }
+
+  </div>
+
+`;
           }).join("")
         }
 
