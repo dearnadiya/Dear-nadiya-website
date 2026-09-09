@@ -5870,32 +5870,55 @@ categoryData.forEach(
 
   track.innerHTML = `
 
-    <div class="recap-batch-header">
+  <div class="recap-batch-header">
 
-      <button
-        type="button"
-        class="recap-back-category"
-        id="recapBackCategory"
-      >
-        ← Kembali ke Kategori
-      </button>
+    <button
+      type="button"
+      class="recap-back-category"
+      id="recapBackCategory"
+    >
+      ← Kembali ke Kategori
+    </button>
 
-      <div class="recap-current-category">
-  ${display(category)}
-</div>
+    <div class="recap-current-category">
+      ${display(category)}
+    </div>
 
-<div class="recap-batch-search">
-  <input
-    type="text"
-    id="recapBatchSearch"
-    placeholder="Cari batch atau nama produk..."
-    autocomplete="off"
-  >
-</div>
+  </div>
 
-</div>
 
-<div class="recap-batch-list">
+  <div class="recap-batch-search">
+
+    <input
+      type="text"
+      id="recapBatchSearch"
+      placeholder="Cari batch atau nama produk..."
+      autocomplete="off"
+    >
+
+  </div>
+
+
+  <div class="recap-batch-table">
+
+    <div class="recap-batch-table-header">
+
+      <div class="recap-batch-table-code">
+        Kode Batch
+      </div>
+
+      <div class="recap-batch-table-name">
+        Nama Barang
+      </div>
+
+      <div class="recap-batch-table-arrow">
+        →
+      </div>
+
+    </div>
+
+
+    <div class="recap-batch-list">
 
       ${batches
         .map(
@@ -5904,33 +5927,27 @@ categoryData.forEach(
             return `
 
               <article
-  class="recap-batch-card"
-  data-batch-code="${display(
-    batch.batch_code
-  )}"
-  data-search="${display(
-    batch.batch_code + " " + batch.item_name
-  ).toLowerCase()}"
->
+                class="recap-batch-card"
+                data-batch-code="${display(
+                  batch.batch_code
+                )}"
+                data-search="${display(
+                  batch.batch_code +
+                  " " +
+                  batch.item_name
+                ).toLowerCase()}"
+              >
 
-                <div class="recap-batch-icon">
-                  📦
+                <div class="recap-batch-code">
+                  ${display(
+                    batch.batch_code
+                  )}
                 </div>
 
-                <div class="recap-batch-info">
-
-                  <div class="recap-batch-code">
-                    ${display(
-                      batch.batch_code
-                    )}
-                  </div>
-
-                  <div class="recap-batch-name">
-                    ${display(
-                      batch.item_name
-                    )}
-                  </div>
-
+                <div class="recap-batch-name">
+                  ${display(
+                    batch.item_name
+                  )}
                 </div>
 
                 <div class="recap-batch-arrow">
@@ -5947,8 +5964,10 @@ categoryData.forEach(
 
     </div>
 
-  `;
+  </div>
 
+`;
+  
     /* =========================
      PENCARIAN BATCH
   ========================= */
