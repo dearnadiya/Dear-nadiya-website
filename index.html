@@ -5243,34 +5243,10 @@ function renderRecapTypes(
 
   track.innerHTML =
   recapTypes
-    .filter(
-      function(type) {
-
-        const hasActiveBatch =
-          recapDataList.some(
-            function(item) {
-
-              return (
-                String(
-                  item.recap_type || ""
-                )
-                  .trim()
-                  .toLowerCase() ===
-                type.name.toLowerCase()
-                &&
-                item.batch_completed !== true
-              );
-
-            }
-          );
-
-        return hasActiveBatch;
-
-      }
-    )
     .map(
-      function(type) {
-          const typeData =
+      function(type) {        
+        
+        const typeData =
   recapDataList.filter(
     function(item) {
 
@@ -5281,8 +5257,6 @@ function renderRecapTypes(
           .trim()
           .toLowerCase() ===
         type.name.toLowerCase()
-        &&
-        item.batch_completed !== true
       );
 
     }
