@@ -5242,26 +5242,51 @@ function renderRecapTypes(
   ];
 
   track.innerHTML =
-    recapTypes
-      .map(
-        function(type) {
+  recapTypes
+    .filter(
+      function(type) {
 
+        const hasActiveBatch =
+          recapDataList.some(
+            function(item) {
+
+              return (
+                String(
+                  item.recap_type || ""
+                )
+                  .trim()
+                  .toLowerCase() ===
+                type.name.toLowerCase()
+                &&
+                item.batch_completed !== true
+              );
+
+            }
+          );
+
+        return hasActiveBatch;
+
+      }
+    )
+    .map(
+      function(type) {
           const typeData =
-            recapDataList.filter(
-              function(item) {
+  recapDataList.filter(
+    function(item) {
 
-                return (
-                  String(
-                    item.recap_type || ""
-                  )
-                    .trim()
-                    .toLowerCase() ===
-                  type.name.toLowerCase()
-                );
+      return (
+        String(
+          item.recap_type || ""
+        )
+          .trim()
+          .toLowerCase() ===
+        type.name.toLowerCase()
+        &&
+        item.batch_completed !== true
+      );
 
-              }
-            );
-
+    }
+  );
           return `
             <article
               class="recap-type-card"
