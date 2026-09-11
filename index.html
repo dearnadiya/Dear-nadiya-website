@@ -8041,7 +8041,6 @@ const customer =
 ========================= */
 
 function closePODetail() {
-
   const detail =
     document.getElementById(
       "poCustomerDetail"
@@ -8053,8 +8052,18 @@ function closePODetail() {
 
   detail.innerHTML = "";
 
-}
+  const poList =
+    document.getElementById(
+      "poCustomerList"
+    );
 
+  if (poList) {
+    poList.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}
 loadPOCustomer();
 
   /* =========================
