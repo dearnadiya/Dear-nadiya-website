@@ -7480,18 +7480,27 @@ async function loadPOCustomer() {
 
                       <div class="po-mini-content">
 
-                        <h3>
-                          ${display(po.title)}
-                        </h3>
+  <h3>
+    ${display(po.title)}
+  </h3>
 
-                        <span
-                          class="${statusClass}"
-                        >
-                          ${statusText}
-                        </span>
+  <span
+    class="${statusClass}"
+  >
+    ${statusText}
+  </span>
 
-                      </div>
+  ${
+    po.batch_status === "full"
+      ? `
+        <div class="po-batch-full-notice">
+          🔴 BATCH FULL
+        </div>
+      `
+      : ""
+  }
 
+</div>
                     </article>
                   `;
 
