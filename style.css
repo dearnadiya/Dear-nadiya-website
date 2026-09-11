@@ -9544,3 +9544,23 @@ footer {
   }
 
 }
+
+/* =========================================================
+   BATCH FULL — TAMPILAN KOMPAK
+   ========================================================= */
+
+.po-batch-full-notice {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+
+  margin-top: 2px !important;
+
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+
+  padding: 0 !important;
+
+  white-space: nowrap !important;
+}
