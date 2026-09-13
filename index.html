@@ -6622,8 +6622,8 @@ document
         } = await supabaseClient
           .from("customers")
           .select(
-            "id, name, username_wa"
-          )
+  "id, name, username_wa, whatsapp"
+)
           .order(
             "id",
             {
@@ -6699,48 +6699,38 @@ document
         );
 
 
-        /* =========================
-           CARI DARI NAMA / 4 DIGIT WA
-           DI REKAP GO
-        ========================= */
+/* =========================
+   CARI DARI 4 DIGIT WA
+   CUSTOMER MASTER
+========================= */
 
-        (recapRows || []).forEach(
-          function(row) {
+(customers || []).forEach(
+  function(customer) {
 
-            const name =
-              String(
-                row.customer_name || ""
-              )
-                .toLowerCase()
-                .trim();
+    const whatsapp =
+      String(
+        customer.whatsapp || ""
+      )
+        .replace(/\D/g, "")
+        .trim();
 
-            const whatsappLast4 =
-              String(
-                row.whatsapp_last4 || ""
-              )
-                .trim();
+    const last4 =
+      whatsapp.slice(-4);
 
-            if (
-              name.includes(keyword) ||
-              whatsappLast4 === keyword
-            ) {
+    if (
+      last4 &&
+      last4 === keyword
+    ) {
 
-              if (row.customer_id) {
+      matchedCustomerIds.add(
+        Number(customer.id)
+      );
 
-                matchedCustomerIds.add(
-                  Number(
-                    row.customer_id
-                  )
-                );
+    }
 
-              }
-
-            }
-
-          }
-        );
-
-
+  }
+);
+        
         /* =========================
            HASIL CUSTOMER
         ========================= */
