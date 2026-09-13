@@ -1070,9 +1070,9 @@ async function findCustomerPayments(
 <div class="form-group">
 
   <label for="paymentCustomerIdentity">
-    Nama Customer (4 Digit Terakhir WhatsApp)
-  </label>
-
+  Cari Data Customer
+</label>
+  
   <input
     id="paymentCustomerIdentity"
     type="text"
@@ -1080,6 +1080,12 @@ async function findCustomerPayments(
     autocomplete="off"
     required
   >
+
+  <input
+  type="hidden"
+  id="paymentCustomerId"
+  value=""
+>
 
 </div>
 
@@ -6570,18 +6576,22 @@ document
           "paymentCustomerIdentity"
         );
 
+      const customerIdInput =
+        document.getElementById(
+          "paymentCustomerId"
+        );
+
       const identity =
         input.value.trim();
 
       if (!identity) {
 
         showPaymentMessage(
-          "Masukkan nama atau 4 digit terakhir WhatsApp.",
+          "Masukkan nama, username WA, atau 4 digit terakhir WhatsApp.",
           true
         );
 
         return;
-
       }
 
       const button =
@@ -6596,28 +6606,143 @@ document
 
       try {
 
+        const keyword =
+          identity
+            .toLowerCase()
+            .trim();
+
+
         /* =========================
-           CARI DI PURCHASE RECAP
+           AMBIL CUSTOMER MASTER
         ========================= */
 
         const {
-          data: results,
-          error
+          data: customers,
+          error: customerError
         } = await supabaseClient
-          .from("purchase_recap")
-          .select("customer_name")
-          .ilike(
-            "customer_name",
-            `%${identity}%`
+          .from("customers")
+          .select(
+            "id, name, username_wa"
+          )
+          .order(
+            "id",
+            {
+              ascending: true
+            }
           );
 
-        if (error) {
-          throw error;
+        if (customerError) {
+          throw customerError;
         }
 
 
         /* =========================
-           TAMPILKAN HASIL
+           AMBIL DATA REKAP GO
+           UNTUK 4 DIGIT WA
+        ========================= */
+
+        const {
+          data: recapRows,
+          error: recapError
+        } = await supabaseClient
+          .from("purchase_recap")
+          .select(
+            "customer_id, customer_name, whatsapp_last4"
+          );
+
+        if (recapError) {
+          throw recapError;
+        }
+
+
+        /* =========================
+           TENTUKAN CUSTOMER YANG COCOK
+        ========================= */
+
+        const matchedCustomerIds =
+          new Set();
+
+
+        /* =========================
+           CARI DARI NAMA / USERNAME WA
+        ========================= */
+
+        (customers || []).forEach(
+          function(customer) {
+
+            const name =
+              String(
+                customer.name || ""
+              )
+                .toLowerCase()
+                .trim();
+
+            const username =
+              String(
+                customer.username_wa || ""
+              )
+                .toLowerCase()
+                .trim();
+
+            if (
+              name.includes(keyword) ||
+              username.includes(keyword)
+            ) {
+
+              matchedCustomerIds.add(
+                Number(customer.id)
+              );
+
+            }
+
+          }
+        );
+
+
+        /* =========================
+           CARI DARI NAMA / 4 DIGIT WA
+           DI REKAP GO
+        ========================= */
+
+        (recapRows || []).forEach(
+          function(row) {
+
+            const name =
+              String(
+                row.customer_name || ""
+              )
+                .toLowerCase()
+                .trim();
+
+            const whatsappLast4 =
+              String(
+                row.whatsapp_last4 || ""
+              )
+                .trim();
+
+            if (
+              name.includes(keyword) ||
+              whatsappLast4 === keyword
+            ) {
+
+              if (row.customer_id) {
+
+                matchedCustomerIds.add(
+                  Number(
+                    row.customer_id
+                  )
+                );
+
+              }
+
+            }
+
+          }
+        );
+
+
+        /* =========================
+           HASIL CUSTOMER
         ========================= */
 
         const resultBox =
@@ -6634,14 +6759,31 @@ document
           "block";
 
 
+        const matchedCustomers =
+          (customers || [])
+            .filter(
+              function(customer) {
+
+                return matchedCustomerIds.has(
+                  Number(customer.id)
+                );
+
+              }
+            );
+
+
         /* =========================
            TIDAK DITEMUKAN
         ========================= */
 
         if (
-          !results ||
-          results.length === 0
+          matchedCustomers.length === 0
         ) {
+
+          customerIdInput.value = "";
+
+          window.selectedPaymentCustomerId =
+            null;
 
           resultList.innerHTML = `
             <p>
@@ -6650,24 +6792,7 @@ document
           `;
 
           return;
-
         }
-
-
-        /* =========================
-           HAPUS DUPLIKAT CUSTOMER
-        ========================= */
-
-        const customers =
-          [
-            ...new Set(
-              results
-                .map(row =>
-                  row.customer_name
-                )
-                .filter(Boolean)
-            )
-          ];
 
 
         /* =========================
@@ -6681,463 +6806,600 @@ document
         `;
 
 
-        customers.forEach(
-          customer => {
+        matchedCustomers
+          .slice(0, 10)
+          .forEach(
+            function(customer) {
 
-            const option =
-              document.createElement(
-                "button"
+              const option =
+                document.createElement(
+                  "button"
+                );
+
+              option.type =
+                "button";
+
+              option.className =
+                "btn";
+
+              option.style.marginBottom =
+                "8px";
+
+              option.style.width =
+                "100%";
+
+              option.textContent =
+                customer.username_wa
+                  ? `${customer.name} (${customer.username_wa})`
+                  : customer.name;
+
+
+              option.addEventListener(
+                "click",
+                async function() {
+
+                  /* =========================
+                     SIMPAN CUSTOMER TERPILIH
+                     INTERNAL SAJA
+                  ========================= */
+
+                  input.value =
+                    customer.name;
+
+                  customerIdInput.value =
+                    customer.id;
+
+                  window.selectedPaymentCustomerId =
+                    Number(
+                      customer.id
+                    );
+
+                  window.selectedPaymentBills =
+                    [];
+
+
+                  resultList.innerHTML = `
+                    <p>
+                      Customer dipilih:
+                      <b>
+                        ${customer.name}
+                      </b>
+                    </p>
+
+                    <p>
+                      Mengambil data tagihan...
+                    </p>
+                  `;
+
+
+                  try {
+
+                    /* =========================
+                       AMBIL TAGIHAN BERDASARKAN
+                       CUSTOMER ID
+                    ========================= */
+
+                    const {
+                      data: bills,
+                      error: billError
+                    } = await supabaseClient
+                      .from("purchase_recap")
+                      .select("*")
+                      .eq(
+                        "customer_id",
+                        Number(
+                          customer.id
+                        )
+                      )
+                      .or(
+                        "dp_status.eq.unpaid,payment_status.eq.unpaid"
+                      );
+
+
+                    if (billError) {
+                      throw billError;
+                    }
+
+
+                    /* =========================
+                       SEMUA SUDAH LUNAS
+                    ========================= */
+
+                    if (
+                      !bills ||
+                      bills.length === 0
+                    ) {
+
+                      resultList.innerHTML = `
+                        <p>
+                          ✅ Semua tagihan kamu
+                          sudah lunas.
+                        </p>
+                      `;
+
+                      return;
+                    }
+
+
+                    /* =========================
+                       TAMPILKAN TAGIHAN
+                    ========================= */
+
+                    resultList.innerHTML = `
+                      <p>
+                        <b>Customer:</b>
+                        ${customer.name}
+                      </p>
+
+                      <p>
+                        <b>Tagihan Kamu:</b>
+                      </p>
+                    `;
+
+
+                    bills.forEach(
+                      function(bill) {
+
+                        const billBox =
+                          document.createElement(
+                            "div"
+                          );
+
+                        billBox.style.border =
+                          "1px solid #ddd";
+
+                        billBox.style.borderRadius =
+                          "10px";
+
+                        billBox.style.padding =
+                          "12px";
+
+                        billBox.style.marginBottom =
+                          "10px";
+
+
+                        billBox.innerHTML = `
+                          <div>
+                            <b>
+                              ${bill.batch_code || "-"}
+                            </b>
+                          </div>
+
+                          <div>
+                            Produk:
+                            ${bill.item_name || "-"}
+                          </div>
+
+                          <div>
+                            Versi:
+                            ${bill.version || "-"}
+                          </div>
+
+                          <div>
+                            DP:
+                            ${
+                              bill.dp_status === "paid"
+                                ? "✅ Sudah Dibayar"
+                                : "❌ Belum Dibayar"
+                            }
+                          </div>
+
+                          <div>
+                            Pelunasan:
+                            ${
+                              bill.payment_status === "paid"
+                                ? "✅ Sudah Lunas"
+                                : "❌ Belum Lunas"
+                            }
+                          </div>
+
+                          <div>
+                            Sisa:
+                            ${bill.remaining_amount ?? 0}
+                          </div>
+                        `;
+
+
+                        /* =========================
+                           CHECKBOX TAGIHAN
+                        ========================= */
+
+                        const selectWrapper =
+                          document.createElement(
+                            "label"
+                          );
+
+                        selectWrapper.style.display =
+                          "flex";
+
+                        selectWrapper.style.alignItems =
+                          "center";
+
+                        selectWrapper.style.gap =
+                          "8px";
+
+                        selectWrapper.style.marginTop =
+                          "12px";
+
+                        selectWrapper.style.cursor =
+                          "pointer";
+
+
+                        const checkbox =
+                          document.createElement(
+                            "input"
+                          );
+
+                        checkbox.type =
+                          "checkbox";
+
+                        checkbox.className =
+                          "payment-bill-checkbox";
+
+
+                        checkbox.addEventListener(
+                          "change",
+                          function() {
+
+                            if (
+                              !window.selectedPaymentBills
+                            ) {
+
+                              window.selectedPaymentBills =
+                                [];
+
+                            }
+
+
+                            if (
+                              checkbox.checked
+                            ) {
+
+                              const alreadySelected =
+                                window.selectedPaymentBills
+                                  .some(
+                                    function(selected) {
+
+                                      return (
+                                        selected.id ===
+                                        bill.id
+                                      );
+
+                                    }
+                                  );
+
+
+                              if (
+                                !alreadySelected
+                              ) {
+
+                                window.selectedPaymentBills
+                                  .push(
+                                    bill
+                                  );
+
+                              }
+
+                            } else {
+
+                              window.selectedPaymentBills =
+                                window.selectedPaymentBills
+                                  .filter(
+                                    function(selected) {
+
+                                      return (
+                                        selected.id !==
+                                        bill.id
+                                      );
+
+                                    }
+                                  );
+
+                            }
+
+
+                            /* =========================
+                               KODE PRODUK
+                            ========================= */
+
+                            const productCodeInput =
+                              document.getElementById(
+                                "paymentProductCode"
+                              );
+
+                            productCodeInput.value =
+                              window.selectedPaymentBills
+                                .map(
+                                  function(selected) {
+
+                                    return (
+                                      selected.batch_code ||
+                                      "-"
+                                    );
+
+                                  }
+                                )
+                                .join(", ");
+
+
+                            /* =========================
+                               VERSI / MEMBER
+                            ========================= */
+
+                            const productVersionInput =
+                              document.getElementById(
+                                "paymentProductVersion"
+                              );
+
+                            productVersionInput.value =
+                              window.selectedPaymentBills
+                                .map(
+                                  function(selected) {
+
+                                    return (
+                                      selected.version ||
+                                      "-"
+                                    );
+
+                                  }
+                                )
+                                .join(", ");
+
+
+                            /* =========================
+                               NOMINAL
+                            ========================= */
+
+                            const paymentAmountInput =
+                              document.getElementById(
+                                "paymentAmount"
+                              );
+
+                            let totalPayment =
+                              0;
+
+                            const paymentType =
+                              document.getElementById(
+                                "paymentType"
+                              ).value;
+
+
+                            window.selectedPaymentBills
+                              .forEach(
+                                function(selectedBill) {
+
+                                  if (
+                                    paymentType ===
+                                    "dp"
+                                  ) {
+
+                                    if (
+                                      selectedBill.dp_status ===
+                                      "unpaid"
+                                    ) {
+
+                                      totalPayment +=
+                                        Number(
+                                          selectedBill.dp_amount ||
+                                          0
+                                        );
+
+                                    }
+
+                                  } else if (
+                                    paymentType ===
+                                    "pelunasan"
+                                  ) {
+
+                                    totalPayment +=
+                                      Number(
+                                        selectedBill.remaining_amount ||
+                                        0
+                                      );
+
+                                  } else if (
+                                    paymentType ===
+                                    "both"
+                                  ) {
+
+                                    if (
+                                      selectedBill.dp_status ===
+                                      "unpaid"
+                                    ) {
+
+                                      totalPayment +=
+                                        Number(
+                                          selectedBill.dp_amount ||
+                                          0
+                                        );
+
+                                    }
+
+                                    totalPayment +=
+                                      Number(
+                                        selectedBill.remaining_amount ||
+                                        0
+                                      );
+
+                                  }
+
+                                }
+                              );
+
+
+                            paymentAmountInput.value =
+                              totalPayment;
+
+                          }
+                        );
+
+
+                        checkbox.style.width =
+                          "18px";
+
+                        checkbox.style.height =
+                          "18px";
+
+                        checkbox.style.cursor =
+                          "pointer";
+
+
+                        const checkboxText =
+                          document.createElement(
+                            "span"
+                          );
+
+                        checkboxText.textContent =
+                          "Pilih tagihan ini";
+
+
+                        selectWrapper.appendChild(
+                          checkbox
+                        );
+
+                        selectWrapper.appendChild(
+                          checkboxText
+                        );
+
+
+                        billBox.appendChild(
+                          selectWrapper
+                        );
+
+
+                        resultList.appendChild(
+                          billBox
+                        );
+
+                      }
+                    );
+
+
+                    /* =========================
+                       PERUBAHAN JENIS PEMBAYARAN
+                    ========================= */
+
+                    const paymentType =
+                      document.getElementById(
+                        "paymentType"
+                      );
+
+
+                    paymentType.onchange =
+                      function() {
+
+                        const selectedBills =
+                          window.selectedPaymentBills ||
+                          [];
+
+                        let totalPayment =
+                          0;
+
+
+                        selectedBills.forEach(
+                          function(bill) {
+
+                            if (
+                              paymentType.value ===
+                              "dp"
+                            ) {
+
+                              if (
+                                bill.dp_status ===
+                                "unpaid"
+                              ) {
+
+                                totalPayment +=
+                                  Number(
+                                    bill.dp_amount ||
+                                    0
+                                  );
+
+                              }
+
+                            }
+
+
+                            if (
+                              paymentType.value ===
+                              "pelunasan"
+                            ) {
+
+                              totalPayment +=
+                                Number(
+                                  bill.remaining_amount ||
+                                  0
+                                );
+
+                            }
+
+
+                            if (
+                              paymentType.value ===
+                              "both"
+                            ) {
+
+                              if (
+                                bill.dp_status ===
+                                "unpaid"
+                              ) {
+
+                                totalPayment +=
+                                  Number(
+                                    bill.dp_amount ||
+                                    0
+                                  );
+
+                              }
+
+                              totalPayment +=
+                                Number(
+                                  bill.remaining_amount ||
+                                  0
+                                );
+
+                            }
+
+                          }
+                        );
+
+
+                        document
+                          .getElementById(
+                            "paymentAmount"
+                          )
+                          .value =
+                          totalPayment;
+
+                      };
+
+
+                  } catch (error) {
+
+                    console.error(
+                      "Gagal mengambil tagihan customer:",
+                      error
+                    );
+
+                    resultList.innerHTML = `
+                      <p>
+                        Gagal mengambil data tagihan:
+                        ${error.message}
+                      </p>
+                    `;
+
+                  }
+
+                }
               );
 
-            option.type =
-              "button";
 
-            option.className =
-              "btn";
+              resultList.appendChild(
+                option
+              );
 
-            option.style.marginBottom =
-              "8px";
-
-            option.style.width =
-              "100%";
-
-            option.textContent =
-              customer;
-
-
-            option.addEventListener(
-  "click",
-  async function () {
-
-    input.value = customer;
-
-    window.selectedPaymentBills = [];
-
-    resultList.innerHTML = `
-      <p>
-        Customer dipilih:
-        <b>${customer}</b>
-      </p>
-      <p>Mengambil data tagihan...</p>
-    `;
-
-    try {
-
-      const {
-  data: bills,
-  error: billError
-} = await supabaseClient
-  .from("purchase_recap")
-  .select("*")
-  .eq("customer_name", customer)
-  .or("dp_status.eq.unpaid,payment_status.eq.unpaid");
-      
-      if (billError) {
-        throw billError;
-      }
-
-      if (
-  !bills ||
-  bills.length === 0
-) {
-
-  resultList.innerHTML = `
-    <p>
-      ✅ Semua tagihan kamu sudah lunas.
-    </p>
-  `;
-
-  return;
-}
-      /* =========================
-         TAMPILKAN TAGIHAN
-      ========================= */
-
-      resultList.innerHTML = `
-        <p>
-          <b>Customer:</b> ${customer}
-        </p>
-
-        <p>
-          <b>Tagihan Kamu:</b>
-        </p>
-      `;
-
-      bills.forEach(
-        bill => {
-
-          const billBox =
-            document.createElement("div");
-
-          billBox.style.border =
-            "1px solid #ddd";
-
-          billBox.style.borderRadius =
-            "10px";
-
-          billBox.style.padding =
-            "12px";
-
-          billBox.style.marginBottom =
-            "10px";
-
-          billBox.innerHTML = `
-            <div>
-              <b>${bill.batch_code || "-"}</b>
-            </div>
-
-            <div>
-              Produk:
-              ${bill.item_name || "-"}
-            </div>
-
-            <div>
-              Versi:
-              ${bill.version || "-"}
-            </div>
-
-            <div>
-              DP:
-              ${bill.dp_status === "paid"
-                ? "✅ Sudah Dibayar"
-                : "❌ Belum Dibayar"}
-            </div>
-
-            <div>
-              Pelunasan:
-              ${bill.payment_status === "paid"
-                ? "✅ Sudah Lunas"
-                : "❌ Belum Lunas"}
-            </div>
-
-            <div>
-              Sisa:
-              ${bill.remaining_amount ?? 0}
-            </div>
-          `;
-
-          /* =========================
-   CHECKBOX PILIH TAGIHAN
-========================= */
-
-const selectWrapper =
-  document.createElement("label");
-
-selectWrapper.style.display = "flex";
-selectWrapper.style.alignItems = "center";
-selectWrapper.style.gap = "8px";
-selectWrapper.style.marginTop = "12px";
-selectWrapper.style.cursor = "pointer";
-
-
-const checkbox =
-  document.createElement("input");
-
-checkbox.type = "checkbox";
-checkbox.className = "payment-bill-checkbox";
-
-          checkbox.addEventListener(
-  "change",
-  function () {
-
-    /* =========================
-       SIAPKAN DAFTAR TAGIHAN
-    ========================= */
-
-    if (!window.selectedPaymentBills) {
-      window.selectedPaymentBills = [];
-    }
-
-
-    /* =========================
-       JIKA DICENTANG
-    ========================= */
-
-    if (checkbox.checked) {
-
-      const alreadySelected =
-        window.selectedPaymentBills.some(
-          selected =>
-            selected.id === bill.id
-        );
-
-      if (!alreadySelected) {
-
-        window.selectedPaymentBills.push(
-          bill
-        );
-
-      }
-
-    }
-
-
-    /* =========================
-       JIKA DILEPAS
-    ========================= */
-
-    else {
-
-      window.selectedPaymentBills =
-        window.selectedPaymentBills.filter(
-          selected =>
-            selected.id !== bill.id
-        );
-
-    }
-
-    // ISI KODE PRODUK & VERSI DARI TAGIHAN TERPILIH
-const productCodeInput =
-  document.getElementById("paymentProductCode");
-
-const productVersionInput =
-  document.getElementById("paymentProductVersion");
-
-productCodeInput.value =
-  window.selectedPaymentBills
-    .map(selected => selected.batch_code || "-")
-    .join(", ");
-
-productVersionInput.value =
-  window.selectedPaymentBills
-    .map(selected => selected.version || "-")
-    .join(", ");
-
-        // ISI NOMINAL PEMBAYARAN
-const paymentAmountInput =
-  document.getElementById("paymentAmount");
-
-let totalPayment = 0;
-
-const paymentType =
-  document.getElementById("paymentType").value;
-
-window.selectedPaymentBills.forEach(selectedBill => {
-
-  if (paymentType === "dp") {
-
-    if (selectedBill.dp_status === "unpaid") {
-      totalPayment +=
-        Number(selectedBill.dp_amount || 0);
-    }
-
-  } else if (paymentType === "pelunasan") {
-
-    totalPayment +=
-      Number(selectedBill.remaining_amount || 0);
-
-  } else if (paymentType === "both") {
-
-    if (selectedBill.dp_status === "unpaid") {
-      totalPayment +=
-        Number(selectedBill.dp_amount || 0);
-    }
-
-    totalPayment +=
-      Number(selectedBill.remaining_amount || 0);
-  }
-
-});
-
-paymentAmountInput.value = totalPayment;
-
-    console.log(
-      "TAGIHAN TERPILIH:",
-      window.selectedPaymentBills
-    );
-
-    /* =========================
-   TAMPILKAN TOTAL TAGIHAN
-========================= */
-
-let totalSelected =
-  0;
-
-window.selectedPaymentBills.forEach(
-  selectedBill => {
-
-    totalSelected +=
-      Number(
-        selectedBill.remaining_amount || 0
-      );
-
-  }
-);
-
-
-/* =========================
-   CARI / BUAT KOTAK TOTAL
-========================= */
-
-let totalBox =
-  document.getElementById(
-    "selectedPaymentTotal"
-  );
-
-if (!totalBox) {
-
-  totalBox =
-    document.createElement("div");
-
-  totalBox.id =
-    "selectedPaymentTotal";
-
-  totalBox.style.marginTop =
-    "12px";
-
-  totalBox.style.padding =
-    "12px";
-
-  totalBox.style.border =
-    "1px solid #ddd";
-
-  totalBox.style.borderRadius =
-    "10px";
-
-  totalBox.style.background =
-    "#fafafa";
-
-  resultList.appendChild(
-    totalBox
-  );
-
-}
-
-
-/* =========================
-   TAMPILKAN TOTAL
-========================= */
-
-totalBox.innerHTML = `
-  <b>Total Tagihan Terpilih</b>
-  <div style="
-    font-size:18px;
-    font-weight:bold;
-    margin-top:5px;
-  ">
-    Rp ${totalSelected.toLocaleString("id-ID")}
-  </div>
-`;
-
-  }
-);
-
-checkbox.style.width = "18px";
-checkbox.style.height = "18px";
-checkbox.style.cursor = "pointer";
-
-
-const checkboxText =
-  document.createElement("span");
-
-checkboxText.textContent =
-  "Pilih tagihan ini";
-
-
-selectWrapper.appendChild(
-  checkbox
-);
-
-selectWrapper.appendChild(
-  checkboxText
-);
-
-
-billBox.appendChild(
-  selectWrapper
-);
-          
-        resultList.appendChild(
-            billBox
+            }
           );
-
-        }
-      );
-
-  // HITUNG TOTAL SESUAI JENIS PEMBAYARAN
-const paymentType = document.getElementById("paymentType");
-
-paymentType.onchange = function () {
-  const selectedBills = window.selectedPaymentBills || [];
-
-  let totalPayment = 0;
-
-  selectedBills.forEach(bill => {
-    if (paymentType.value === "dp") {
-      // DP hanya dibayar jika status DP masih belum dibayar
-      if (bill.dp_status === "unpaid") {
-        totalPayment += Number(bill.dp_amount || 0);
-      }
-    }
-
-    if (paymentType.value === "pelunasan") {
-      // Pelunasan menggunakan sisa tagihan
-      totalPayment += Number(bill.remaining_amount || 0);
-    }
-
-    if (paymentType.value === "both") {
-      // DP + Pelunasan
-      if (bill.dp_status === "unpaid") {
-        totalPayment += Number(bill.dp_amount || 0);
-      }
-
-      totalPayment += Number(bill.remaining_amount || 0);
-    }
-  });
-
-  const paymentAmountInput =
-  document.getElementById("paymentAmount");
-
-paymentAmountInput.value = totalPayment;
-
-  let totalBox = document.getElementById("selectedPaymentTotal");
-
-  if (!totalBox) {
-    totalBox = document.createElement("div");
-    totalBox.id = "selectedPaymentTotal";
-    totalBox.style.marginTop = "12px";
-    totalBox.style.padding = "12px";
-    totalBox.style.border = "1px solid #ddd";
-    totalBox.style.borderRadius = "10px";
-    totalBox.style.background = "#fafafa";
-
-    document.getElementById("customerPaymentList").appendChild(totalBox);
-  }
-
-  totalBox.innerHTML = `
-    <b>Total Pembayaran</b>
-    <div style="font-size:18px;font-weight:bold;margin-top:5px;">
-      Rp ${totalPayment.toLocaleString("id-ID")}
-    </div>
-  `;
-};
-      
-    } catch (error) {
-
-      console.error(
-        "Gagal mengambil tagihan customer:",
-        error
-      );
-
-      resultList.innerHTML = `
-        <p>
-          Gagal mengambil data tagihan:
-          ${error.message}
-        </p>
-      `;
-
-    }
-
-  }
-);
-
-            resultList.appendChild(
-              option
-            );
-
-          }
-        );
-
 
       } catch (error) {
 
@@ -7163,8 +7425,7 @@ paymentAmountInput.value = totalPayment;
       }
 
     }
-  );
-  
+  );  
   /* =========================
      PAYMENT MESSAGE
   ========================= */
