@@ -6441,17 +6441,22 @@ if (selectedBills.length === 0) {
               )
               .insert({
 
-                customer_name:
-                  customerName,
+  customer_id:
+    Number(
+      document.getElementById("paymentCustomerId").value
+    ) || null,
 
-                whatsapp_last4:
-                  whatsappLast4,
+  customer_name:
+    customerName,
 
-                product_code:
-                  productCode,
+  whatsapp_last4:
+    whatsappLast4,
 
-                product_version:
-                  productVersion,
+  product_code:
+    productCode,
+
+  product_version:
+    productVersion,
 
                 amount:
                   paymentAmount,
