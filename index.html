@@ -6611,106 +6611,139 @@ document
             .toLowerCase()
             .trim();
 
+/* =========================
+   AMBIL DATA CUSTOMER
+   DARI REKAP GO PUBLIC
+========================= */
 
-        /* =========================
-           AMBIL CUSTOMER MASTER
-        ========================= */
+const {
+  data: customerItems,
+  error: customerError
+} = await supabaseClient
+  .from("go_rekap_public")
+  .select(
+    "customer_id, customer_name, username_wa, customer_whatsapp_last4"
+  )
+  .not(
+    "customer_id",
+    "is",
+    null
+  );
 
-        const {
-          data: customers,
-          error: customerError
-        } = await supabaseClient
-          .from("customers")
-          .select(
-  "id, name, username_wa, whatsapp"
-)
-          .order(
-            "id",
-            {
-              ascending: true
-            }
-          );
-
-        if (customerError) {
-          throw customerError;
-        }
-
-        /* =========================
-           TENTUKAN CUSTOMER YANG COCOK
-        ========================= */
-
-        const matchedCustomerIds =
-          new Set();
-
-
-        /* =========================
-           CARI DARI NAMA / USERNAME WA
-        ========================= */
-
-        (customers || []).forEach(
-          function(customer) {
-
-            const name =
-              String(
-                customer.name || ""
-              )
-                .toLowerCase()
-                .trim();
-
-            const username =
-              String(
-                customer.username_wa || ""
-              )
-                .toLowerCase()
-                .trim();
-
-            if (
-              name.includes(keyword) ||
-              username.includes(keyword)
-            ) {
-
-              matchedCustomerIds.add(
-                Number(customer.id)
-              );
-
-            }
-
-          }
-        );
+if (customerError) {
+  throw customerError;
+}
 
 
 /* =========================
-   CARI DARI 4 DIGIT WA
-   CUSTOMER MASTER
+   TENTUKAN CUSTOMER YANG COCOK
 ========================= */
 
-(customers || []).forEach(
-  function(customer) {
+const matchedCustomerIds =
+  new Set();
 
-    const whatsapp =
+
+(customerItems || []).forEach(
+  function(item) {
+
+    const customerName =
       String(
-        customer.whatsapp || ""
+        item.customer_name || ""
       )
-        .replace(/\D/g, "")
+        .toLowerCase()
         .trim();
 
-    const last4 =
-      whatsapp.slice(-4);
+    const usernameWA =
+      String(
+        item.username_wa || ""
+      )
+        .toLowerCase()
+        .trim();
+
+    const whatsappLast4 =
+      String(
+        item.customer_whatsapp_last4 || ""
+      )
+        .trim();
+
 
     if (
-      last4 &&
-      last4 === keyword
+      customerName.includes(keyword) ||
+      usernameWA.includes(keyword) ||
+      whatsappLast4 === keyword
     ) {
 
       matchedCustomerIds.add(
-        Number(customer.id)
+        Number(
+          item.customer_id
+        )
       );
 
     }
 
   }
 );
-        
+
+
+/* =========================
+   BUAT CUSTOMER UNIK
+========================= */
+
+const customerMap =
+  new Map();
+
+
+(customerItems || []).forEach(
+  function(item) {
+
+    const customerId =
+      Number(
+        item.customer_id
+      );
+
+    if (
+      !matchedCustomerIds.has(
+        customerId
+      )
+    ) {
+      return;
+    }
+
+
+    if (
+      !customerMap.has(
+        customerId
+      )
+    ) {
+
+      customerMap.set(
+        customerId,
+        {
+          id:
+            customerId,
+
+          name:
+            item.customer_name || "",
+
+          username_wa:
+            item.username_wa || "",
+
+          last4:
+            item.customer_whatsapp_last4 || ""
+        }
+      );
+
+    }
+
+  }
+);
+
+
+const matchedCustomers =
+  Array.from(
+    customerMap.values()
+  );
+
         /* =========================
            HASIL CUSTOMER
         ========================= */
