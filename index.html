@@ -6635,26 +6635,6 @@ document
           throw customerError;
         }
 
-
-        /* =========================
-           AMBIL DATA REKAP GO
-           UNTUK 4 DIGIT WA
-        ========================= */
-
-        const {
-          data: recapRows,
-          error: recapError
-        } = await supabaseClient
-          .from("purchase_recap")
-          .select(
-            "customer_id, customer_name, whatsapp_last4"
-          );
-
-        if (recapError) {
-          throw recapError;
-        }
-
-
         /* =========================
            TENTUKAN CUSTOMER YANG COCOK
         ========================= */
