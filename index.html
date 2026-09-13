@@ -6761,20 +6761,6 @@ const matchedCustomers =
         resultBox.style.display =
           "block";
 
-
-        const matchedCustomers =
-          (customers || [])
-            .filter(
-              function(customer) {
-
-                return matchedCustomerIds.has(
-                  Number(customer.id)
-                );
-
-              }
-            );
-
-
         /* =========================
            TIDAK DITEMUKAN
         ========================= */
