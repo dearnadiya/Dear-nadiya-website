@@ -6931,343 +6931,602 @@ const matchedCustomers =
                     `;
 
 
-                    bills.forEach(
-                      function(bill) {
+                    /* =========================
+   KELOMPOKKAN TAGIHAN PER BATCH
+========================= */
 
-                        const billBox =
-                          document.createElement(
-                            "div"
-                          );
+const batchGroups = {};
 
-                        billBox.style.border =
-                          "1px solid #ddd";
+bills.forEach(
+  function(bill) {
 
-                        billBox.style.borderRadius =
-                          "10px";
+    const batchKey =
+      String(
+        bill.category || ""
+      ) +
+      "||" +
+      String(
+        bill.batch_code || ""
+      );
 
-                        billBox.style.padding =
-                          "12px";
+    if (!batchGroups[batchKey]) {
 
-                        billBox.style.marginBottom =
-                          "10px";
+      batchGroups[batchKey] = [];
 
+    }
 
-                        billBox.innerHTML = `
-                          <div>
-                            <b>
-                              ${bill.batch_code || "-"}
-                            </b>
-                          </div>
+    batchGroups[batchKey].push(
+      bill
+    );
 
-                          <div>
-                            Produk:
-                            ${bill.item_name || "-"}
-                          </div>
+  }
+);
 
-                          <div>
-                            Versi:
-                            ${bill.version || "-"}
-                          </div>
 
-                          <div>
-                            DP:
-                            ${
-                              bill.dp_status === "paid"
-                                ? "✅ Sudah Dibayar"
-                                : "❌ Belum Dibayar"
-                            }
-                          </div>
+/* =========================
+   TAMPILKAN PER BATCH
+========================= */
 
-                          <div>
-                            Pelunasan:
-                            ${
-                              bill.payment_status === "paid"
-                                ? "✅ Sudah Lunas"
-                                : "❌ Belum Lunas"
-                            }
-                          </div>
+Object.values(
+  batchGroups
+).forEach(
+  function(batchBills) {
 
-                          <div>
-                            Sisa:
-                            ${bill.remaining_amount ?? 0}
-                          </div>
-                        `;
+    const firstBill =
+      batchBills[0];
 
+    const batchCode =
+      firstBill.batch_code || "-";
 
-                        /* =========================
-                           CHECKBOX TAGIHAN
-                        ========================= */
 
-                        const selectWrapper =
-                          document.createElement(
-                            "label"
-                          );
+    /* =========================
+       HITUNG RINGKASAN BATCH
+    ========================= */
 
-                        selectWrapper.style.display =
-                          "flex";
+    const versionCount =
+      batchBills.length;
 
-                        selectWrapper.style.alignItems =
-                          "center";
 
-                        selectWrapper.style.gap =
-                          "8px";
+    const unpaidDp =
+      batchBills.reduce(
+        function(total, bill) {
 
-                        selectWrapper.style.marginTop =
-                          "12px";
+          if (
+            bill.dp_status ===
+            "unpaid"
+          ) {
 
-                        selectWrapper.style.cursor =
-                          "pointer";
+            return (
+              total +
+              Number(
+                bill.dp_amount || 0
+              )
+            );
 
+          }
 
-                        const checkbox =
-                          document.createElement(
-                            "input"
-                          );
+          return total;
 
-                        checkbox.type =
-                          "checkbox";
+        },
+        0
+      );
 
-                        checkbox.className =
-                          "payment-bill-checkbox";
 
+    const remainingTotal =
+      batchBills.reduce(
+        function(total, bill) {
 
-                        checkbox.addEventListener(
-                          "change",
-                          function() {
+          return (
+            total +
+            Number(
+              bill.remaining_amount || 0
+            )
+          );
 
-                            if (
-                              !window.selectedPaymentBills
-                            ) {
+        },
+        0
+      );
 
-                              window.selectedPaymentBills =
-                                [];
 
-                            }
+    /* =========================
+       KOTAK BATCH
+    ========================= */
 
+    const batchBox =
+      document.createElement(
+        "div"
+      );
+
+    batchBox.style.border =
+      "1px solid #ddd";
+
+    batchBox.style.borderRadius =
+      "12px";
+
+    batchBox.style.padding =
+      "14px";
+
+    batchBox.style.marginBottom =
+      "12px";
+
+
+    /* =========================
+       DAFTAR VERSI / MEMBER
+    ========================= */
+
+    const versionList =
+      batchBills
+        .map(
+          function(bill) {
+
+            return `
+              <div
+                style="
+                  display:flex;
+                  justify-content:space-between;
+                  gap:10px;
+                  padding:4px 0;
+                "
+              >
+
+                <span>
+                  ${display(
+                    bill.version ||
+                    bill.item_name ||
+                    "-"
+                  )}
+                </span>
+
+                <span>
+                  ${rupiah(
+                    bill.item_price ||
+                    0
+                  )}
+                </span>
+
+              </div>
+            `;
+
+          }
+        )
+        .join("");
+
+
+    /* =========================
+       ISI KOTAK BATCH
+    ========================= */
+
+    batchBox.innerHTML = `
+
+      <div
+        style="
+          font-size:17px;
+          font-weight:bold;
+          margin-bottom:4px;
+        "
+      >
+        ${display(
+          batchCode
+        )}
+      </div>
+
 
-                            if (
-                              checkbox.checked
-                            ) {
+      <div
+        style="
+          color:#666;
+          margin-bottom:10px;
+        "
+      >
+        ${versionCount}
+        versi / member
+      </div>
 
-                              const alreadySelected =
-                                window.selectedPaymentBills
-                                  .some(
-                                    function(selected) {
 
-                                      return (
-                                        selected.id ===
-                                        bill.id
-                                      );
+      <div
+        style="
+          border-top:1px solid #eee;
+          border-bottom:1px solid #eee;
+          padding:8px 0;
+          margin-bottom:10px;
+        "
+      >
 
-                                    }
-                                  );
+        ${versionList}
 
+      </div>
 
-                              if (
-                                !alreadySelected
-                              ) {
 
-                                window.selectedPaymentBills
-                                  .push(
-                                    bill
-                                  );
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          margin-top:6px;
+        "
+      >
 
-                              }
+        <span>
+          DP belum dibayar
+        </span>
 
-                            } else {
+        <b>
+          ${rupiah(
+            unpaidDp
+          )}
+        </b>
 
-                              window.selectedPaymentBills =
-                                window.selectedPaymentBills
-                                  .filter(
-                                    function(selected) {
+      </div>
 
-                                      return (
-                                        selected.id !==
-                                        bill.id
-                                      );
 
-                                    }
-                                  );
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          margin-top:6px;
+        "
+      >
 
-                            }
+        <span>
+          Sisa
+        </span>
 
+        <b>
+          ${rupiah(
+            remainingTotal
+          )}
+        </b>
 
-                            /* =========================
-                               KODE PRODUK
-                            ========================= */
+      </div>
 
-                            const productCodeInput =
-                              document.getElementById(
-                                "paymentProductCode"
-                              );
+    `;
 
-                            productCodeInput.value =
-                              window.selectedPaymentBills
-                                .map(
-                                  function(selected) {
 
-                                    return (
-                                      selected.batch_code ||
-                                      "-"
-                                    );
+    /* =========================
+       CHECKBOX PER BATCH
+    ========================= */
 
-                                  }
-                                )
-                                .join(", ");
+    const selectWrapper =
+      document.createElement(
+        "label"
+      );
 
+    selectWrapper.style.display =
+      "flex";
 
-                            /* =========================
-                               VERSI / MEMBER
-                            ========================= */
+    selectWrapper.style.alignItems =
+      "center";
 
-                            const productVersionInput =
-                              document.getElementById(
-                                "paymentProductVersion"
-                              );
+    selectWrapper.style.gap =
+      "8px";
 
-                            productVersionInput.value =
-                              window.selectedPaymentBills
-                                .map(
-                                  function(selected) {
+    selectWrapper.style.marginTop =
+      "14px";
 
-                                    return (
-                                      selected.version ||
-                                      "-"
-                                    );
+    selectWrapper.style.paddingTop =
+      "10px";
 
-                                  }
-                                )
-                                .join(", ");
+    selectWrapper.style.borderTop =
+      "1px solid #eee";
 
+    selectWrapper.style.cursor =
+      "pointer";
 
-                            /* =========================
-                               NOMINAL
-                            ========================= */
 
-                            const paymentAmountInput =
-                              document.getElementById(
-                                "paymentAmount"
-                              );
+    const checkbox =
+      document.createElement(
+        "input"
+      );
 
-                            let totalPayment =
-                              0;
+    checkbox.type =
+      "checkbox";
 
-                            const paymentType =
-                              document.getElementById(
-                                "paymentType"
-                              ).value;
+    checkbox.className =
+      "payment-batch-checkbox";
 
 
-                            window.selectedPaymentBills
-                              .forEach(
-                                function(selectedBill) {
+    checkbox.addEventListener(
+      "change",
+      function() {
 
-                                  if (
-                                    paymentType ===
-                                    "dp"
-                                  ) {
+        if (
+          !window.selectedPaymentBills
+        ) {
 
-                                    if (
-                                      selectedBill.dp_status ===
-                                      "unpaid"
-                                    ) {
+          window.selectedPaymentBills =
+            [];
 
-                                      totalPayment +=
-                                        Number(
-                                          selectedBill.dp_amount ||
-                                          0
-                                        );
+        }
 
-                                    }
 
-                                  } else if (
-                                    paymentType ===
-                                    "pelunasan"
-                                  ) {
+        /* =========================
+           PILIH SATU BATCH
+        ========================= */
 
-                                    totalPayment +=
-                                      Number(
-                                        selectedBill.remaining_amount ||
-                                        0
-                                      );
+        if (
+          checkbox.checked
+        ) {
 
-                                  } else if (
-                                    paymentType ===
-                                    "both"
-                                  ) {
+          batchBills.forEach(
+            function(bill) {
 
-                                    if (
-                                      selectedBill.dp_status ===
-                                      "unpaid"
-                                    ) {
+              const alreadySelected =
+                window.selectedPaymentBills
+                  .some(
+                    function(selected) {
 
-                                      totalPayment +=
-                                        Number(
-                                          selectedBill.dp_amount ||
-                                          0
-                                        );
+                      return (
+                        selected.id ===
+                        bill.id
+                      );
 
-                                    }
+                    }
+                  );
 
-                                    totalPayment +=
-                                      Number(
-                                        selectedBill.remaining_amount ||
-                                        0
-                                      );
 
-                                  }
+              if (
+                !alreadySelected
+              ) {
 
-                                }
-                              );
+                window.selectedPaymentBills
+                  .push(
+                    bill
+                  );
 
+              }
 
-                            paymentAmountInput.value =
-                              totalPayment;
+            }
+          );
 
-                          }
-                        );
 
+        }
 
-                        checkbox.style.width =
-                          "18px";
+        /* =========================
+           BATAL PILIH BATCH
+        ========================= */
 
-                        checkbox.style.height =
-                          "18px";
+        else {
 
-                        checkbox.style.cursor =
-                          "pointer";
+          const batchIds =
+            batchBills.map(
+              function(bill) {
 
+                return bill.id;
 
-                        const checkboxText =
-                          document.createElement(
-                            "span"
-                          );
+              }
+            );
 
-                        checkboxText.textContent =
-                          "Pilih tagihan ini";
 
+          window.selectedPaymentBills =
+            window.selectedPaymentBills
+              .filter(
+                function(selected) {
 
-                        selectWrapper.appendChild(
-                          checkbox
-                        );
+                  return !batchIds.includes(
+                    selected.id
+                  );
 
-                        selectWrapper.appendChild(
-                          checkboxText
-                        );
+                }
+              );
 
+        }
 
-                        billBox.appendChild(
-                          selectWrapper
-                        );
 
+        /* =========================
+           KODE PRODUK / BATCH
+        ========================= */
 
-                        resultList.appendChild(
-                          billBox
-                        );
+        const productCodeInput =
+          document.getElementById(
+            "paymentProductCode"
+          );
 
-                      }
+
+        const selectedBatchCodes =
+          [
+            ...new Set(
+              window.selectedPaymentBills
+                .map(
+                  function(selected) {
+
+                    return (
+                      selected.batch_code ||
+                      "-"
                     );
 
+                  }
+                )
+            )
+          ];
+
+
+        productCodeInput.value =
+          selectedBatchCodes.join(
+            ", "
+          );
+
+
+        /* =========================
+           VERSI / MEMBER
+        ========================= */
+
+        const productVersionInput =
+          document.getElementById(
+            "paymentProductVersion"
+          );
+
+
+        const selectedVersions =
+          [
+            ...new Set(
+              window.selectedPaymentBills
+                .map(
+                  function(selected) {
+
+                    return (
+                      selected.version ||
+                      selected.item_name ||
+                      "-"
+                    );
+
+                  }
+                )
+            )
+          ];
+
+
+        productVersionInput.value =
+          selectedVersions.join(
+            ", "
+          );
+
+
+        /* =========================
+           HITUNG NOMINAL
+        ========================= */
+
+        const paymentAmountInput =
+          document.getElementById(
+            "paymentAmount"
+          );
+
+
+        let totalPayment =
+          0;
+
+
+        const paymentType =
+          document.getElementById(
+            "paymentType"
+          ).value;
+
+
+        window.selectedPaymentBills
+          .forEach(
+            function(selectedBill) {
+
+
+              if (
+                paymentType ===
+                "dp"
+              ) {
+
+                if (
+                  selectedBill.dp_status ===
+                  "unpaid"
+                ) {
+
+                  totalPayment +=
+                    Number(
+                      selectedBill.dp_amount ||
+                      0
+                    );
+
+                }
+
+              }
+
+
+              else if (
+                paymentType ===
+                "pelunasan"
+              ) {
+
+                totalPayment +=
+                  Number(
+                    selectedBill.remaining_amount ||
+                    0
+                  );
+
+              }
+
+
+              else if (
+                paymentType ===
+                "both"
+              ) {
+
+                if (
+                  selectedBill.dp_status ===
+                  "unpaid"
+                ) {
+
+                  totalPayment +=
+                    Number(
+                      selectedBill.dp_amount ||
+                      0
+                    );
+
+                }
+
+
+                totalPayment +=
+                  Number(
+                    selectedBill.remaining_amount ||
+                    0
+                  );
+
+              }
+
+            }
+          );
+
+
+        paymentAmountInput.value =
+          totalPayment;
+
+
+        console.log(
+          "BATCH TERPILIH:",
+          batchCode
+        );
+
+        console.log(
+          "SEMUA TAGIHAN TERPILIH:",
+          window.selectedPaymentBills
+        );
+
+      }
+    );
+
+
+    checkbox.style.width =
+      "18px";
+
+    checkbox.style.height =
+      "18px";
+
+    checkbox.style.cursor =
+      "pointer";
+
+
+    const checkboxText =
+      document.createElement(
+        "span"
+      );
+
+    checkboxText.textContent =
+      "Pilih Batch Ini";
+
+
+    selectWrapper.appendChild(
+      checkbox
+    );
+
+    selectWrapper.appendChild(
+      checkboxText
+    );
+
+
+    batchBox.appendChild(
+      selectWrapper
+    );
+
+
+    resultList.appendChild(
+      batchBox
+    );
+
+  }
+);
 
                     /* =========================
                        PERUBAHAN JENIS PEMBAYARAN
