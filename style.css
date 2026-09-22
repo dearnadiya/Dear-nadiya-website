@@ -9564,3 +9564,35 @@ footer {
 
   white-space: nowrap !important;
 }
+
+
+/* ================================
+   SCROLLBAR PO CUSTOMER
+   ================================ */
+
+#poCustomerList {
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  scrollbar-width: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Chrome, Edge, Safari */
+#poCustomerList::-webkit-scrollbar {
+  height: 10px;
+  display: block;
+}
+
+#poCustomerList::-webkit-scrollbar-track {
+  background: #eeeeee;
+  border-radius: 10px;
+}
+
+#poCustomerList::-webkit-scrollbar-thumb {
+  background: #999999;
+  border-radius: 10px;
+}
+
+#poCustomerList::-webkit-scrollbar-thumb:hover {
+  background: #666666;
+}
