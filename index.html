@@ -7573,36 +7573,27 @@ async function loadPOCustomer() {
        ========================================== */
 
     const {
-      data: recapData,
-      error: recapError
-    } =
-      await supabaseClient
-        .from("purchase_recap")
-        .select(`
-          id,
-          category,
-          batch_code,
-          item_name,
-          version,
-          quantity,
-          item_price,
-          minimum_dp_amount,
-          customer_id,
-          customer_name,
-          image_url,
-          batch_tracking_status
-        `)
-        .not(
-          "version",
-          "is",
-          null
-        )
-        .order(
-          "id",
-          {
-            ascending: false
-          }
-        );
+  data: recapData,
+  error: recapError
+} =
+  await supabaseClient
+    .from("purchase_recap")
+    .select("*")
+    .order("id", {
+      ascending: false
+    });
+
+
+if (recapError) {
+
+  console.error(
+    "ERROR LOAD PURCHASE_RECAP:",
+    recapError
+  );
+
+  throw recapError;
+
+}
 
 
     if (recapError) {
@@ -7746,9 +7737,11 @@ async function loadPOCustomer() {
 
 
       const trackingStatus =
-        String(
-          row.batch_tracking_status || ""
-        ).trim();
+  String(
+    row.batch_tracking_status || ""
+  )
+    .trim()
+    .toLowerCase();
 
 
       /* ======================================
@@ -7770,20 +7763,19 @@ async function loadPOCustomer() {
 
 
       if (
-        trackingStatus ===
-        "Arrived Admin"
-      ) {
-        return;
-      }
+  trackingStatus ===
+  "arrived admin"
+) {
+  return;
+}
 
 
-      if (
-        trackingStatus ===
-        "Goods Arrive at Customer"
-      ) {
-        return;
-      }
-
+if (
+  trackingStatus ===
+  "goods arrive at customer"
+) {
+  return;
+}
 
       const category =
         String(
@@ -7792,14 +7784,11 @@ async function loadPOCustomer() {
 
 
       const batchCode =
-        String(
-          row.batch_code || ""
-        ).trim();
-
-
-      if (!batchCode) {
-        return;
-      }
+  String(
+    row.batch_code ||
+    row.item_name ||
+    "Tanpa Batch"
+  ).trim();
 
 
       const groupKey =
