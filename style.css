@@ -9726,31 +9726,45 @@ footer {
 
 /* ================================
    SCROLLBAR PO CUSTOMER
-   ================================ */
+================================ */
+
+/*
+   JANGAN pasang overflow pada
+   #poCustomerList karena detail PO
+   berada di dalamnya.
+*/
 
 #poCustomerList {
-  overflow-x: auto !important;
-  overflow-y: hidden;
+  overflow: visible !important;
+}
+
+
+/* ================================
+   SCROLLBAR CAROUSEL
+================================ */
+
+.po-carousel-track {
   scrollbar-width: auto;
-  -webkit-overflow-scrolling: touch;
+  scrollbar-color: #b9b9b9 #eeeeee;
 }
 
 /* Chrome, Edge, Safari */
-#poCustomerList::-webkit-scrollbar {
-  height: 10px;
+
+.po-carousel-track::-webkit-scrollbar {
+  height: 8px;
   display: block;
 }
 
-#poCustomerList::-webkit-scrollbar-track {
+.po-carousel-track::-webkit-scrollbar-track {
   background: #eeeeee;
   border-radius: 10px;
 }
 
-#poCustomerList::-webkit-scrollbar-thumb {
-  background: #999999;
+.po-carousel-track::-webkit-scrollbar-thumb {
+  background: #b9b9b9;
   border-radius: 10px;
 }
 
-#poCustomerList::-webkit-scrollbar-thumb:hover {
-  background: #666666;
+.po-carousel-track::-webkit-scrollbar-thumb:hover {
+  background: #888888;
 }
