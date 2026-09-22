@@ -7971,139 +7971,204 @@ console.log(
        ========================================== */
 
     function renderPOCards(
-      list,
-      statusText,
-      statusClass,
-      startIndex
-    ) {
+  list,
+  statusText,
+  statusClass,
+  startIndex
+) {
 
-      if (!list.length) {
+  if (!list.length) {
 
-        return `
-          <div class="empty">
-            Belum ada PO.
-          </div>
-        `;
+    return `
+      <div class="empty">
+        Belum ada PO.
+      </div>
+    `;
 
-      }
+  }
 
 
-      return `
-        <div class="po-carousel">
+  return `
+    <div class="po-carousel">
 
-          <div class="po-carousel-track">
+      <div class="po-carousel-track">
 
-            ${
-              list.map(
-                function (
-                  po,
-                  index
-                ) {
+        ${
+          list.map(
+            function(
+              po,
+              index
+            ) {
 
-                  return `
-                    <article
-                      class="po-mini-card"
-                      onclick="showPODetail(${startIndex + index})"
-                    >
+              /* =========================
+                 MEMBER YANG MASIH AVAILABLE
+              ========================= */
 
-                      ${
-                        po.image_url
-                          ? `
-                            <img
-                              src="${display(
-                                po.image_url
-                              )}"
-                              alt="${display(
-                                po.title
-                              )}"
-                              class="po-mini-image"
-                            >
-                          `
-                          : `
-                            <div
-                              class="po-mini-placeholder"
-                            >
-                              Dear Nadiya
-                            </div>
-                          `
-                      }
+              let rows = [];
 
-                      <div
-                        class="po-mini-content"
-                      >
+              if (Array.isArray(po.list_data)) {
 
-                        <h3>
-                          ${display(
-                            po.title
-                          )}
-                        </h3>
+                rows = po.list_data;
 
-                        <span
-                          class="${statusClass}"
-                        >
-                          ${statusText}
-                        </span>
+              } else if (po.list_data) {
 
-                        ${
-                          po.source ===
-                          "purchase_recap"
-                            ? `
-                              <div
-                                style="
-                                  margin-top:6px;
-                                  font-size:12px;
-                                  opacity:.7;
-                                "
-                              >
-                                📋 Dari Rekap GO
-                              </div>
-                            `
-                            : ""
-                        }
+                try {
 
-                        ${
-                          po.batch_status ===
-                          "full"
-                            ? `
-                              <div
-                                class="po-batch-full-notice"
-                              >
-                                🔴 BATCH FULL
-                              </div>
-                            `
-                            : ""
-                        }
+                  rows =
+                    typeof po.list_data === "string"
+                      ? JSON.parse(po.list_data)
+                      : [];
 
-                      </div>
+                } catch (error) {
 
-                    </article>
-                  `;
+                  rows = [];
 
                 }
-              ).join("")
-            }
 
-          </div>
+              }
 
 
-          ${
-            list.length > 1
-              ? `
-                <div
-                  class="po-carousel-hint"
+              const availableMembers =
+                rows
+                  .filter(function(row) {
+
+                    const member =
+                      String(
+                        row.member || ""
+                      ).trim();
+
+                    const customer =
+                      String(
+                        row.customer || ""
+                      ).trim();
+
+                    return (
+                      member &&
+                      !customer
+                    );
+
+                  })
+                  .map(function(row) {
+
+                    return String(
+                      row.member || ""
+                    ).trim();
+
+                  });
+
+
+              const uniqueMembers =
+                [...new Set(
+                  availableMembers
+                )];
+
+
+              const memberText =
+                uniqueMembers.length
+                  ? uniqueMembers.join(" · ")
+                  : "Belum ada member";
+
+
+              return `
+
+                <article
+                  class="po-mini-card"
+                  onclick="showPODetail(${startIndex + index})"
                 >
-                  Geser untuk melihat PO lainnya
-                </div>
-              `
-              : ""
-          }
 
-        </div>
-      `;
+                  ${
+                    po.image_url
+                      ? `
+                        <img
+                          src="${display(
+                            po.image_url
+                          )}"
+                          alt="${display(
+                            po.title
+                          )}"
+                          class="po-mini-image"
+                        >
+                      `
+                      : `
+                        <div
+                          class="po-mini-placeholder"
+                        >
+                          Dear Nadiya
+                        </div>
+                      `
+                  }
 
-    }
+
+                  <div
+                    class="po-mini-content"
+                  >
+
+                    <h3>
+                      ${display(
+                        po.title
+                      )}
+                    </h3>
 
 
+                    <div
+                      class="po-mini-available-label"
+                    >
+                      Available
+                    </div>
+
+
+                    <div
+                      class="po-mini-members"
+                    >
+                      ${display(
+                        memberText
+                      )}
+                    </div>
+
+
+                    ${
+                      po.batch_status ===
+                      "full"
+                        ? `
+                          <div
+                            class="po-batch-full-notice"
+                          >
+                            🔴 BATCH FULL
+                          </div>
+                        `
+                        : ""
+                    }
+
+                  </div>
+
+                </article>
+
+              `;
+
+            }
+          ).join("")
+        }
+
+      </div>
+
+
+      ${
+        list.length > 4
+          ? `
+            <div
+              class="po-carousel-hint"
+            >
+              Geser untuk melihat PO lainnya
+            </div>
+          `
+          : ""
+      }
+
+    </div>
+  `;
+
+}
+    
     /* ==========================================
        9. TAMPILKAN CUSTOMER
        ========================================== */
