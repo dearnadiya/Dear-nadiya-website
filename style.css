@@ -717,7 +717,12 @@ footer {
 .po-carousel-track {
   display: grid;
 
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, auto);
+
+  grid-auto-flow: column;
+
+  grid-auto-columns:
+    calc((100% - 42px) / 4);
 
   gap: 14px;
 
@@ -727,7 +732,15 @@ footer {
 
   box-sizing: border-box;
 
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+
+  scrollbar-width: none;
+
+  -webkit-overflow-scrolling: touch;
 }
 
 .po-carousel-track::-webkit-scrollbar {
@@ -1008,8 +1021,14 @@ footer {
 
   .po-carousel-track {
 
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-rows:
+      repeat(2, auto);
+
+    grid-auto-flow:
+      column;
+
+    grid-auto-columns:
+      calc((100% - 10px) / 2);
 
     gap: 10px;
 
@@ -1018,7 +1037,14 @@ footer {
     padding:
       4px 2px 12px;
 
-    overflow: visible;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+
+    scrollbar-width: none;
+
+    -webkit-overflow-scrolling: touch;
   }
 
 
