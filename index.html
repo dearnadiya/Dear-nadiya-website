@@ -7517,7 +7517,7 @@ const matchedCustomers =
   loadRecap();
 
     /* =========================
-   LOAD PO BERJALAN
+   LOAD PO BERJALAN + CLAIM
 ========================= */
 
 async function loadPOCustomer() {
@@ -7525,11 +7525,19 @@ async function loadPOCustomer() {
   const container =
     document.getElementById("poCustomerList");
 
+  if (!container) {
+    return;
+  }
+
   try {
 
+    /* ==========================================
+       1. AMBIL PO DARI po_posts
+       ========================================== */
+
     const {
-      data,
-      error
+      data: poData,
+      error: poError
     } =
       await supabaseClient
         .from("po_posts")
@@ -7546,7 +7554,8 @@ async function loadPOCustomer() {
           last_dp_date,
           description,
           list_data,
-          status
+          status,
+          created_at
         `)
         .eq("status", "active")
         .order("created_at", {
@@ -7554,26 +7563,65 @@ async function loadPOCustomer() {
         });
 
 
-    if (error) {
-      throw error;
+    if (poError) {
+      throw poError;
     }
 
 
-    if (!data || !data.length) {
+    /* ==========================================
+       2. AMBIL MEMBER TERSEDIA DARI REKAP GO
+       ========================================== */
 
-      container.innerHTML = `
-        <div class="empty">
-          Belum ada PO.
-        </div>
-      `;
+    const {
+      data: recapData,
+      error: recapError
+    } =
+      await supabaseClient
+        .from("purchase_recap")
+        .select(`
+          id,
+          category,
+          batch_code,
+          item_name,
+          version,
+          quantity,
+          item_price,
+          minimum_dp_amount,
+          customer_id,
+          customer_name,
+          image_url,
+          batch_tracking_status
+        `)
+        .not(
+          "version",
+          "is",
+          null
+        )
+        .order(
+          "id",
+          {
+            ascending: false
+          }
+        );
 
-      return;
+
+    if (recapError) {
+
+      console.error(
+        "ERROR LOAD REKAP GO UNTUK CLAIM:",
+        recapError
+      );
+
     }
 
 
-    /* =========================
-       PISAHKAN PO
-    ========================= */
+    /* ==========================================
+       3. DATA PO
+       ========================================== */
+
+    const data =
+      poData || [];
+
 
     const now =
       new Date();
@@ -7586,9 +7634,14 @@ async function loadPOCustomer() {
       [];
 
 
+    /* ==========================================
+       4. PO DARI po_posts
+       ========================================== */
+
     data.forEach(function (po) {
 
       let rows = [];
+
 
       if (Array.isArray(po.list_data)) {
 
@@ -7622,12 +7675,20 @@ async function loadPOCustomer() {
         rows.some(function (row) {
 
           const hasMember =
+            row &&
             row.member &&
-            String(row.member).trim();
+            String(
+              row.member
+            ).trim();
+
 
           const hasCustomer =
+            row &&
             row.customer &&
-            String(row.customer).trim();
+            String(
+              row.customer
+            ).trim();
+
 
           return (
             hasMember &&
@@ -7637,9 +7698,7 @@ async function loadPOCustomer() {
         });
 
 
-      /* =========================
-         PO BERJALAN
-      ========================= */
+      /* PO BERJALAN */
 
       if (!isClosed) {
 
@@ -7650,9 +7709,7 @@ async function loadPOCustomer() {
       }
 
 
-      /* =========================
-         MASIH BISA CLAIM
-      ========================= */
+      /* PO CLAIM LAMA */
 
       if (
         po.order_mode === "claim" &&
@@ -7666,9 +7723,216 @@ async function loadPOCustomer() {
     });
 
 
-    /* =========================
-       GABUNG DATA UNTUK DETAIL
-    ========================= */
+    /* ==========================================
+       5. REKAP GO → MASIH BISA CLAIM
+       ========================================== */
+
+    const recapClaimGroups =
+      {};
+
+
+    (recapData || []).forEach(function (row) {
+
+      const version =
+        String(
+          row.version || ""
+        ).trim();
+
+
+      const customer =
+        String(
+          row.customer_name || ""
+        ).trim();
+
+
+      const trackingStatus =
+        String(
+          row.batch_tracking_status || ""
+        ).trim();
+
+
+      /* ======================================
+         SYARAT MEMBER MASIH BISA CLAIM
+
+         1. Member / version ada
+         2. Customer belum ada
+         3. Belum Arrived Admin
+         ====================================== */
+
+      if (!version) {
+        return;
+      }
+
+
+      if (customer) {
+        return;
+      }
+
+
+      if (
+        trackingStatus ===
+        "Arrived Admin"
+      ) {
+        return;
+      }
+
+
+      if (
+        trackingStatus ===
+        "Goods Arrive at Customer"
+      ) {
+        return;
+      }
+
+
+      const category =
+        String(
+          row.category || ""
+        ).trim();
+
+
+      const batchCode =
+        String(
+          row.batch_code || ""
+        ).trim();
+
+
+      if (!batchCode) {
+        return;
+      }
+
+
+      const groupKey =
+        category.toLowerCase() +
+        "|" +
+        batchCode.toLowerCase();
+
+
+      if (
+        !recapClaimGroups[groupKey]
+      ) {
+
+        recapClaimGroups[groupKey] = {
+
+          id:
+            "recap-" +
+            category +
+            "-" +
+            batchCode,
+
+          title:
+            row.item_name ||
+            batchCode,
+
+          image_url:
+            row.image_url ||
+            "",
+
+          close_date:
+            null,
+
+          last_dp_date:
+            null,
+
+          price_text:
+            "",
+
+          dp_text:
+            "",
+
+          description:
+            "Member tersedia dari Rekap GO.",
+
+          order_mode:
+            "claim",
+
+          batch_status:
+            "available",
+
+          status:
+            "active",
+
+          source:
+            "purchase_recap",
+
+          category:
+            category,
+
+          batch_code:
+            batchCode,
+
+          list_data:
+            []
+
+        };
+
+      }
+
+
+      recapClaimGroups[
+        groupKey
+      ].list_data.push({
+
+        member:
+          version,
+
+        customer:
+          customer,
+
+        customer_id:
+          row.customer_id,
+
+        quantity:
+          Number(
+            row.quantity || 1
+          ),
+
+        price:
+          row.item_price || "",
+
+        dp:
+          row.minimum_dp_amount || "",
+
+        note:
+          "",
+
+        batch_tracking_status:
+          trackingStatus
+
+      });
+
+    });
+
+
+    /* ==========================================
+       6. MASUKKAN REKAP GO KE LIST CLAIM
+       ========================================== */
+
+    const recapClaimPOs =
+      Object.values(
+        recapClaimGroups
+      );
+
+
+    recapClaimPOs.forEach(
+      function (po) {
+
+        if (
+          po.list_data &&
+          po.list_data.length
+        ) {
+
+          poMasihClaim.push(po);
+
+        }
+
+      }
+    );
+
+
+    /* ==========================================
+       7. GABUNG DATA UNTUK DETAIL
+       ========================================== */
 
     const combinedData =
       [
@@ -7681,9 +7945,9 @@ async function loadPOCustomer() {
       combinedData;
 
 
-    /* =========================
-       HELPER CARD
-    ========================= */
+    /* ==========================================
+       8. HELPER CARD
+       ========================================== */
 
     function renderPOCards(
       list,
@@ -7710,7 +7974,10 @@ async function loadPOCustomer() {
 
             ${
               list.map(
-                function (po, index) {
+                function (
+                  po,
+                  index
+                ) {
 
                   return `
                     <article
@@ -7722,41 +7989,72 @@ async function loadPOCustomer() {
                         po.image_url
                           ? `
                             <img
-                              src="${display(po.image_url)}"
-                              alt="${display(po.title)}"
+                              src="${display(
+                                po.image_url
+                              )}"
+                              alt="${display(
+                                po.title
+                              )}"
                               class="po-mini-image"
                             >
                           `
                           : `
-                            <div class="po-mini-placeholder">
+                            <div
+                              class="po-mini-placeholder"
+                            >
                               Dear Nadiya
                             </div>
                           `
                       }
 
-                      <div class="po-mini-content">
+                      <div
+                        class="po-mini-content"
+                      >
 
-  <h3>
-    ${display(po.title)}
-  </h3>
+                        <h3>
+                          ${display(
+                            po.title
+                          )}
+                        </h3>
 
-  <span
-    class="${statusClass}"
-  >
-    ${statusText}
-  </span>
+                        <span
+                          class="${statusClass}"
+                        >
+                          ${statusText}
+                        </span>
 
-  ${
-    po.batch_status === "full"
-      ? `
-        <div class="po-batch-full-notice">
-          🔴 BATCH FULL
-        </div>
-      `
-      : ""
-  }
+                        ${
+                          po.source ===
+                          "purchase_recap"
+                            ? `
+                              <div
+                                style="
+                                  margin-top:6px;
+                                  font-size:12px;
+                                  opacity:.7;
+                                "
+                              >
+                                📋 Dari Rekap GO
+                              </div>
+                            `
+                            : ""
+                        }
 
-</div>
+                        ${
+                          po.batch_status ===
+                          "full"
+                            ? `
+                              <div
+                                class="po-batch-full-notice"
+                              >
+                                🔴 BATCH FULL
+                              </div>
+                            `
+                            : ""
+                        }
+
+                      </div>
+
                     </article>
                   `;
 
@@ -7770,7 +8068,9 @@ async function loadPOCustomer() {
           ${
             list.length > 1
               ? `
-                <div class="po-carousel-hint">
+                <div
+                  class="po-carousel-hint"
+                >
                   Geser untuk melihat PO lainnya
                 </div>
               `
@@ -7783,9 +8083,9 @@ async function loadPOCustomer() {
     }
 
 
-    /* =========================
-       TAMPILKAN CUSTOMER
-    ========================= */
+    /* ==========================================
+       9. TAMPILKAN CUSTOMER
+       ========================================== */
 
     container.innerHTML = `
 
@@ -7793,9 +8093,13 @@ async function loadPOCustomer() {
            PO BERJALAN
       ========================= -->
 
-      <div class="po-customer-category">
+      <div
+        class="po-customer-category"
+      >
 
-        <div class="po-customer-category-header">
+        <div
+          class="po-customer-category-header"
+        >
 
           <div>
 
@@ -7833,11 +8137,16 @@ async function loadPOCustomer() {
           ? `
 
             <div
-              class="po-customer-category po-claim-category"
+              class="
+                po-customer-category
+                po-claim-category
+              "
             >
 
               <div
-                class="po-customer-category-header"
+                class="
+                  po-customer-category-header
+                "
               >
 
                 <div>
@@ -7847,9 +8156,9 @@ async function loadPOCustomer() {
                   </h3>
 
                   <p>
-                    PO sudah ditutup,
-                    tetapi masih tersedia
-                    member yang belum di-claim.
+                    PO yang sudah ditutup
+                    atau member dari Rekap GO
+                    yang masih tersedia untuk di-claim.
                   </p>
 
                 </div>
@@ -7900,7 +8209,9 @@ async function loadPOCustomer() {
 
         <br><br>
 
-        ${display(error.message)}
+        ${display(
+          error.message
+        )}
 
       </div>
     `;
@@ -7908,7 +8219,6 @@ async function loadPOCustomer() {
   }
 
 }
-
 /* =========================
    TAMPILKAN DETAIL PO
 ========================= */
