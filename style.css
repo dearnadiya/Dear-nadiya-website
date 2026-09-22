@@ -706,7 +706,7 @@ footer {
 }
 
 /* =========================
-   PO CUSTOMER
+   PO CUSTOMER CAROUSEL
 ========================= */
 
 .po-carousel {
@@ -715,12 +715,25 @@ footer {
 }
 
 .po-carousel-track {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, auto);
+
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+
   gap: 14px;
+
   overflow-x: auto;
+  overflow-y: hidden;
+
   padding: 4px 4px 12px;
+
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+
   scrollbar-width: none;
+
   -webkit-overflow-scrolling: touch;
 }
 
@@ -728,39 +741,70 @@ footer {
   display: none;
 }
 
+
+/* =========================
+   CARD
+========================= */
+
 .po-mini-card {
-  flex: 0 0 170px;
-  scroll-snap-align: start;
+  width: 100%;
+  min-width: 0;
+
   background: #fff;
+
   border: 1px solid #eee;
   border-radius: 16px;
+
   overflow: hidden;
+
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease;
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.06);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  scroll-snap-align: start;
 }
 
 .po-mini-card:active {
   transform: scale(0.97);
 }
 
+
+/* =========================
+   FOTO
+========================= */
+
 .po-mini-image {
   width: 100%;
-  height: 170px;
+  height: 150px;
+
   object-fit: cover;
+
   display: block;
 }
 
 .po-mini-placeholder {
   width: 100%;
-  height: 170px;
+  height: 150px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: #f5f5f5;
+
   font-size: 13px;
   color: #777;
 }
+
+
+/* =========================
+   ISI CARD
+========================= */
 
 .po-mini-content {
   padding: 11px;
@@ -768,26 +812,60 @@ footer {
 
 .po-mini-content h3 {
   margin: 0 0 7px;
+
   font-size: 14px;
   line-height: 1.35;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
 }
 
-.po-mini-status {
-  display: inline-block;
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 20px;
-  background: #f3f3f3;
-  color: #555;
+
+/* =========================
+   AVAILABLE
+========================= */
+
+.po-mini-available-label {
+  font-size: 10px;
+  font-weight: 600;
+
+  color: #888;
+
+  margin-bottom: 4px;
+
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
+
+.po-mini-members {
+  font-size: 12px;
+  line-height: 1.45;
+
+  color: #444;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+}
+
+
+/* =========================
+   PETUNJUK GESER
+========================= */
 
 .po-carousel-hint {
   text-align: center;
+
   font-size: 11px;
   color: #888;
-  margin-top: 2px;
-}
 
+  margin-top: 5px;
+}
 /* =========================
    DETAIL PO
 ========================= */
@@ -935,25 +1013,90 @@ footer {
 
 @media (max-width: 600px) {
 
-  .po-mini-card {
-    flex-basis: 150px;
+  .po-carousel-track {
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    grid-template-rows:
+      repeat(2, auto);
+
+    grid-auto-flow: column;
+
+    grid-auto-columns:
+      100%;
+
+    gap: 10px;
+
+    padding:
+      4px 2px 12px;
   }
+
+
+  .po-mini-card {
+    border-radius: 14px;
+  }
+
 
   .po-mini-image,
   .po-mini-placeholder {
-    height: 150px;
+
+    height: 125px;
   }
 
+
+  .po-mini-content {
+
+    padding: 9px;
+  }
+
+
+  .po-mini-content h3 {
+
+    font-size: 12px;
+    line-height: 1.3;
+
+    margin-bottom: 6px;
+  }
+
+
+  .po-mini-available-label {
+
+    font-size: 9px;
+
+    margin-bottom: 3px;
+  }
+
+
+  .po-mini-members {
+
+    font-size: 11px;
+    line-height: 1.4;
+
+    -webkit-line-clamp: 2;
+  }
+
+
+  .po-carousel-hint {
+
+    margin-top: 5px;
+
+    font-size: 10px;
+  }
+
+
   .po-detail-content {
+
     padding: 15px;
   }
 
+
   .po-detail-content h2 {
+
     font-size: 20px;
   }
 
 }
-
 /* =========================
    DETAIL PO - REFINEMENT
 ========================= */
