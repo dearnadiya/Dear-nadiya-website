@@ -7595,6 +7595,28 @@ if (recapError) {
 
 }
 
+    console.log(
+  "===== DEBUG CUSTOMER CLAIM ====="
+);
+
+console.log(
+  "TOTAL PURCHASE_RECAP:",
+  Array.isArray(recapData)
+    ? recapData.length
+    : "BUKAN ARRAY"
+);
+
+console.log(
+  "CONTOH DATA PURCHASE_RECAP:",
+  recapData
+    ? recapData.slice(0, 10)
+    : recapData
+);
+
+console.log(
+  "==============================="
+);
+
 
     if (recapError) {
 
