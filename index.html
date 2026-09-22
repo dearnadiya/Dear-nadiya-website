@@ -7825,92 +7825,122 @@ if (
 
         recapClaimGroups[groupKey] = {
 
-          id:
-            "recap-" +
-            category +
-            "-" +
-            batchCode,
+  id:
+    "recap-" +
+    category +
+    "-" +
+    batchCode,
 
-          title:
-            row.item_name ||
-            batchCode,
+  title:
+    row.item_name ||
+    batchCode,
 
-          image_url:
-            row.image_url ||
-            "",
+  image_url:
+    row.image_url ||
+    "",
 
-          close_date:
-            null,
+  close_date:
+    row.close_date ||
+    null,
 
-          last_dp_date:
-            null,
+  last_dp_date:
+    row.dp_deadline ||
+    row.last_dp_date ||
+    null,
 
-          price_text:
-            "",
+  price_text:
+    row.item_price !== null &&
+    row.item_price !== undefined &&
+    row.item_price !== ""
+      ? Number(row.item_price).toLocaleString(
+          "id-ID"
+        )
+      : "",
 
-          dp_text:
-            "",
+  dp_text:
+    row.minimum_dp_amount !== null &&
+    row.minimum_dp_amount !== undefined &&
+    row.minimum_dp_amount !== ""
+      ? Number(
+          row.minimum_dp_amount
+        ).toLocaleString("id-ID")
+      : "",
 
-          description:
-            "Member tersedia dari Rekap GO.",
+  description:
+    "Member tersedia dari Rekap GO.",
 
-          order_mode:
-            "claim",
+  order_mode:
+    "claim",
 
-          batch_status:
-            "available",
+  batch_status:
+    "available",
 
-          status:
-            "active",
+  status:
+    "active",
 
-          source:
-            "purchase_recap",
+  source:
+    "purchase_recap",
 
-          category:
-            category,
+  category:
+    category,
 
-          batch_code:
-            batchCode,
+  batch_code:
+    batchCode,
 
-          list_data:
-            []
+  tracking_status:
+    trackingStatus,
 
-        };
+  list_data:
+    []
+
+};
 
       }
 
 
       recapClaimGroups[
-        groupKey
-      ].list_data.push({
+  groupKey
+].list_data.push({
 
-        member:
-          version,
+  member:
+    version,
 
-        customer:
-          customer,
+  customer:
+    customer,
 
-        customer_id:
-          row.customer_id,
+  customer_id:
+    row.customer_id,
 
-        quantity:
-          Number(
-            row.quantity || 1
-          ),
+  quantity:
+    Number(
+      row.quantity || 1
+    ),
 
-        price:
-          row.item_price || "",
+  price:
+    row.item_price || "",
 
-        dp:
-          row.minimum_dp_amount || "",
+  dp:
+    row.minimum_dp_amount || "",
 
-        note:
-          "",
+  note:
+    "",
 
-        batch_tracking_status:
-          trackingStatus
+  batch_tracking_status:
+    trackingStatus,
 
-      });
+  payment_status:
+    row.payment_status || "",
+
+  dp_status:
+    row.dp_status || "",
+
+  remaining_amount:
+    row.remaining_amount || 0,
+
+  recap_id:
+    row.id
+
+});
 
     });
 
@@ -8592,6 +8622,21 @@ const customer =
             `
             : ""
         }
+
+        ${
+  po.tracking_status
+    ? `
+      <div class="po-info-row">
+        <span>Tracking Barang</span>
+        <strong>
+          ${getTrackingDisplay(
+            po.tracking_status
+          )}
+        </strong>
+      </div>
+    `
+    : ""
+}
 
 
         ${
