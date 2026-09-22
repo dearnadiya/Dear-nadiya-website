@@ -7858,13 +7858,19 @@ if (
       : "",
 
   dp_text:
-    row.minimum_dp_amount !== null &&
-    row.minimum_dp_amount !== undefined &&
-    row.minimum_dp_amount !== ""
-      ? Number(
-          row.minimum_dp_amount
-        ).toLocaleString("id-ID")
-      : "",
+  Number(row.dp_amount || 0) > 0
+    ? Number(
+        row.dp_amount
+      ).toLocaleString("id-ID")
+    : (
+        row.minimum_dp_amount !== null &&
+        row.minimum_dp_amount !== undefined &&
+        row.minimum_dp_amount !== ""
+          ? Number(
+              row.minimum_dp_amount
+            ).toLocaleString("id-ID")
+          : ""
+      ),
 
   description:
     "Member tersedia dari Rekap GO.",
@@ -7920,7 +7926,9 @@ if (
     row.item_price || "",
 
   dp:
-    row.minimum_dp_amount || "",
+  Number(row.dp_amount || 0) > 0
+    ? row.dp_amount
+    : row.minimum_dp_amount || "",
 
   note:
     "",
