@@ -7029,26 +7029,31 @@ Object.values(
 
 
     /* =========================
-       KOTAK BATCH
-    ========================= */
+   KOTAK BATCH
+========================= */
 
-    const batchBox =
-      document.createElement(
-        "div"
-      );
+const batchBox =
+  document.createElement(
+    "div"
+  );
 
-    batchBox.style.border =
-      "1px solid #ddd";
+batchBox.style.border =
+  "1px solid #e5e5e5";
 
-    batchBox.style.borderRadius =
-      "12px";
+batchBox.style.borderRadius =
+  "10px";
 
-    batchBox.style.padding =
-      "14px";
+batchBox.style.padding =
+  "11px 12px";
 
-    batchBox.style.marginBottom =
-      "12px";
+batchBox.style.marginBottom =
+  "8px";
 
+batchBox.style.background =
+  "#fff";
+
+batchBox.style.boxShadow =
+  "0 1px 4px rgba(0,0,0,.04)";
 
     /* =========================
        DAFTAR VERSI / MEMBER
@@ -7098,108 +7103,143 @@ Object.values(
 
     batchBox.innerHTML = `
 
-      <!-- KODE BATCH -->
+  <!-- PRIORITAS -->
+  <div
+    style="
+      font-size:11px;
+      font-weight:700;
+      color:#d9534f;
+      margin-bottom:3px;
+    "
+  >
+    🔴 PRIORITAS PEMBAYARAN
+  </div>
+
+
+  <!-- NAMA BARANG -->
+  <div
+    style="
+      font-size:16px;
+      font-weight:700;
+      line-height:1.3;
+      color:#222;
+      margin-bottom:2px;
+    "
+  >
+    ${display(
+      firstBill.item_name ||
+      "-"
+    )}
+  </div>
+
+
+  <!-- KODE BATCH -->
+  <div
+    style="
+      font-size:10px;
+      color:#999;
+      margin-bottom:7px;
+    "
+  >
+    ${display(
+      batchCode
+    )}
+  </div>
+
+
+  <!-- RINGKASAN TAGIHAN -->
+  <div
+    style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:7px 0;
+      border-top:1px solid #f0f0f0;
+    "
+  >
+
+    <div>
+
       <div
         style="
-          font-size:11px;
-          font-weight:600;
-          color:#888;
-          letter-spacing:.3px;
-          margin-bottom:3px;
-        "
-      >
-        ${display(
-          batchCode
-        )}
-      </div>
-
-
-      <!-- NAMA BARANG -->
-      <div
-        style="
-          font-size:18px;
-          font-weight:700;
-          line-height:1.35;
-          color:#222;
-          margin-bottom:5px;
-        "
-      >
-        ${display(
-          firstBill.item_name ||
-          "-"
-        )}
-      </div>
-
-
-      <!-- JUMLAH VERSI / MEMBER -->
-      <div
-        style="
+          font-size:12px;
           color:#666;
-          font-size:13px;
-          margin-bottom:10px;
+          margin-bottom:2px;
         "
       >
-        ${versionCount}
-        versi / member
+        ${
+          unpaidDp > 0
+            ? "DP belum dibayar"
+            : "Sisa tagihan"
+        }
       </div>
-
 
       <div
         style="
-          border-top:1px solid #eee;
-          border-bottom:1px solid #eee;
-          padding:8px 0;
-          margin-bottom:10px;
+          font-size:16px;
+          font-weight:700;
+          color:#222;
         "
       >
-
-        ${versionList}
-
+        ${
+          unpaidDp > 0
+            ? rupiah(unpaidDp)
+            : rupiah(remainingTotal)
+        }
       </div>
 
-
-      <div
-        style="
-          display:flex;
-          justify-content:space-between;
-          margin-top:6px;
-        "
-      >
-
-        <span>
-          DP belum dibayar
-        </span>
-
-        <b>
-          ${rupiah(
-            unpaidDp
-          )}
-        </b>
-
-      </div>
+    </div>
 
 
-      <div
-        style="
-          display:flex;
-          justify-content:space-between;
-          margin-top:6px;
-        "
-      >
+    <div
+      style="
+        font-size:11px;
+        color:#777;
+        text-align:right;
+      "
+    >
+      ${versionCount}
+      versi/member
+    </div>
 
-        <span>
-          Sisa
-        </span>
+  </div>
 
-        <b>
-          ${rupiah(
-            remainingTotal
-          )}
-        </b>
 
-      </div>
+  <!-- DETAIL VERSI -->
+  <details
+    style="
+      margin-top:4px;
+      font-size:12px;
+    "
+  >
 
-    `;
+    <summary
+      style="
+        cursor:pointer;
+        color:#666;
+        padding:4px 0;
+        user-select:none;
+      "
+    >
+      Lihat detail versi/member
+    </summary>
+
+    <div
+      style="
+        margin-top:5px;
+        padding:6px 0;
+        border-top:1px solid #f2f2f2;
+      "
+    >
+
+      ${versionList}
+
+    </div>
+
+  </details>
+
+`;
 
 
     /* =========================
@@ -7217,17 +7257,17 @@ Object.values(
     selectWrapper.style.alignItems =
       "center";
 
-    selectWrapper.style.gap =
-      "8px";
+   selectWrapper.style.gap =
+  "7px";
 
     selectWrapper.style.marginTop =
-      "14px";
+  "6px";
 
-    selectWrapper.style.paddingTop =
-      "10px";
+selectWrapper.style.paddingTop =
+  "7px";
 
-    selectWrapper.style.borderTop =
-      "1px solid #eee";
+selectWrapper.style.borderTop =
+  "1px solid #f0f0f0";
 
     selectWrapper.style.cursor =
       "pointer";
