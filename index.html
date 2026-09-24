@@ -6982,7 +6982,7 @@ Object.values(
     ) {
 
       const unpaidDp =
-  batchBills.reduce( 
+  batchBills.reduce(
     function(total, bill) {
 
       const minimumDp =
@@ -6995,20 +6995,6 @@ Object.values(
           bill.dp_amount || 0
         );
 
-      /*
-       * Jika minimum DP = 0,
-       * berarti batch ini tidak memiliki
-       * tagihan DP.
-       */
-      if (
-        minimumDp <= 0
-      ) {
-        return total;
-      }
-
-      /*
-       * Hitung kekurangan DP aktual.
-       */
       const dpOutstanding =
         Math.max(
           minimumDp -
@@ -7024,6 +7010,7 @@ Object.values(
     },
     0
   );
+      
       /*
        * Masih ada DP.
        */
@@ -7038,26 +7025,65 @@ Object.values(
       /*
        * Cari deadline pelunasan.
        */
+      
       const deadline =
-        batchBills
-          .map(
-            function(bill) {
+  batchBills
+    .map(
+      function(bill) {
 
-              return bill.payment_deadline
-                ? String(
-                    bill.payment_deadline
-                  ).substring(0, 10)
-                : "";
+        /*
+         * Jika DP masih kurang,
+         * gunakan deadline DP.
+         */
+        const minimumDp =
+          Number(
+            bill.minimum_dp_amount || 0
+          );
 
-            }
-          )
-          .find(
-            function(value) {
+        const actualDp =
+          Number(
+            bill.dp_amount || 0
+          );
 
-              return value;
+        const dpOutstanding =
+          Math.max(
+            minimumDp -
+            actualDp,
+            0
+          );
 
-            }
-          ) || "";
+        if (
+          dpOutstanding > 0
+        ) {
+
+          return bill.dp_deadline
+            ? String(
+                bill.dp_deadline
+              ).substring(0, 10)
+            : "";
+
+        }
+
+        /*
+         * Jika DP sudah tercapai,
+         * gunakan deadline pelunasan.
+         */
+        return bill.payment_deadline
+          ? String(
+              bill.payment_deadline
+            ).substring(0, 10)
+          : "";
+
+      }
+    )
+    .find(
+      function(value) {
+
+        return value;
+
+      }
+    ) || "";
+      
 
       /*
        * Tidak ada deadline:
@@ -7145,28 +7171,34 @@ Object.values(
 
 
     const unpaidDp =
-      batchBills.reduce(
-        function(total, bill) {
+  batchBills.reduce(
+    function(total, bill) {
 
-          if (
-            bill.dp_status ===
-            "unpaid"
-          ) {
+      const minimumDp =
+        Number(
+          bill.minimum_dp_amount || 0
+        );
 
-            return (
-              total +
-              Number(
-                bill.dp_amount || 0
-              )
-            );
+      const actualDp =
+        Number(
+          bill.dp_amount || 0
+        );
 
-          }
+      const dpOutstanding =
+        Math.max(
+          minimumDp -
+          actualDp,
+          0
+        );
 
-          return total;
-
-        },
-        0
+      return (
+        total +
+        dpOutstanding
       );
+
+    },
+    0
+  );
 
 
     const remainingTotal =
@@ -7200,6 +7232,43 @@ const paymentDeadline =
   batchBills
     .map(function(bill) {
 
+      /*
+       * Jika DP masih kurang,
+       * tampilkan DEADLINE DP.
+       */
+      const minimumDp =
+        Number(
+          bill.minimum_dp_amount || 0
+        );
+
+      const actualDp =
+        Number(
+          bill.dp_amount || 0
+        );
+
+      const dpOutstanding =
+        Math.max(
+          minimumDp -
+          actualDp,
+          0
+        );
+
+      if (
+        dpOutstanding > 0
+      ) {
+
+        return bill.dp_deadline
+          ? String(
+              bill.dp_deadline
+            ).substring(0, 10)
+          : "";
+
+      }
+
+      /*
+       * Jika DP sudah selesai,
+       * tampilkan DEADLINE PELUNASAN.
+       */
       return bill.payment_deadline
         ? String(
             bill.payment_deadline
