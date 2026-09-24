@@ -6969,7 +6969,145 @@ bills.forEach(
 
 Object.values(
   batchGroups
-).forEach(
+)
+.sort(
+  function(a, b) {
+
+    /*
+     * Fungsi kecil untuk menentukan
+     * prioritas masing-masing batch.
+     */
+    function getPriority(
+      batchBills
+    ) {
+
+      const unpaidDp =
+        batchBills.reduce(
+          function(total, bill) {
+
+            if (
+              bill.dp_status ===
+              "unpaid"
+            ) {
+
+              return (
+                total +
+                Number(
+                  bill.dp_amount || 0
+                )
+              );
+
+            }
+
+            return total;
+
+          },
+          0
+        );
+
+      /*
+       * Masih ada DP.
+       */
+      if (
+        unpaidDp > 0
+      ) {
+
+        return 1;
+
+      }
+
+      /*
+       * Cari deadline pelunasan.
+       */
+      const deadline =
+        batchBills
+          .map(
+            function(bill) {
+
+              return bill.payment_deadline
+                ? String(
+                    bill.payment_deadline
+                  ).substring(0, 10)
+                : "";
+
+            }
+          )
+          .find(
+            function(value) {
+
+              return value;
+
+            }
+          ) || "";
+
+      /*
+       * Tidak ada deadline:
+       * paling bawah.
+       */
+      if (!deadline) {
+
+        return 3;
+
+      }
+
+      const today =
+        new Date();
+
+      today.setHours(
+        0,
+        0,
+        0,
+        0
+      );
+
+      const deadlineDate =
+        new Date(
+          deadline +
+          "T00:00:00"
+        );
+
+      const days =
+        Math.ceil(
+          (
+            deadlineDate -
+            today
+          ) /
+          (
+            1000 *
+            60 *
+            60 *
+            24
+          )
+        );
+
+      /*
+       * H-7 atau sudah lewat:
+       * prioritas.
+       */
+      if (
+        days <= 7
+      ) {
+
+        return 1;
+
+      }
+
+      /*
+       * Ada deadline tetapi
+       * belum mendekati.
+       */
+      return 2;
+
+    }
+
+    return (
+      getPriority(a) -
+      getPriority(b)
+    );
+
+  }
+)
+.forEach(
   function(batchBills) {
 
     const firstBill =
@@ -7027,6 +7165,151 @@ Object.values(
         0
       );
 
+    /* =========================
+   LOGIKA PRIORITAS TAGIHAN
+========================= */
+
+const hasUnpaidDp =
+  unpaidDp > 0;
+
+
+/*
+ * Ambil deadline pelunasan
+ * dari data batch/customer.
+ */
+const paymentDeadline =
+  batchBills
+    .map(function(bill) {
+
+      return bill.payment_deadline
+        ? String(
+            bill.payment_deadline
+          ).substring(0, 10)
+        : "";
+
+    })
+    .find(function(deadline) {
+
+      return deadline;
+
+    }) || "";
+
+
+/*
+ * Hari ini.
+ */
+const today =
+  new Date();
+
+today.setHours(
+  0,
+  0,
+  0,
+  0
+);
+
+
+/*
+ * Hitung jarak deadline.
+ */
+let daysToPaymentDeadline =
+  null;
+
+if (paymentDeadline) {
+
+  const deadlineDate =
+    new Date(
+      paymentDeadline +
+      "T00:00:00"
+    );
+
+  if (
+    !isNaN(
+      deadlineDate.getTime()
+    )
+  ) {
+
+    daysToPaymentDeadline =
+      Math.ceil(
+        (
+          deadlineDate -
+          today
+        ) /
+        (
+          1000 *
+          60 *
+          60 *
+          24
+        )
+      );
+
+  }
+
+}
+
+
+/*
+ * PRIORITAS:
+ *
+ * 1 = deadline sudah dekat
+ * 2 = sudah ada deadline
+ * 3 = belum ada deadline
+ *
+ * DP belum lunas tetap menjadi
+ * prioritas tersendiri.
+ */
+let paymentPriority =
+  3;
+
+let paymentLabel =
+  "Pelunasan";
+
+
+if (
+  hasUnpaidDp
+) {
+
+  paymentPriority =
+    1;
+
+  paymentLabel =
+    "DP";
+
+} else if (
+  paymentDeadline
+) {
+
+  /*
+   * Deadline mendekati:
+   * H-7 sampai lewat deadline.
+   */
+  if (
+    daysToPaymentDeadline !== null &&
+    daysToPaymentDeadline <= 7
+  ) {
+
+    paymentPriority =
+      1;
+
+  } else {
+
+    paymentPriority =
+      2;
+
+  }
+
+} else {
+
+  /*
+   * Sudah DP tetapi admin belum
+   * menetapkan deadline pelunasan.
+   *
+   * SELALU paling bawah.
+   */
+  paymentPriority =
+    3;
+
+}
 
     /* =========================
    KOTAK BATCH
@@ -7159,51 +7442,83 @@ batchBox.style.boxShadow =
     "
   >
 
-    <div>
+    <div
+  style="
+    font-size:12px;
+    color:#666;
+    margin-bottom:2px;
+  "
+>
+  ${
+    hasUnpaidDp
+      ? "DP belum dibayar"
+      : "Sisa pelunasan"
+  }
+</div>
 
-      <div
-        style="
-          font-size:12px;
-          color:#666;
-          margin-bottom:2px;
-        "
-      >
-        ${
-          unpaidDp > 0
-            ? "DP belum dibayar"
-            : "Sisa tagihan"
-        }
-      </div>
-
-      <div
-        style="
-          font-size:16px;
-          font-weight:700;
-          color:#222;
-        "
-      >
-        ${
-          unpaidDp > 0
-            ? rupiah(unpaidDp)
-            : rupiah(remainingTotal)
-        }
-      </div>
+<div
+  style="
+    font-size:16px;
+    font-weight:700;
+    color:#222;
+  "
+>
+  ${
+    hasUnpaidDp
+      ? rupiah(unpaidDp)
+      : rupiah(remainingTotal)
+  }
+</div>
 
     </div>
 
 
     <div
-      style="
-        font-size:11px;
-        color:#777;
-        text-align:right;
-      "
-    >
-      ${versionCount}
-      versi/member
-    </div>
-
+  style="
+    font-size:11px;
+    color:#777;
+    text-align:right;
+  "
+>
+  <div>
+    ${versionCount}
+    versi/member
   </div>
+
+  ${
+    paymentDeadline
+      ? `
+        <div
+          style="
+            margin-top:3px;
+            color:${
+              paymentPriority === 1
+                ? "#d9534f"
+                : "#777"
+            };
+            font-weight:${
+              paymentPriority === 1
+                ? "600"
+                : "400"
+            };
+          "
+        >
+          Deadline:
+          ${paymentDeadline}
+        </div>
+      `
+      : `
+        <div
+          style="
+            margin-top:3px;
+            color:#999;
+          "
+        >
+          Belum ada deadline
+        </div>
+      `
+  }
+</div>
 
 
   <!-- DETAIL VERSI -->
