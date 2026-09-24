@@ -7098,11 +7098,14 @@ Object.values(
 
     batchBox.innerHTML = `
 
+      <!-- KODE BATCH -->
       <div
         style="
-          font-size:17px;
-          font-weight:bold;
-          margin-bottom:4px;
+          font-size:11px;
+          font-weight:600;
+          color:#888;
+          letter-spacing:.3px;
+          margin-bottom:3px;
         "
       >
         ${display(
@@ -7111,9 +7114,28 @@ Object.values(
       </div>
 
 
+      <!-- NAMA BARANG -->
+      <div
+        style="
+          font-size:18px;
+          font-weight:700;
+          line-height:1.35;
+          color:#222;
+          margin-bottom:5px;
+        "
+      >
+        ${display(
+          firstBill.item_name ||
+          "-"
+        )}
+      </div>
+
+
+      <!-- JUMLAH VERSI / MEMBER -->
       <div
         style="
           color:#666;
+          font-size:13px;
           margin-bottom:10px;
         "
       >
