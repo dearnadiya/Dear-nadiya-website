@@ -6982,29 +6982,48 @@ Object.values(
     ) {
 
       const unpaidDp =
-        batchBills.reduce(
-          function(total, bill) {
+  batchBills.reduce(
+    function(total, bill) {
 
-            if (
-              bill.dp_status ===
-              "unpaid"
-            ) {
+      const minimumDp =
+        Number(
+          bill.minimum_dp_amount || 0
+        );
 
-              return (
-                total +
-                Number(
-                  bill.dp_amount || 0
-                )
-              );
+      const actualDp =
+        Number(
+          bill.dp_amount || 0
+        );
 
-            }
+      /*
+       * Jika minimum DP = 0,
+       * berarti batch ini tidak memiliki
+       * tagihan DP.
+       */
+      if (
+        minimumDp <= 0
+      ) {
+        return total;
+      }
 
-            return total;
-
-          },
+      /*
+       * Hitung kekurangan DP aktual.
+       */
+      const dpOutstanding =
+        Math.max(
+          minimumDp -
+          actualDp,
           0
         );
 
+      return (
+        total +
+        dpOutstanding
+      );
+
+    },
+    0
+  );
       /*
        * Masih ada DP.
        */
@@ -7258,13 +7277,22 @@ if (paymentDeadline) {
  * DP belum lunas tetap menjadi
  * prioritas tersendiri.
  */
-let paymentPriority =
+
+    let paymentPriority =
   3;
 
 let paymentLabel =
   "Pelunasan";
 
 
+/*
+ * =====================================
+ * PRIORITAS DP
+ * =====================================
+ *
+ * Jika DP masih kurang:
+ * -> prioritas paling atas.
+ */
 if (
   hasUnpaidDp
 ) {
@@ -7275,13 +7303,23 @@ if (
   paymentLabel =
     "DP";
 
-} else if (
+}
+
+
+/*
+ * =====================================
+ * PRIORITAS PELUNASAN
+ * =====================================
+ *
+ * Hanya berlaku jika DP sudah selesai.
+ */
+else if (
   paymentDeadline
 ) {
 
   /*
-   * Deadline mendekati:
-   * H-7 sampai lewat deadline.
+   * Deadline H-7 atau sudah lewat
+   * -> prioritas pembayaran.
    */
   if (
     daysToPaymentDeadline !== null &&
@@ -7291,26 +7329,46 @@ if (
     paymentPriority =
       1;
 
-  } else {
+    paymentLabel =
+      "Prioritas Pelunasan";
+
+  }
+
+  /*
+   * Sudah ada deadline,
+   * tetapi masih jauh.
+   */
+  else {
 
     paymentPriority =
       2;
 
+    paymentLabel =
+      "Pelunasan";
+
   }
-
-} else {
-
-  /*
-   * Sudah DP tetapi admin belum
-   * menetapkan deadline pelunasan.
-   *
-   * SELALU paling bawah.
-   */
-  paymentPriority =
-    3;
 
 }
 
+
+/*
+ * =====================================
+ * PELUNASAN TANPA DEADLINE
+ * =====================================
+ *
+ * Bukan prioritas.
+ * Selalu berada paling bawah.
+ */
+else {
+
+  paymentPriority =
+    3;
+
+  paymentLabel =
+    "Pelunasan • Belum Ada Deadline";
+
+}
+    
     /* =========================
    KOTAK BATCH
 ========================= */
@@ -7386,17 +7444,29 @@ batchBox.style.boxShadow =
 
     batchBox.innerHTML = `
 
-  <!-- PRIORITAS -->
-  <div
-    style="
-      font-size:11px;
-      font-weight:700;
-      color:#d9534f;
-      margin-bottom:3px;
-    "
-  >
-    🔴 PRIORITAS PEMBAYARAN
-  </div>
+  <!-- STATUS PEMBAYARAN -->
+<div
+  style="
+    font-size:11px;
+    font-weight:700;
+    color:${
+      paymentPriority === 1
+        ? "#d9534f"
+        : paymentPriority === 2
+          ? "#b7791f"
+          : "#888"
+    };
+    margin-bottom:3px;
+  "
+>
+  ${
+    paymentPriority === 1
+      ? "🔴 " + paymentLabel
+      : paymentPriority === 2
+        ? "🟠 " + paymentLabel
+        : "⚪ " + paymentLabel
+  }
+</div>
 
 
   <!-- NAMA BARANG -->
