@@ -2306,20 +2306,69 @@ async function loadRecap() {
   try {
 
     /* =========================
+       AMBIL SEMUA DATA PUBLIC
+       DENGAN PAGINATION
+    ========================= */
+
+    async function fetchAllRows(
+      tableName,
+      selectColumns = "*"
+    ) {
+
+      const allRows = [];
+      const pageSize = 1000;
+      let from = 0;
+
+      while (true) {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from(tableName)
+            .select(selectColumns)
+            .range(
+              from,
+              from + pageSize - 1
+            );
+
+        if (error) {
+          throw error;
+        }
+
+        const rows =
+          data || [];
+
+        allRows.push(
+          ...rows
+        );
+
+        if (
+          rows.length <
+          pageSize
+        ) {
+          break;
+        }
+
+        from += pageSize;
+
+      }
+
+      return allRows;
+
+    }
+
+
+    /* =========================
        DATA PUBLIC CUSTOMER
     ========================= */
 
-    const {
-      data: publicData,
-      error: publicError
-    } =
-      await supabaseClient
-        .from("go_rekap_public")
-        .select("*");
-
-    if (publicError) {
-      throw publicError;
-    }
+    const publicData =
+      await fetchAllRows(
+        "go_rekap_public",
+        "*"
+      );
 
 
     /* =========================
@@ -2327,20 +2376,12 @@ async function loadRecap() {
        DARI REKAP UTAMA
     ========================= */
 
-    const {
-      data: recapMeta,
-      error: metaError
-    } =
-      await supabaseClient
-        .from("purchase_recap")
-.select(
-  "recap_type, category, batch_code, item_name, customer_status"
-);
+    const recapMeta =
+  await fetchAllRows(
+    "purchase_recap",
+    "recap_type, category, batch_code, item_name, customer_status"
+  );
     
-    if (metaError) {
-      throw metaError;
-    }
-
     /* =========================
    STATUS BATCH
 ========================= */
