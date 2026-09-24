@@ -6397,23 +6397,28 @@ if (selectedBills.length === 0) {
              UPLOAD KE STORAGE
           ===================== */
 
-          const upload =
-            await supabaseClient
-              .storage
-              .from(
-                "payment-proofs"
-              )
-              .upload(
-                filePath,
-                file,
-                {
-                  cacheControl:
-                    "3600",
+         const upload =
+  await supabaseClient
+    .storage
+    .from(
+      "payment-proofs"
+    )
+    .upload(
+      filePath,
+      file,
+      {
+        cacheControl:
+          "3600",
 
-                  upsert:
-                    false
-                }
-              );
+        upsert:
+          false
+      }
+    );
+
+console.log(
+  "HASIL UPLOAD BUKTI:",
+  upload
+);
 
 
           if (
@@ -6469,11 +6474,15 @@ if (selectedBills.length === 0) {
 
                 payment_type: paymentType,
 
-                status:
+                                status:
                   "pending"
 
               });
 
+console.log(
+  "HASIL INSERT PEMBAYARAN:",
+  error
+);
 
           if (error) {
 
