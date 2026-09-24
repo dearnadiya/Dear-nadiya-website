@@ -7976,24 +7976,40 @@ selectWrapper.style.borderTop =
 
 
               if (
-                paymentType ===
-                "dp"
-              ) {
+  paymentType ===
+  "dp"
+) {
 
-                if (
-                  selectedBill.dp_status ===
-                  "unpaid"
-                ) {
+  if (
+    selectedBill.dp_status ===
+    "unpaid"
+  ) {
 
-                  totalPayment +=
-                    Number(
-                      selectedBill.dp_amount ||
-                      0
-                    );
+    const minimumDp =
+      Number(
+        selectedBill.minimum_dp_amount ||
+        0
+      );
 
-                }
+    const actualDp =
+      Number(
+        selectedBill.dp_amount ||
+        0
+      );
 
-              }
+    const dpOutstanding =
+      Math.max(
+        minimumDp -
+        actualDp,
+        0
+      );
+
+    totalPayment +=
+      dpOutstanding;
+
+  }
+
+}
 
 
               else if (
@@ -8010,32 +8026,18 @@ selectWrapper.style.borderTop =
               }
 
 
-              else if (
-                paymentType ===
-                "both"
-              ) {
+             else if (
+  paymentType ===
+  "both"
+) {
 
-                if (
-                  selectedBill.dp_status ===
-                  "unpaid"
-                ) {
+  totalPayment +=
+    Number(
+      selectedBill.remaining_amount ||
+      0
+    );
 
-                  totalPayment +=
-                    Number(
-                      selectedBill.dp_amount ||
-                      0
-                    );
-
-                }
-
-
-                totalPayment +=
-                  Number(
-                    selectedBill.remaining_amount ||
-                    0
-                  );
-
-              }
+}
 
             }
           );
@@ -8124,24 +8126,40 @@ selectWrapper.style.borderTop =
                           function(bill) {
 
                             if (
-                              paymentType.value ===
-                              "dp"
-                            ) {
+  paymentType.value ===
+  "dp"
+) {
 
-                              if (
-                                bill.dp_status ===
-                                "unpaid"
-                              ) {
+  if (
+    bill.dp_status ===
+    "unpaid"
+  ) {
 
-                                totalPayment +=
-                                  Number(
-                                    bill.dp_amount ||
-                                    0
-                                  );
+    const minimumDp =
+      Number(
+        bill.minimum_dp_amount ||
+        0
+      );
 
-                              }
+    const actualDp =
+      Number(
+        bill.dp_amount ||
+        0
+      );
 
-                            }
+    const dpOutstanding =
+      Math.max(
+        minimumDp -
+        actualDp,
+        0
+      );
+
+    totalPayment +=
+      dpOutstanding;
+
+  }
+
+}
 
 
                             if (
@@ -8159,30 +8177,17 @@ selectWrapper.style.borderTop =
 
 
                             if (
-                              paymentType.value ===
-                              "both"
-                            ) {
+  paymentType.value ===
+  "both"
+) {
 
-                              if (
-                                bill.dp_status ===
-                                "unpaid"
-                              ) {
+  totalPayment +=
+    Number(
+      bill.remaining_amount ||
+      0
+    );
 
-                                totalPayment +=
-                                  Number(
-                                    bill.dp_amount ||
-                                    0
-                                  );
-
-                              }
-
-                              totalPayment +=
-                                Number(
-                                  bill.remaining_amount ||
-                                  0
-                                );
-
-                            }
+}
 
                           }
                         );
