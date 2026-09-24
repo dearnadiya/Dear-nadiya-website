@@ -6977,173 +6977,178 @@ Object.values(
      * Fungsi kecil untuk menentukan
      * prioritas masing-masing batch.
      */
-    function getPriority(
-      batchBills
-    ) {
-
-      const unpaidDp =
-  batchBills.reduce(
-    function(total, bill) {
-
-      const minimumDp =
-        Number(
-          bill.minimum_dp_amount || 0
-        );
-
-      const actualDp =
-        Number(
-          bill.dp_amount || 0
-        );
-
-      const dpOutstanding =
-        Math.max(
-          minimumDp -
-          actualDp,
-          0
-        );
-
-      return (
-        total +
-        dpOutstanding
-      );
-
-    },
-    0
-  );
-      
-      /*
-       * Masih ada DP.
-       */
-      if (
-        unpaidDp > 0
-      ) {
-
-        return 1;
-
-      }
-
-      /*
-       * Cari deadline pelunasan.
-       */
-      
-      const deadline =
+   function getPriority(
   batchBills
-    .map(
-      function(bill) {
+) {
 
-        /*
-         * Jika DP masih kurang,
-         * gunakan deadline DP.
-         */
-        const minimumDp =
-          Number(
-            bill.minimum_dp_amount || 0
-          );
+  /*
+   * =====================================
+   * TENTUKAN DEADLINE YANG BERLAKU
+   * =====================================
+   *
+   * Jika DP masih kurang:
+   * gunakan DP deadline.
+   *
+   * Jika DP sudah selesai:
+   * gunakan deadline pelunasan.
+   */
 
-        const actualDp =
-          Number(
-            bill.dp_amount || 0
-          );
+  const deadline =
+    batchBills
+      .map(
+        function(bill) {
 
-        const dpOutstanding =
-          Math.max(
-            minimumDp -
-            actualDp,
-            0
-          );
+          const minimumDp =
+            Number(
+              bill.minimum_dp_amount || 0
+            );
 
-        if (
-          dpOutstanding > 0
-        ) {
+          const actualDp =
+            Number(
+              bill.dp_amount || 0
+            );
 
-          return bill.dp_deadline
+          const dpOutstanding =
+            Math.max(
+              minimumDp -
+              actualDp,
+              0
+            );
+
+          /*
+           * Masih ada DP
+           */
+          if (
+            dpOutstanding > 0
+          ) {
+
+            return bill.dp_deadline
+              ? String(
+                  bill.dp_deadline
+                ).substring(0, 10)
+              : "";
+
+          }
+
+          /*
+           * DP sudah tercapai.
+           * Gunakan deadline pelunasan.
+           */
+          return bill.payment_deadline
             ? String(
-                bill.dp_deadline
+                bill.payment_deadline
               ).substring(0, 10)
             : "";
 
         }
+      )
+      .find(
+        function(value) {
 
-        /*
-         * Jika DP sudah tercapai,
-         * gunakan deadline pelunasan.
-         */
-        return bill.payment_deadline
-          ? String(
-              bill.payment_deadline
-            ).substring(0, 10)
-          : "";
+          return value;
 
-      }
-    )
-    .find(
-      function(value) {
+        }
+      ) || "";
 
-        return value;
 
-      }
-    ) || "";
-      
+  /*
+   * =====================================
+   * TIDAK ADA DEADLINE
+   * =====================================
+   */
 
-      /*
-       * Tidak ada deadline:
-       * paling bawah.
-       */
-      if (!deadline) {
+  if (
+    !deadline
+  ) {
 
-        return 3;
+    return 4;
 
-      }
+  }
 
-      const today =
-        new Date();
 
-      today.setHours(
-        0,
-        0,
-        0,
-        0
-      );
+  /*
+   * =====================================
+   * HITUNG JARAK DEADLINE
+   * =====================================
+   */
 
-      const deadlineDate =
-        new Date(
-          deadline +
-          "T00:00:00"
-        );
+  const today =
+    new Date();
 
-      const days =
-        Math.ceil(
-          (
-            deadlineDate -
-            today
-          ) /
-          (
-            1000 *
-            60 *
-            60 *
-            24
-          )
-        );
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
-      /*
-       * H-7 atau sudah lewat:
-       * prioritas.
-       */
-      if (
-        days <= 7
-      ) {
 
-        return 1;
+  const deadlineDate =
+    new Date(
+      deadline +
+      "T00:00:00"
+    );
 
-      }
 
-      /*
-       * Ada deadline tetapi
-       * belum mendekati.
-       */
-      return 2;
+  const days =
+    Math.ceil(
+      (
+        deadlineDate -
+        today
+      ) /
+      (
+        1000 *
+        60 *
+        60 *
+        24
+      )
+    );
 
-    }
+
+  /*
+   * =====================================
+   * PRIORITAS 1
+   * DEADLINE SUDAH LEWAT
+   * =====================================
+   *
+   * Ini HARUS berada paling atas.
+   */
+
+  if (
+    days < 0
+  ) {
+
+    return 1;
+
+  }
+
+
+  /*
+   * =====================================
+   * PRIORITAS 2
+   * DEADLINE HARI INI - H7
+   * =====================================
+   */
+
+  if (
+    days <= 7
+  ) {
+
+    return 2;
+
+  }
+
+
+  /*
+   * =====================================
+   * PRIORITAS 3
+   * DEADLINE MASIH LAMA
+   * =====================================
+   */
+
+  return 3;
+
+}
 
     return (
       getPriority(a) -
