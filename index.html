@@ -2391,7 +2391,7 @@ async function loadRecap() {
        DARI REKAP UTAMA
     ========================= */
 
-    const recapMeta =
+   const recapMeta =
   await fetchAllRows(
     "purchase_recap",
     `
@@ -2400,7 +2400,7 @@ async function loadRecap() {
       batch_code,
       item_name,
       customer_name,
-      product_version,
+      version,
       quantity,
       item_price,
       minimum_dp_amount,
@@ -2617,6 +2617,7 @@ recapBatchData = [];
           .trim()
           .toLowerCase();
 
+
       if (
         rowBatch !==
         itemBatch
@@ -2639,6 +2640,7 @@ recapBatchData = [];
           .trim()
           .toLowerCase();
 
+
       if (
         rowCustomer &&
         itemCustomer &&
@@ -2648,9 +2650,10 @@ recapBatchData = [];
         return false;
       }
 
+
       const rowVersion =
         String(
-          row.product_version || ""
+          row.version || ""
         )
           .trim()
           .toLowerCase();
@@ -2661,6 +2664,7 @@ recapBatchData = [];
         )
           .trim()
           .toLowerCase();
+
 
       if (
         rowVersion &&
