@@ -6665,31 +6665,177 @@ const whatsappLast4 = match
             .trim();
 
 
-        const paymentAmount =
-          Number(
-            document
-              .getElementById(
-                "paymentAmount"
-              )
-              .value
-          );
-
-
         const paymentDate =
-          document
-            .getElementById(
-              "paymentDate"
-            )
-            .value;
+  document
+    .getElementById(
+      "paymentDate"
+    )
+    .value;
 
-        /* =====================
+
+/* =========================
    VALIDASI TAGIHAN TERPILIH
-===================== */
+========================= */
 
-  console.log("CEK TAGIHAN SAAT SUBMIT:", window.selectedPaymentBills);
-        
+console.log(
+  "CEK TAGIHAN SAAT SUBMIT:",
+  window.selectedPaymentBills
+);
+
 const selectedBills =
   window.selectedPaymentBills || [];
+
+if (
+  selectedBills.length === 0
+) {
+
+  showPaymentMessage(
+    "Pilih minimal satu tagihan terlebih dahulu.",
+    true
+  );
+
+  return;
+}
+
+
+/* =========================
+   JENIS PEMBAYARAN
+========================= */
+
+const paymentType =
+  document
+    .getElementById(
+      "paymentType"
+    )
+    .value;
+
+if (
+  ![
+    "dp",
+    "pelunasan",
+    "both"
+  ].includes(paymentType)
+) {
+
+  showPaymentMessage(
+    "Pilih jenis pembayaran terlebih dahulu.",
+    true
+  );
+
+  return;
+}
+
+
+/* =========================
+   HITUNG ULANG NOMINAL
+   DARI TAGIHAN TERPILIH
+========================= */
+
+let paymentAmount =
+  0;
+
+
+selectedBills.forEach(
+  function(bill) {
+
+    const dpStatus =
+      String(
+        bill.dp_status ||
+        "unpaid"
+      )
+        .trim()
+        .toLowerCase();
+
+
+    /* =========================
+       DP
+    ========================= */
+
+    if (
+      paymentType ===
+      "dp"
+    ) {
+
+      if (
+        dpStatus ===
+        "unpaid"
+      ) {
+
+        const minimumDp =
+          Number(
+            bill.minimum_dp_amount ||
+            0
+          );
+
+        paymentAmount +=
+          minimumDp;
+
+      }
+
+    }
+
+
+    /* =========================
+       PELUNASAN
+    ========================= */
+
+    else if (
+      paymentType ===
+      "pelunasan"
+    ) {
+
+      paymentAmount +=
+        Number(
+          bill.remaining_amount ||
+          0
+        );
+
+    }
+
+
+    /* =========================
+       DP + PELUNASAN
+    ========================= */
+
+    else if (
+      paymentType ===
+      "both"
+    ) {
+
+      paymentAmount +=
+        Number(
+          bill.remaining_amount ||
+          0
+        );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   CEK NOMINAL
+========================= */
+
+paymentAmount =
+  Math.max(
+    Number(
+      paymentAmount
+    ) || 0,
+    0
+  );
+
+
+console.log(
+  "JENIS PEMBAYARAN:",
+  paymentType
+);
+
+console.log(
+  "NOMINAL PEMBAYARAN FINAL:",
+  paymentAmount
+);
 
 if (selectedBills.length === 0) {
   showPaymentMessage(
@@ -6869,8 +7015,6 @@ console.log(
           /* =====================
              SIMPAN DATA PEMBAYARAN
           ===================== */
-
-          const paymentType = document.getElementById("paymentType").value;
           
           const {
             error
@@ -7442,29 +7586,26 @@ Object.values(
       .map(
         function(bill) {
 
-          const minimumDp =
-            Number(
-              bill.minimum_dp_amount || 0
-            );
+          const dpStatus =
+  String(
+    bill.dp_status ||
+    "unpaid"
+  )
+    .trim()
+    .toLowerCase();
 
-          const actualDp =
-            Number(
-              bill.dp_amount || 0
-            );
+if (
+  dpStatus !==
+  "paid"
+) {
 
-          const dpOutstanding =
-            Math.max(
-              minimumDp -
-              actualDp,
-              0
-            );
+  return bill.dp_deadline
+    ? String(
+        bill.dp_deadline
+      ).substring(0, 10)
+    : "";
 
-          /*
-           * Masih ada DP
-           */
-          if (
-            dpOutstanding > 0
-          ) {
+}
 
             return bill.dp_deadline
               ? String(
