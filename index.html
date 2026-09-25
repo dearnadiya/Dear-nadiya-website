@@ -23,10 +23,43 @@ content="width=device-width, initial-scale=1"
     ========================= */
 
     .portal {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px 70px;
-    }
+  display: block !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 40px 20px 70px;
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   SEMUA FITUR UTAMA HARUS TURUN KE BAWAH
+========================================== */
+
+.portal > section {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  float: none !important;
+  position: relative;
+}
+
+
+/* Urutan halaman */
+
+#dashboard,
+#pesanan,
+#rekap,
+#rekapDetail,
+#checkoutYuk,
+#pembayaran {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  float: none !important;
+}
 
 
     /* =========================
