@@ -9766,3 +9766,70 @@ footer {
 .po-carousel-track::-webkit-scrollbar-thumb:hover {
   background: #888888;
 }
+
+/* ==========================================
+   FIX LAYOUT CUSTOMER PORTAL
+   AGAR SECTION TETAP TURUN KE BAWAH
+========================================== */
+
+.portal {
+  display: block !important;
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+
+/* Semua section utama satu kolom */
+
+.portal > section {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* Jangan biarkan carousel
+   membuat seluruh halaman melebar */
+
+.recap-carousel {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
+}
+
+
+/* Track boleh berjajar hanya DI DALAM carousel,
+   bukan mendorong seluruh halaman */
+
+.recap-carousel-track {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* Card type tetap tersusun rapi */
+
+.recap-type-card {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+
+/* Hasil pencarian tidak boleh
+   memperlebar halaman */
+
+#recapGlobalResults {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#recapGlobalResults * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
