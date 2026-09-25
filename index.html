@@ -3034,8 +3034,9 @@ if (
   }
 
 
-  /* ==========================================
+    /* ==========================================
      AMBIL TABUNGAN MANUAL ADMIN
+     MELALUI RPC PUBLIC
      ========================================== */
 
   const {
@@ -3043,16 +3044,12 @@ if (
     error: manualTabunganError
   } =
     await supabaseClient
-      .from(
-        "dn_manual_tabungan"
-      )
-      .select(`
-        recap_id,
-        amount
-      `)
-      .in(
-        "recap_id",
-        tabunganRecapIds
+      .rpc(
+        "get_public_tabungan_totals",
+        {
+          p_recap_ids:
+            tabunganRecapIds
+        }
       );
 
 
@@ -3082,7 +3079,7 @@ if (
 
           const amount =
             Number(
-              row.amount
+              row.total_amount
             ) || 0;
 
 
@@ -3107,8 +3104,6 @@ if (
 
   }
 
-}
-    
     /* =========================
        GABUNGKAN DATA
     ========================= */
