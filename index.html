@@ -3428,24 +3428,12 @@ else {
 
 
 /* ========================================
-   PROGRESS
+   PROGRESS TABUNGAN
+   PROGRESS SELALU BERDASARKAN
+   TARGET UTAMA / HARGA BARANG
    ======================================== */
 
 if (
-  tabunganTarget > 0
-) {
-
-  tabunganProgress =
-    Math.min(
-      (
-        tabunganPaid /
-        tabunganTarget
-      ) * 100,
-      100
-    );
-
-}
-else if (
   price > 0
 ) {
 
@@ -3457,6 +3445,11 @@ else if (
       ) * 100,
       100
     );
+
+}
+else {
+
+  tabunganProgress = 0;
 
 }
  
