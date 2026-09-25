@@ -1973,47 +1973,88 @@ function getTrackingDisplay(status) {
    STATUS DISPLAY PAYMENT
 ========================= */
 
-  function getPaymentStatusDisplay(item) {
-  const dp = Number(item.dp || 0);
-  const pelunasan = Number(item.pelunasan || 0);
+function getPaymentStatusDisplay(item) {
 
-  if (dp <= 0 && pelunasan <= 0) {
+  const dp =
+    Number(
+      item.dp || 0
+    );
+
+  const pelunasan =
+    Number(
+      item.pelunasan || 0
+    );
+
+
+  /* =========================
+     BELUM ADA PEMBAYARAN
+  ========================= */
+
+  if (
+    dp <= 0 &&
+    pelunasan <= 0
+  ) {
+
     return `
       <span class="payment-status payment-status-none">
         ⚪ Belum Ada Pembayaran
       </span>
     `;
+
   }
 
-  if (dp > 0 && pelunasan <= 0) {
+
+  /* =========================
+     DP SAJA
+  ========================= */
+
+  if (
+    dp > 0 &&
+    pelunasan <= 0
+  ) {
+
     return `
       <span class="payment-status payment-status-dp">
         🟠 DP Lunas • Pelunasan Belum
       </span>
     `;
+
   }
 
-  if (dp <= 0 && pelunasan > 0) {
-    return `
-      <span class="payment-status payment-status-full">
-        🔵 Pelunasan Lunas
-      </span>
-    `;
-  }
 
-  if (dp > 0 && pelunasan > 0) {
+  /* =========================
+     SUDAH LUNAS
+     
+     Tidak peduli:
+     - langsung bayar penuh
+     - DP lalu pelunasan
+     
+     Keduanya dianggap sama.
+  ========================= */
+
+  if (
+    pelunasan > 0
+  ) {
+
     return `
       <span class="payment-status payment-status-both">
-        🟣 DP & Pelunasan
+        🟣 Lunas
       </span>
     `;
+
   }
+
+
+  /* =========================
+     DEFAULT
+  ========================= */
 
   return `
     <span class="payment-status payment-status-none">
       ⚪ Belum Ada Pembayaran
     </span>
   `;
+
 }
 
    /* =========================
