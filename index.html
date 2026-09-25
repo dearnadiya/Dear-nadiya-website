@@ -7170,113 +7170,161 @@ if (
       ========================= */
 
       resultContainer.innerHTML =
-        filtered
-          .map(
-            function(item) {
+  filtered
+    .map(
+      function(item) {
 
-              return `
+        return `
 
-                <div
-                  class="recap-detail-card"
-                  style="
-                    margin-bottom:12px;
-                    cursor:default;
-                  "
-                >
+          <div
+            class="recap-detail-card"
+            style="
+              margin-bottom:12px;
+              cursor:default;
+            "
+          >
 
-                  <div
-                    class="recap-detail-customer"
-                  >
+            <div
+              class="recap-detail-customer"
+            >
 
-                    <strong>
-                      ${display(
-                        item.customer_name ||
-                        "Customer"
-                      )}
-                    </strong>
+              <strong>
+                ${display(
+                  item.customer_name ||
+                  "Customer"
+                )}
+              </strong>
 
-                  </div>
-
-
-                  <div
-                    style="
-                      font-size:13px;
-                      color:#777;
-                      margin-top:4px;
-                    "
-                  >
-
-                    ID Customer:
-                    <strong>
-                      ${display(
-                        item.customer_id ||
-                        "-"
-                      )}
-                    </strong>
-
-                  </div>
+            </div>
 
 
-                  <div
-                    class="recap-detail-info"
-                    style="
-                      margin-top:12px;
-                    "
-                  >
+            <div
+              style="
+                font-size:13px;
+                color:#777;
+                margin-top:4px;
+              "
+            >
+
+              ID Customer:
+              <strong>
+                ${display(
+                  item.customer_id ||
+                  "-"
+                )}
+              </strong>
+
+            </div>
+
+
+            <div class="recap-detail-info">
+
+              <div>
+                <span>Versi</span>
+
+                <strong>
+                  ${display(
+                    item.product_version ||
+                    item.version ||
+                    "-"
+                  )}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Qty</span>
+
+                <strong>
+                  ${display(
+                    item.quantity ||
+                    1
+                  )}
+                </strong>
+              </div>
+
+
+              ${
+                String(
+                  item.recap_type || ""
+                )
+                  .trim()
+                  .toLowerCase() ===
+                "tabungan"
+
+                  ? `
 
                     <div>
-
-                      <span>
-                        Barang
-                      </span>
+                      <span>Harga Barang</span>
 
                       <strong>
-                        ${display(
-                          item.item_name ||
-                          "-"
+                        ${rupiah(
+                          item.price || 0
                         )}
                       </strong>
-
                     </div>
 
 
                     <div>
-
-                      <span>
-                        Batch
-                      </span>
+                      <span>Target Tabungan</span>
 
                       <strong>
-                        ${display(
-                          item.batch_code ||
-                          "-"
+                        ${rupiah(
+                          item.tabungan_target || 0
                         )}
                       </strong>
-
                     </div>
 
 
                     <div>
-
-                      <span>
-                        Qty
-                      </span>
+                      <span>Total Terkumpul</span>
 
                       <strong>
-                        ${display(
-                          item.quantity ||
-                          1
+                        ${rupiah(
+                          item.tabungan_paid || 0
                         )}
                       </strong>
-
                     </div>
 
 
                     <div>
+                      <span>Sisa Harga</span>
 
-                      <span>
-                        Status
-                      </span>
+                      <strong>
+                        ${rupiah(
+                          item.tabungan_remaining || 0
+                        )}
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>Progress Tabungan</span>
+
+                      <strong>
+                        ${
+                          Number(
+                            item.tabungan_progress || 0
+                          ).toFixed(1)
+                        }%
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>Status Tabungan</span>
+
+                      <strong>
+                        ${display(
+                          item.tabungan_status ||
+                          "Menabung"
+                        )}
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>Tracking</span>
 
                       <strong>
                         ${getTrackingDisplay(
@@ -7285,19 +7333,75 @@ if (
                           "Menabung"
                         )}
                       </strong>
-
                     </div>
 
-                  </div>
+                  `
 
-                </div>
+                  : `
 
-              `;
+                    <div>
+                      <span>Harga</span>
 
-            }
-          )
-          .join("");
+                      <strong>
+                        ${rupiah(
+                          item.price || 0
+                        )}
+                      </strong>
+                    </div>
 
+
+                    <div>
+                      <span>DP</span>
+
+                      <strong>
+                        ${rupiah(
+                          item.dp || 0
+                        )}
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>Pelunasan</span>
+
+                      <strong>
+                        ${rupiah(
+                          item.pelunasan || 0
+                        )}
+                      </strong>
+                    </div>
+
+                  `
+              }
+
+            </div>
+
+
+            <div
+              style="
+                margin-top:12px;
+                font-size:13px;
+                color:#777;
+              "
+            >
+
+              Batch:
+              <strong>
+                ${display(
+                  item.batch_code ||
+                  "-"
+                )}
+              </strong>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    )
+    .join("");
     }
   );
 
