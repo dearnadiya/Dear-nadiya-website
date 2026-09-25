@@ -2712,6 +2712,7 @@ async function loadRecap() {
       batch_code,
       item_name,
       customer_name,
+      customer_id,
       version,
       quantity,
       item_price,
@@ -3565,6 +3566,11 @@ else {
   item_name:
     meta?.item_name ||
     item.product_name,
+
+  customer_id:
+  meta?.customer_id ||
+  item.customer_id ||
+  null,
 
     /* =========================
      TRACKING
@@ -6877,6 +6883,48 @@ function renderRecapBatches(
 
  /* ==========================================
    KHUSUS TABUNGAN LIGHTSTICK
+
+   renderRecapBatches menerima recapBatchData
+   yang hanya berisi data batch.
+
+   Untuk pencarian customer,
+   gunakan recapData yang berisi data customer.
+========================================== */
+
+const lightstickCustomerData =
+  String(category || "")
+    .trim()
+    .toLowerCase() ===
+  "tabungan lightstick"
+
+    ? (recapData || []).filter(
+        function(item) {
+
+          return (
+            String(
+              item.recap_type || ""
+            )
+              .trim()
+              .toLowerCase() ===
+            "tabungan"
+
+            &&
+
+            String(
+              item.category || ""
+            )
+              .trim()
+              .toLowerCase() ===
+            "tabungan lightstick"
+          );
+
+        }
+      )
+
+    : categoryData;
+
+ /* ==========================================
+   KHUSUS TABUNGAN LIGHTSTICK
    TABUNGAN LIGHTSTICK TAMPIL PER CUSTOMER
 
    Tidak menggunakan daftar batch.
@@ -7053,8 +7101,8 @@ if (
       ========================= */
 
       const filtered =
-        categoryData.filter(
-          function(item) {
+  lightstickCustomerData.filter(
+    function(item) {
 
             const customerName =
               String(
