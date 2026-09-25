@@ -1958,42 +1958,109 @@ function getTrackingDisplay(status) {
    STATUS DISPLAY PAYMENT
 ========================= */
 
-  function getPaymentStatusDisplay(item) {
-  const dp = Number(item.dp || 0);
-  const pelunasan = Number(item.pelunasan || 0);
+function getPaymentStatusDisplay(item) {
 
-  if (dp <= 0 && pelunasan <= 0) {
+  const dpStatus =
+    String(
+      item.dp_status ||
+      "unpaid"
+    )
+      .trim()
+      .toLowerCase();
+
+
+  const paymentStatus =
+    String(
+      item.payment_status ||
+      "unpaid"
+    )
+      .trim()
+      .toLowerCase();
+
+
+  /*
+   * =====================================
+   * LUNAS
+   *
+   * payment_status dari Admin
+   * adalah sumber utama.
+   * =====================================
+   */
+
+  if (
+    paymentStatus ===
+    "paid"
+  ) {
+
     return `
-      <span class="payment-status payment-status-none">
-        ⚪ Belum Ada Pembayaran
+      <span class="payment-status payment-status-full">
+        🔵 Lunas
       </span>
     `;
+
   }
 
-  if (dp > 0 && pelunasan <= 0) {
+
+  /*
+   * =====================================
+   * DP LUNAS
+   * PELUNASAN BELUM
+   * =====================================
+   */
+
+  if (
+    dpStatus ===
+    "paid"
+  ) {
+
     return `
       <span class="payment-status payment-status-dp">
         🟠 DP Lunas • Pelunasan Belum
       </span>
     `;
+
   }
 
- if (
-  (
-    dp <= 0 &&
+
+  /*
+   * =====================================
+   * ADA PEMBAYARAN TAPI BELUM LUNAS
+   * =====================================
+   *
+   * Tetap tampil sebagai belum lunas.
+   */
+
+  const dp =
+    Number(
+      item.dp || 0
+    );
+
+  const pelunasan =
+    Number(
+      item.pelunasan || 0
+    );
+
+
+  if (
+    dp > 0 ||
     pelunasan > 0
-  ) ||
-  (
-    dp > 0 &&
-    pelunasan > 0
-  )
-) {
-  return `
-    <span class="payment-status payment-status-full">
-      🔵 Lunas
-    </span>
-  `;
-}
+  ) {
+
+    return `
+      <span class="payment-status payment-status-dp">
+        🟠 Pembayaran Belum Lunas
+      </span>
+    `;
+
+  }
+
+
+  /*
+   * =====================================
+   * BELUM ADA PEMBAYARAN
+   * =====================================
+   */
+
   return `
     <span class="payment-status payment-status-none">
       ⚪ Belum Ada Pembayaran
@@ -2371,15 +2438,31 @@ async function loadRecap() {
       );
 
 
-    /* =========================
-       DATA KATEGORI / BATCH
-       DARI REKAP UTAMA
-    ========================= */
+/* =========================
+   DATA REKAP UTAMA
+   SUMBER MASTER PEMBAYARAN
+   ========================= */
 
-    const recapMeta =
+const recapMeta =
   await fetchAllRows(
     "purchase_recap",
-    "recap_type, category, batch_code, item_name, customer_status"
+    `
+      id,
+      recap_type,
+      category,
+      batch_code,
+      item_name,
+      customer_name,
+      whatsapp_last4,
+      product_version,
+      quantity,
+      item_price,
+      minimum_dp_amount,
+      dp_status,
+      payment_status,
+      remaining_amount,
+      customer_status
+    `
   );
     
     /* =========================
@@ -2563,84 +2646,406 @@ recapBatchData = [];
 );
     
     /* =========================
-       GABUNGKAN DATA
-    ========================= */
-    
-    recapData =
-      (publicData || []).map(
-        function(item) {
+   GABUNGKAN DATA
+   ========================= */
 
-          const meta =
-            (recapMeta || []).find(
-              function(row) {
+recapData =
+  (publicData || []).map(
+    function(item) {
 
-                return (
-                  String(
-                    row.batch_code || ""
-                  )
-                    .trim()
-                    .toLowerCase() ===
-                  String(
-                    item.product_code || ""
-                  )
-                    .trim()
-                    .toLowerCase()
-                );
+      /*
+       * =====================================
+       * CARI DATA MASTER PURCHASE_RECAP
+       * =====================================
+       */
 
-              }
-            );
+      const publicBatch =
+        String(
+          item.product_code ||
+          ""
+        )
+          .trim()
+          .toLowerCase();
 
+      const publicCustomer =
+        String(
+          item.customer_name ||
+          ""
+        )
+          .trim()
+          .toLowerCase();
 
-          return {
-  ...item,
+      const publicWhatsapp =
+        String(
+          item.whatsapp_last4 ||
+          ""
+        )
+          .trim();
 
-  recap_type:
-    meta?.recap_type ||
-    "Lainnya",
-
-  category:
-    meta?.category ||
-    "Lainnya",
-
-  batch_code:
-    meta?.batch_code ||
-    item.product_code,
-
-  item_name:
-    meta?.item_name ||
-    item.product_name,
-
-  customer_status:
-  meta?.customer_status ||
-  item.customer_status ||
-  "Belum Checkout Shopee",
+      const publicVersion =
+        String(
+          item.product_version ||
+          ""
+        )
+          .trim()
+          .toLowerCase();
 
 
-batch_completed:
-  completedBatchMap[
-    String(
-      meta?.recap_type || ""
-    )
-      .trim()
-      .toLowerCase()
-    + "|" +
-    String(
-      meta?.category || ""
-    )
-      .trim()
-      .toLowerCase()
-    + "|" +
-    String(
-      meta?.batch_code ||
-      item.product_code ||
-      ""
-    )
-      .trim()
-      .toLowerCase()
-  ] || false
-};
-        }
-      );
+      /*
+       * Cari baris purchase_recap
+       * yang benar-benar milik customer
+       * dan versi tersebut.
+       */
+
+      const meta =
+        (recapMeta || []).find(
+          function(row) {
+
+            const rowBatch =
+              String(
+                row.batch_code ||
+                ""
+              )
+                .trim()
+                .toLowerCase();
+
+            const rowCustomer =
+              String(
+                row.customer_name ||
+                ""
+              )
+                .trim()
+                .toLowerCase();
+
+            const rowWhatsapp =
+              String(
+                row.whatsapp_last4 ||
+                ""
+              )
+                .trim();
+
+            const rowVersion =
+              String(
+                row.product_version ||
+                ""
+              )
+                .trim()
+                .toLowerCase();
+
+
+            /*
+             * Batch harus sama.
+             */
+
+            if (
+              rowBatch !==
+              publicBatch
+            ) {
+              return false;
+            }
+
+
+            /*
+             * Customer harus sama.
+             */
+
+            if (
+              rowCustomer !==
+              publicCustomer
+            ) {
+              return false;
+            }
+
+
+            /*
+             * Jika kedua data mempunyai
+             * WhatsApp last 4, harus sama.
+             */
+
+            if (
+              publicWhatsapp &&
+              rowWhatsapp &&
+              publicWhatsapp !==
+                rowWhatsapp
+            ) {
+              return false;
+            }
+
+
+            /*
+             * Jika kedua data mempunyai
+             * versi/member, harus sama.
+             */
+
+            if (
+              publicVersion &&
+              rowVersion &&
+              publicVersion !==
+                rowVersion
+            ) {
+              return false;
+            }
+
+
+            return true;
+
+          }
+        );
+
+
+      /*
+       * =====================================
+       * DATA DASAR
+       * =====================================
+       */
+
+      const price =
+        Number(
+          meta?.item_price ??
+          item.price ??
+          item.item_price ??
+          0
+        ) || 0;
+
+
+      const minimumDp =
+        Number(
+          meta?.minimum_dp_amount ??
+          0
+        ) || 0;
+
+
+      const fixedDp =
+        Math.min(
+          minimumDp,
+          price
+        );
+
+
+      const dpStatus =
+        String(
+          meta?.dp_status ||
+          "unpaid"
+        )
+          .trim()
+          .toLowerCase();
+
+
+      const paymentStatus =
+        String(
+          meta?.payment_status ||
+          "unpaid"
+        )
+          .trim()
+          .toLowerCase();
+
+
+      /*
+       * =====================================
+       * HITUNG PEMBAYARAN CUSTOMER
+       *
+       * SAMA DENGAN ATURAN ADMIN
+       * =====================================
+       */
+
+      let dpPaid = 0;
+      let pelunasanPaid = 0;
+      let remainingAmount = price;
+
+
+      /*
+       * FULL LUNAS
+       */
+
+      if (
+        paymentStatus ===
+        "paid"
+      ) {
+
+        dpPaid =
+          fixedDp;
+
+        pelunasanPaid =
+          Math.max(
+            price -
+            fixedDp,
+            0
+          );
+
+        remainingAmount =
+          0;
+
+      }
+
+
+      /*
+       * DP LUNAS,
+       * PELUNASAN BELUM
+       */
+
+      else if (
+        dpStatus ===
+        "paid"
+      ) {
+
+        dpPaid =
+          fixedDp;
+
+        pelunasanPaid =
+          0;
+
+        remainingAmount =
+          Math.max(
+            price -
+            fixedDp,
+            0
+          );
+
+      }
+
+
+      /*
+       * BELUM ADA PEMBAYARAN
+       */
+
+      else {
+
+        dpPaid =
+          0;
+
+        pelunasanPaid =
+          0;
+
+        remainingAmount =
+          price;
+
+      }
+
+
+      /*
+       * =====================================
+       * HASIL FINAL CUSTOMER
+       * =====================================
+       */
+
+      return {
+
+        ...item,
+
+        /*
+         * DATA REKAP
+         */
+
+        recap_type:
+          meta?.recap_type ||
+          "Lainnya",
+
+        category:
+          meta?.category ||
+          "Lainnya",
+
+        batch_code:
+          meta?.batch_code ||
+          item.product_code,
+
+        item_name:
+          meta?.item_name ||
+          item.product_name,
+
+
+        /*
+         * IDENTITAS CUSTOMER
+         */
+
+        customer_name:
+          meta?.customer_name ||
+          item.customer_name,
+
+        whatsapp_last4:
+          meta?.whatsapp_last4 ||
+          item.whatsapp_last4,
+
+        product_version:
+          meta?.product_version ||
+          item.product_version,
+
+        quantity:
+          Number(
+            meta?.quantity ??
+            item.quantity ??
+            1
+          ) || 1,
+
+
+        /*
+         * PEMBAYARAN
+         */
+
+        price:
+          price,
+
+        dp:
+          dpPaid,
+
+        pelunasan:
+          pelunasanPaid,
+
+        minimum_dp_amount:
+          fixedDp,
+
+        dp_status:
+          dpStatus,
+
+        payment_status:
+          paymentStatus,
+
+        remaining_amount:
+          remainingAmount,
+
+
+        /*
+         * STATUS CUSTOMER
+         */
+
+        customer_status:
+          meta?.customer_status ||
+          item.customer_status ||
+          "Belum Checkout Shopee",
+
+
+        /*
+         * STATUS BATCH
+         */
+
+        batch_completed:
+          completedBatchMap[
+            String(
+              meta?.recap_type ||
+              ""
+            )
+              .trim()
+              .toLowerCase()
+            + "|" +
+            String(
+              meta?.category ||
+              ""
+            )
+              .trim()
+              .toLowerCase()
+            + "|" +
+            String(
+              meta?.batch_code ||
+              item.product_code ||
+              ""
+            )
+              .trim()
+              .toLowerCase()
+          ] || false
+
+      };
+
+    }
+  );
   
     /* =========================
        TAMPILKAN KATEGORI
@@ -2869,32 +3274,21 @@ function setupRecapGlobalSearch() {
 
 
     const belumLunas =
-      items.filter(
-        function(item) {
+  items.filter(
+    function(item) {
 
-          const price =
-            Number(
-              item.price || 0
-            );
+      return (
+        String(
+          item.payment_status ||
+          "unpaid"
+        )
+          .trim()
+          .toLowerCase() !==
+        "paid"
+      );
 
-          const dp =
-            Number(
-              item.dp || 0
-            );
-
-          const pelunasan =
-            Number(
-              item.pelunasan || 0
-            );
-
-
-          return (
-            dp + pelunasan <
-            price
-          );
-
-        }
-      ).length;
+    }
+  ).length;
 
 
     const customerName =
@@ -7229,27 +7623,29 @@ Object.values(
   batchBills.reduce(
     function(total, bill) {
 
-      const minimumDp =
-        Number(
-          bill.minimum_dp_amount || 0
+      if (
+        String(
+          bill.dp_status ||
+          "unpaid"
+        )
+          .trim()
+          .toLowerCase() !==
+        "paid"
+      ) {
+
+        const minimumDp =
+          Number(
+            bill.minimum_dp_amount || 0
+          );
+
+        return (
+          total +
+          minimumDp
         );
 
-      const actualDp =
-        Number(
-          bill.dp_amount || 0
-        );
+      }
 
-      const dpOutstanding =
-        Math.max(
-          minimumDp -
-          actualDp,
-          0
-        );
-
-      return (
-        total +
-        dpOutstanding
-      );
+      return total;
 
     },
     0
@@ -7291,26 +7687,18 @@ const paymentDeadline =
        * Jika DP masih kurang,
        * tampilkan DEADLINE DP.
        */
-      const minimumDp =
-        Number(
-          bill.minimum_dp_amount || 0
-        );
+      const dpStatus =
+  String(
+    bill.dp_status ||
+    "unpaid"
+  )
+    .trim()
+    .toLowerCase();
 
-      const actualDp =
-        Number(
-          bill.dp_amount || 0
-        );
-
-      const dpOutstanding =
-        Math.max(
-          minimumDp -
-          actualDp,
-          0
-        );
-
-      if (
-        dpOutstanding > 0
-      ) {
+if (
+  dpStatus !==
+  "paid"
+) {
 
         return bill.dp_deadline
           ? String(
@@ -7981,33 +8369,24 @@ selectWrapper.style.borderTop =
 ) {
 
   if (
-    selectedBill.dp_status ===
+  String(
+    selectedBill.dp_status ||
     "unpaid"
-  ) {
+  )
+    .trim()
+    .toLowerCase() ===
+  "unpaid"
+) {
 
-    const minimumDp =
-      Number(
-        selectedBill.minimum_dp_amount ||
-        0
-      );
+  const minimumDp =
+    Number(
+      selectedBill.minimum_dp_amount ||
+      0
+    );
 
-    const actualDp =
-      Number(
-        selectedBill.dp_amount ||
-        0
-      );
-
-    const dpOutstanding =
-      Math.max(
-        minimumDp -
-        actualDp,
-        0
-      );
-
-    totalPayment +=
-      dpOutstanding;
-
-  }
+  totalPayment +=
+    minimumDp;
+}
 
 }
 
@@ -8131,33 +8510,24 @@ selectWrapper.style.borderTop =
 ) {
 
   if (
-    bill.dp_status ===
+  String(
+    bill.dp_status ||
     "unpaid"
-  ) {
+  )
+    .trim()
+    .toLowerCase() ===
+  "unpaid"
+) {
 
-    const minimumDp =
-      Number(
-        bill.minimum_dp_amount ||
-        0
-      );
+  const minimumDp =
+    Number(
+      bill.minimum_dp_amount ||
+      0
+    );
 
-    const actualDp =
-      Number(
-        bill.dp_amount ||
-        0
-      );
-
-    const dpOutstanding =
-      Math.max(
-        minimumDp -
-        actualDp,
-        0
-      );
-
-    totalPayment +=
-      dpOutstanding;
-
-  }
+  totalPayment +=
+    minimumDp;
+}
 
 }
 
@@ -8693,19 +9063,13 @@ if (
       : "",
 
   dp_text:
-  Number(row.dp_amount || 0) > 0
+  Number(
+    row.minimum_dp_amount || 0
+  ) > 0
     ? Number(
-        row.dp_amount
+        row.minimum_dp_amount
       ).toLocaleString("id-ID")
-    : (
-        row.minimum_dp_amount !== null &&
-        row.minimum_dp_amount !== undefined &&
-        row.minimum_dp_amount !== ""
-          ? Number(
-              row.minimum_dp_amount
-            ).toLocaleString("id-ID")
-          : ""
-      ),
+    : "",
 
   description:
     "Member tersedia dari Rekap GO.",
@@ -8761,9 +9125,9 @@ if (
     row.item_price || "",
 
   dp:
-  Number(row.dp_amount || 0) > 0
-    ? row.dp_amount
-    : row.minimum_dp_amount || "",
+  Number(
+    row.minimum_dp_amount || 0
+  ),
 
   note:
     "",
