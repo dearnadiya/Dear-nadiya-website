@@ -2394,7 +2394,22 @@ async function loadRecap() {
     const recapMeta =
   await fetchAllRows(
     "purchase_recap",
-    "recap_type, category, batch_code, item_name, customer_status"
+    `
+      recap_type,
+      category,
+      batch_code,
+      item_name,
+      customer_name,
+      whatsapp_last4,
+      product_version,
+      quantity,
+      item_price,
+      minimum_dp_amount,
+      dp_status,
+      payment_status,
+      remaining_amount,
+      customer_status
+    `
   );
     
     /* =========================
@@ -2586,25 +2601,193 @@ recapBatchData = [];
         function(item) {
 
           const meta =
-            (recapMeta || []).find(
-              function(row) {
+  (recapMeta || []).find(
+    function(row) {
 
-                return (
-                  String(
-                    row.batch_code || ""
-                  )
-                    .trim()
-                    .toLowerCase() ===
-                  String(
-                    item.product_code || ""
-                  )
-                    .trim()
-                    .toLowerCase()
-                );
+      const rowBatch =
+        String(
+          row.batch_code || ""
+        )
+          .trim()
+          .toLowerCase();
 
-              }
-            );
+      const itemBatch =
+        String(
+          item.product_code || ""
+        )
+          .trim()
+          .toLowerCase();
 
+      if (
+        rowBatch !==
+        itemBatch
+      ) {
+        return false;
+      }
+
+
+      const rowCustomer =
+        String(
+          row.customer_name || ""
+        )
+          .trim()
+          .toLowerCase();
+
+      const itemCustomer =
+        String(
+          item.customer_name || ""
+        )
+          .trim()
+          .toLowerCase();
+
+      if (
+        rowCustomer &&
+        itemCustomer &&
+        rowCustomer !==
+        itemCustomer
+      ) {
+        return false;
+      }
+
+
+      const rowWhatsapp =
+        String(
+          row.whatsapp_last4 || ""
+        )
+          .trim();
+
+      const itemWhatsapp =
+        String(
+          item.whatsapp_last4 || ""
+        )
+          .trim();
+
+      if (
+        rowWhatsapp &&
+        itemWhatsapp &&
+        rowWhatsapp !==
+        itemWhatsapp
+      ) {
+        return false;
+      }
+
+
+      const rowVersion =
+        String(
+          row.product_version || ""
+        )
+          .trim()
+          .toLowerCase();
+
+      const itemVersion =
+        String(
+          item.product_version || ""
+        )
+          .trim()
+          .toLowerCase();
+
+      if (
+        rowVersion &&
+        itemVersion &&
+        rowVersion !==
+        itemVersion
+      ) {
+        return false;
+      }
+
+
+      return true;
+
+    }
+  );
+
+    const price =
+  Number(
+    meta?.item_price ??
+    item.price ??
+    item.item_price ??
+    0
+  ) || 0;
+
+
+const minimumDp =
+  Number(
+    meta?.minimum_dp_amount ??
+    0
+  ) || 0;
+
+
+const fixedDp =
+  Math.min(
+    minimumDp,
+    price
+  );
+
+
+const dpStatus =
+  String(
+    meta?.dp_status ||
+    "unpaid"
+  )
+    .trim()
+    .toLowerCase();
+
+
+const paymentStatus =
+  String(
+    meta?.payment_status ||
+    "unpaid"
+  )
+    .trim()
+    .toLowerCase();
+
+
+let dpPaid = 0;
+
+let pelunasanPaid = 0;
+
+let remainingAmount =
+  price;
+
+
+if (
+  paymentStatus ===
+  "paid"
+) {
+
+  dpPaid =
+    fixedDp;
+
+  pelunasanPaid =
+    Math.max(
+      price -
+      fixedDp,
+      0
+    );
+
+  remainingAmount =
+    0;
+
+}
+else if (
+  dpStatus ===
+  "paid"
+) {
+
+  dpPaid =
+    fixedDp;
+
+  pelunasanPaid =
+    0;
+
+  remainingAmount =
+    Math.max(
+      price -
+      fixedDp,
+      0
+    );
+
+}
 
           return {
   ...item,
@@ -2630,6 +2813,26 @@ recapBatchData = [];
   item.customer_status ||
   "Belum Checkout Shopee",
 
+  price:
+  price,
+
+dp:
+  dpPaid,
+
+pelunasan:
+  pelunasanPaid,
+
+minimum_dp_amount:
+  fixedDp,
+
+dp_status:
+  dpStatus,
+
+payment_status:
+  paymentStatus,
+
+remaining_amount:
+  remainingAmount,
 
 batch_completed:
   completedBatchMap[
