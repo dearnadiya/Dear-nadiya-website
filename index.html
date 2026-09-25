@@ -1916,10 +1916,14 @@ function closeRecapDetail() {
   }
 
 
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
+  if (dashboardSection) {
+
+  dashboardSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
   });
+
+}
 
 }
 
@@ -6172,12 +6176,52 @@ categoryData.forEach(
 
   }
 );
-  
-  /* =========================
-     TAMPILKAN BATCH
-  ========================= */
 
-  track.innerHTML = `
+
+/* =========================
+   URUTKAN BATCH NUMERIK
+========================= */
+
+batches.sort(
+  function(a, b) {
+
+    const matchA =
+      String(
+        a.batch_code || ""
+      ).match(
+        /(\d+)\s*$/
+      );
+
+    const matchB =
+      String(
+        b.batch_code || ""
+      ).match(
+        /(\d+)\s*$/
+      );
+
+
+    const numberA =
+      matchA
+        ? Number(matchA[1])
+        : Number.MAX_SAFE_INTEGER;
+
+    const numberB =
+      matchB
+        ? Number(matchB[1])
+        : Number.MAX_SAFE_INTEGER;
+
+
+    return numberA - numberB;
+
+  }
+);
+
+
+/* =========================
+   TAMPILKAN BATCH
+========================= */
+
+track.innerHTML = `
 
   <div class="recap-batch-header">
 
