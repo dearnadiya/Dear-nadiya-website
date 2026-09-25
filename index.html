@@ -3034,73 +3034,75 @@ if (
   }
 
 
-    /* ==========================================
-     AMBIL TABUNGAN MANUAL ADMIN
-     MELALUI RPC PUBLIC
-     ========================================== */
+        /* ==========================================
+       AMBIL TABUNGAN MANUAL ADMIN
+       MELALUI RPC PUBLIC
+       ========================================== */
 
-  const {
-    data: manualTabunganRows,
-    error: manualTabunganError
-  } =
-    await supabaseClient
-      .rpc(
-        "get_public_tabungan_totals",
-        {
-          p_recap_ids:
-            tabunganRecapIds
-        }
+    const {
+      data: manualTabunganRows,
+      error: manualTabunganError
+    } =
+      await supabaseClient
+        .rpc(
+          "get_public_tabungan_totals",
+          {
+            p_recap_ids:
+              tabunganRecapIds
+          }
+        );
+
+
+    if (
+      manualTabunganError
+    ) {
+
+      console.error(
+        "ERROR LOAD MANUAL TABUNGAN:",
+        manualTabunganError
       );
 
+    }
+    else {
 
-  if (
-    manualTabunganError
-  ) {
+      (
+        manualTabunganRows ||
+        []
+      )
+        .forEach(
+          function(row) {
 
-    console.error(
-      "ERROR LOAD MANUAL TABUNGAN:",
-      manualTabunganError
-    );
+            const recapId =
+              String(
+                row.recap_id
+              );
 
-  }
-  else {
-
-    (
-      manualTabunganRows ||
-      []
-    )
-      .forEach(
-        function(row) {
-
-          const recapId =
-            String(
-              row.recap_id
-            );
-
-          const amount =
-            Number(
-              row.total_amount
-            ) || 0;
+            const amount =
+              Number(
+                row.total_amount
+              ) || 0;
 
 
-          if (
-            amount <= 0
-          ) {
+            if (
+              amount <= 0
+            ) {
 
-            return;
+              return;
+
+            }
+
+
+            tabunganManualMap[recapId] =
+              (
+                tabunganManualMap[recapId] ||
+                0
+              ) +
+              amount;
 
           }
+        );
 
-
-          tabunganManualMap[recapId] =
-            (
-              tabunganManualMap[recapId] ||
-              0
-            ) +
-            amount;
-
-        }
-      );
+    }
 
   }
 
