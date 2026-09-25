@@ -3339,6 +3339,16 @@ const recapId =
       )
     : "";
 
+ console.log(
+  "DEBUG TABUNGAN NAI:",
+  {
+    customer: item.customer_name,
+    customerId: item.customer_id,
+    recapId: meta?.id,
+    batchCode: meta?.batch_code,
+    recapType: meta?.recap_type
+  }
+);
 
 const confirmedTabunganPaid =
   Number(
