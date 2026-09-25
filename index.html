@@ -6874,6 +6874,388 @@ function renderRecapBatches(
 
     }
   );
+
+ /* ==========================================
+   KHUSUS TABUNGAN LIGHTSTICK
+   TABUNGAN LIGHTSTICK TAMPIL PER CUSTOMER
+
+   Tidak menggunakan daftar batch.
+   Customer langsung mencari nama / ID.
+========================================== */
+
+if (
+  String(category || "")
+    .trim()
+    .toLowerCase() ===
+  "tabungan lightstick"
+) {
+
+  track.innerHTML = `
+
+    <div class="recap-batch-header">
+
+      <button
+        type="button"
+        class="recap-back-category"
+        id="recapBackCategory"
+      >
+        ← Kembali ke Kategori
+      </button>
+
+      <div class="recap-current-category">
+        💡 Tabungan Lightstick
+      </div>
+
+    </div>
+
+
+    <div
+      style="
+        padding: 10px 0 18px;
+      "
+    >
+
+      <input
+        type="text"
+        id="tabunganLightstickCustomerSearch"
+        placeholder="🔎 Cari nama customer atau ID customer..."
+        autocomplete="off"
+        style="
+          width:100%;
+          box-sizing:border-box;
+          padding:14px 16px;
+          border:1px solid #e5ddea;
+          border-radius:12px;
+          font-size:14px;
+          outline:none;
+        "
+      >
+
+    </div>
+
+
+    <div
+      id="tabunganLightstickCustomerResults"
+    >
+
+      <div class="recap-search-empty">
+
+        <div class="recap-search-icon">
+          🔎
+        </div>
+
+        <strong>
+          Cari customer
+        </strong>
+
+        <p>
+          Ketik nama atau ID customer
+          untuk melihat tabungan lightstick.
+        </p>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  /* ==========================================
+     KEMBALI KE KATEGORI
+  ========================================== */
+
+  const backButton =
+    document.getElementById(
+      "recapBackCategory"
+    );
+
+  if (backButton) {
+
+    backButton.addEventListener(
+      "click",
+      function() {
+
+        renderRecapCategories(
+          data,
+          recapType
+        );
+
+      }
+    );
+
+  }
+
+
+  /* ==========================================
+     SEARCH CUSTOMER
+  ========================================== */
+
+  const searchInput =
+    document.getElementById(
+      "tabunganLightstickCustomerSearch"
+    );
+
+  const resultContainer =
+    document.getElementById(
+      "tabunganLightstickCustomerResults"
+    );
+
+
+  if (!searchInput || !resultContainer) {
+    return;
+  }
+
+
+  searchInput.addEventListener(
+    "input",
+    function() {
+
+      const keyword =
+        this.value
+          .toLowerCase()
+          .trim();
+
+
+      /* =========================
+         BELUM ADA PENCARIAN
+      ========================= */
+
+      if (!keyword) {
+
+        resultContainer.innerHTML = `
+
+          <div class="recap-search-empty">
+
+            <div class="recap-search-icon">
+              🔎
+            </div>
+
+            <strong>
+              Cari customer
+            </strong>
+
+            <p>
+              Ketik nama atau ID customer
+              untuk melihat tabungan lightstick.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /* =========================
+         FILTER CUSTOMER
+      ========================= */
+
+      const filtered =
+        categoryData.filter(
+          function(item) {
+
+            const customerName =
+              String(
+                item.customer_name || ""
+              )
+                .toLowerCase()
+                .trim();
+
+
+            const customerId =
+              String(
+                item.customer_id || ""
+              )
+                .toLowerCase()
+                .trim();
+
+
+            return (
+              customerName.includes(
+                keyword
+              ) ||
+              customerId.includes(
+                keyword
+              )
+            );
+
+          }
+        );
+
+
+      /* =========================
+         TIDAK DITEMUKAN
+      ========================= */
+
+      if (!filtered.length) {
+
+        resultContainer.innerHTML = `
+
+          <div class="recap-search-empty">
+
+            <div class="recap-search-icon">
+              🔎
+            </div>
+
+            <strong>
+              Customer tidak ditemukan
+            </strong>
+
+            <p>
+              Periksa kembali nama atau
+              ID customer yang dicari.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /* =========================
+         TAMPILKAN HASIL CUSTOMER
+      ========================= */
+
+      resultContainer.innerHTML =
+        filtered
+          .map(
+            function(item) {
+
+              return `
+
+                <div
+                  class="recap-detail-card"
+                  style="
+                    margin-bottom:12px;
+                    cursor:default;
+                  "
+                >
+
+                  <div
+                    class="recap-detail-customer"
+                  >
+
+                    <strong>
+                      ${display(
+                        item.customer_name ||
+                        "Customer"
+                      )}
+                    </strong>
+
+                  </div>
+
+
+                  <div
+                    style="
+                      font-size:13px;
+                      color:#777;
+                      margin-top:4px;
+                    "
+                  >
+
+                    ID Customer:
+                    <strong>
+                      ${display(
+                        item.customer_id ||
+                        "-"
+                      )}
+                    </strong>
+
+                  </div>
+
+
+                  <div
+                    class="recap-detail-info"
+                    style="
+                      margin-top:12px;
+                    "
+                  >
+
+                    <div>
+
+                      <span>
+                        Barang
+                      </span>
+
+                      <strong>
+                        ${display(
+                          item.item_name ||
+                          "-"
+                        )}
+                      </strong>
+
+                    </div>
+
+
+                    <div>
+
+                      <span>
+                        Batch
+                      </span>
+
+                      <strong>
+                        ${display(
+                          item.batch_code ||
+                          "-"
+                        )}
+                      </strong>
+
+                    </div>
+
+
+                    <div>
+
+                      <span>
+                        Qty
+                      </span>
+
+                      <strong>
+                        ${display(
+                          item.quantity ||
+                          1
+                        )}
+                      </strong>
+
+                    </div>
+
+
+                    <div>
+
+                      <span>
+                        Status
+                      </span>
+
+                      <strong>
+                        ${getTrackingDisplay(
+                          item.item_status ||
+                          item.tracking_status ||
+                          "Menabung"
+                        )}
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+  );
+
+
+  return;
+}
   
   if (!categoryData.length) {
 
