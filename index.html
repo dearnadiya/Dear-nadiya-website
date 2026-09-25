@@ -1128,36 +1128,32 @@ pasti ketahuan loh! 😆
 <div class="form-group">
 
   <label for="paymentCustomerIdentity">
-  Cari Data Customer
-</label>
+    Cari Data Customer
+  </label>
 
-<input
-id="paymentCustomerIdentity"
-type="text"
-placeholder="Contoh: nanana (1234)"
-autocomplete="off"
-required
+  <input
+    id="paymentCustomerIdentity"
+    type="text"
+    placeholder="Contoh: nanana (1234)"
+    autocomplete="off"
+    required
+  >
 
-
-
-<input
-type="hidden"
-id="paymentCustomerId"
-value=""
-
-
+  <input
+    type="hidden"
+    id="paymentCustomerId"
+    value=""
+  >
 
 </div>
 
+
 <button
-
-type="button"
-id="paymentCustomerNextBtn"
-class="btn primary"
-
-
-
-Lanjutkan →
+  type="button"
+  id="paymentCustomerNextBtn"
+  class="btn primary"
+>
+  Lanjutkan →
 </button>
 
 <!-- HASIL DATA CUSTOMER -->
@@ -1185,29 +1181,27 @@ Lanjutkan →
   </label>
 
 <select
-id="paymentType"
-required
+  id="paymentType"
+  required
+>
 
+  <option value="">
+    Pilih jenis pembayaran
+  </option>
 
+  <option value="dp">
+    DP
+  </option>
 
-<option value="">
+  <option value="pelunasan">
+    Pelunasan
+  </option>
 
-  Pilih jenis pembayaran
-</option>
+  <option value="both">
+    DP + Pelunasan
+  </option>
 
-<option value="dp">
-  DP
-</option>
-
-<option value="pelunasan">
-  Pelunasan
-</option>
-
-<option value="both">
-  DP + Pelunasan
-</option>
-
-  </select>
+</select>
 
 </div>
 
@@ -1225,7 +1219,7 @@ type="text"
 placeholder="Otomatis dari tagihan"
 readonly
 required
-
+>
 
 
 </div>
