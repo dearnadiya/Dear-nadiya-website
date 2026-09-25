@@ -2812,6 +2812,302 @@ recapBatchData = [];
 
   }
 );
+
+   /* ==========================================
+   CACHE PEMBAYARAN REKAP TABUNGAN
+   AMBIL SEKALI, BUKAN PER CUSTOMER
+   ========================================== */
+
+const tabunganPaymentMap = {};
+const tabunganManualMap = {};
+
+
+/* ==========================================
+   AMBIL ID REKAP TABUNGAN
+   ========================================== */
+
+const tabunganRecapIds =
+  (recapMeta || [])
+    .filter(
+      function(row) {
+
+        return (
+          String(
+            row.recap_type || ""
+          )
+            .trim()
+            .toLowerCase() ===
+          "tabungan"
+        );
+
+      }
+    )
+    .map(
+      function(row) {
+
+        return Number(
+          row.id
+        );
+
+      }
+    )
+    .filter(
+      function(id) {
+
+        return Number.isFinite(id);
+
+      }
+    );
+
+
+/* ==========================================
+   AMBIL PAYMENT ALLOCATION TABUNGAN
+   ========================================== */
+
+if (
+  tabunganRecapIds.length > 0
+) {
+
+  const {
+    data: tabunganAllocations,
+    error: tabunganAllocationError
+  } =
+    await supabaseClient
+      .from(
+        "dn_payment_allocations"
+      )
+      .select(`
+        recap_id,
+        payment_submission_id,
+        allocated_amount,
+        payment_part
+      `)
+      .in(
+        "recap_id",
+        tabunganRecapIds
+      );
+
+
+  if (
+    tabunganAllocationError
+  ) {
+
+    console.error(
+      "ERROR LOAD TABUNGAN ALLOCATION:",
+      tabunganAllocationError
+    );
+
+  }
+  else {
+
+    const paymentIds =
+      [
+        ...new Set(
+          (
+            tabunganAllocations ||
+            []
+          )
+            .map(
+              function(row) {
+
+                return row.payment_submission_id;
+
+              }
+            )
+            .filter(Boolean)
+        )
+      ];
+
+
+    let confirmedIds =
+      new Set();
+
+
+    if (
+      paymentIds.length > 0
+    ) {
+
+      const {
+        data: confirmedPayments,
+        error: confirmedError
+      } =
+        await supabaseClient
+          .from(
+            "dn_payment_submissions"
+          )
+          .select(
+            "id"
+          )
+          .in(
+            "id",
+            paymentIds
+          )
+          .eq(
+            "status",
+            "confirmed"
+          );
+
+
+      if (
+        confirmedError
+      ) {
+
+        console.error(
+          "ERROR LOAD CONFIRMED TABUNGAN:",
+          confirmedError
+        );
+
+      }
+      else {
+
+        confirmedIds =
+          new Set(
+            (
+              confirmedPayments ||
+              []
+            )
+              .map(
+                function(payment) {
+
+                  return payment.id;
+
+                }
+              )
+          );
+
+      }
+
+    }
+
+
+    /*
+     * Simpan total pembayaran confirmed
+     * berdasarkan recap_id.
+     */
+
+    (
+      tabunganAllocations ||
+      []
+    )
+      .filter(
+        function(row) {
+
+          return confirmedIds.has(
+            row.payment_submission_id
+          );
+
+        }
+      )
+      .forEach(
+        function(row) {
+
+          const recapId =
+            String(
+              row.recap_id
+            );
+
+          const amount =
+            Number(
+              row.allocated_amount
+            ) || 0;
+
+
+          if (
+            amount <= 0
+          ) {
+
+            return;
+
+          }
+
+
+          tabunganPaymentMap[recapId] =
+            (
+              tabunganPaymentMap[recapId] ||
+              0
+            ) +
+            amount;
+
+        }
+      );
+
+  }
+
+
+  /* ==========================================
+     AMBIL TABUNGAN MANUAL ADMIN
+     ========================================== */
+
+  const {
+    data: manualTabunganRows,
+    error: manualTabunganError
+  } =
+    await supabaseClient
+      .from(
+        "dn_manual_tabungan"
+      )
+      .select(`
+        recap_id,
+        amount
+      `)
+      .in(
+        "recap_id",
+        tabunganRecapIds
+      );
+
+
+  if (
+    manualTabunganError
+  ) {
+
+    console.error(
+      "ERROR LOAD MANUAL TABUNGAN:",
+      manualTabunganError
+    );
+
+  }
+  else {
+
+    (
+      manualTabunganRows ||
+      []
+    )
+      .forEach(
+        function(row) {
+
+          const recapId =
+            String(
+              row.recap_id
+            );
+
+          const amount =
+            Number(
+              row.amount
+            ) || 0;
+
+
+          if (
+            amount <= 0
+          ) {
+
+            return;
+
+          }
+
+
+          tabunganManualMap[recapId] =
+            (
+              tabunganManualMap[recapId] ||
+              0
+            ) +
+            amount;
+
+        }
+      );
+
+  }
+
+}
     
     /* =========================
        GABUNGKAN DATA
@@ -3032,392 +3328,131 @@ if (
       0
     ) || 0;
 
+ /* ========================================
+   AMBIL NILAI TABUNGAN DARI CACHE
+   ======================================== */
 
-  /* ========================================
-     AMBIL PEMBAYARAN CONFIRMED
-     ======================================== */
-
-  let confirmedTabunganPaid =
-    0;
-
-
-  if (
-    meta?.id
-  ) {
-
-    const {
-      data: allocationRows,
-      error: allocationError
-    } =
-      await supabaseClient
-        .from(
-          "dn_payment_allocations"
-        )
-        .select(`
-          payment_submission_id,
-          allocated_amount,
-          payment_part
-        `)
-        .eq(
-          "recap_id",
-          meta.id
-        );
-
-
-    if (
-      allocationError
-    ) {
-
-      console.error(
-        "ERROR LOAD TABUNGAN PAYMENT:",
-        allocationError
-      );
-
-    }
-
-
-    const paymentIds =
-      [
-        ...new Set(
-          (
-            allocationRows ||
-            []
-          )
-            .map(
-              function(row) {
-                return row.payment_submission_id;
-              }
-            )
-            .filter(Boolean)
-        )
-      ];
-
-
-    let confirmedIds =
-      new Set();
-
-
-    if (
-      paymentIds.length > 0
-    ) {
-
-      const {
-        data: confirmedPayments,
-        error: confirmedError
-      } =
-        await supabaseClient
-          .from(
-            "dn_payment_submissions"
-          )
-          .select("id")
-          .in(
-            "id",
-            paymentIds
-          )
-          .eq(
-            "status",
-            "confirmed"
-          );
-
-
-      if (
-        confirmedError
-      ) {
-
-        console.error(
-          "ERROR LOAD CONFIRMED TABUNGAN:",
-          confirmedError
-        );
-
-      }
-      else {
-
-        confirmedIds =
-          new Set(
-            (
-              confirmedPayments ||
-              []
-            ).map(
-              function(payment) {
-                return payment.id;
-              }
-            )
-          );
-
-      }
-
-    }
-
-
-    /*
-     * Hanya pembayaran confirmed.
-     */
-
-    (
-      allocationRows ||
-      []
-    )
-      .filter(
-        function(row) {
-
-          return confirmedIds.has(
-            row.payment_submission_id
-          );
-
-        }
+const recapId =
+  meta?.id
+    ? String(
+        meta.id
       )
-      .forEach(
-        function(row) {
-
-          const amount =
-            Number(
-              row.allocated_amount
-            ) || 0;
+    : "";
 
 
-          if (
-            amount <= 0
-          ) {
-            return;
-          }
+const confirmedTabunganPaid =
+  Number(
+    tabunganPaymentMap[
+      recapId
+    ] || 0
+  );
 
 
-          /*
-           * Untuk Tabungan,
-           * pembayaran yang masuk
-           * dihitung sebagai tabungan.
-           */
-
-          confirmedTabunganPaid +=
-            amount;
-
-        }
-      );
-
-  }
+const manualTabungan =
+  Number(
+    tabunganManualMap[
+      recapId
+    ] || 0
+  );
 
 
-  /* ========================================
-     AMBIL TABUNGAN MANUAL ADMIN
-     ======================================== */
+/* ========================================
+   TOTAL TERKUMPUL
+   ======================================== */
 
-  let manualTabungan =
-    0;
-
-
-  if (
-    meta?.id
-  ) {
-
-    const {
-      data: manualRows,
-      error: manualError
-    } =
-      await supabaseClient
-        .from(
-          "dn_manual_tabungan"
-        )
-        .select(
-          "amount"
-        )
-        .eq(
-          "recap_id",
-          meta.id
-        );
+tabunganPaid =
+  confirmedTabunganPaid +
+  manualTabungan;
 
 
-    if (
-  manualError
+/*
+ * Jangan sampai total terkumpul
+ * melebihi harga barang.
+ */
+
+tabunganPaid =
+  Math.min(
+    tabunganPaid,
+    price
+  );
+
+
+/* ========================================
+   SISA HARGA
+   ======================================== */
+
+tabunganRemaining =
+  Math.max(
+    price -
+    tabunganPaid,
+    0
+  );
+
+
+/* ========================================
+   STATUS
+   ======================================== */
+
+if (
+  price > 0 &&
+  tabunganPaid >= price
 ) {
 
-  console.error(
-    "ERROR LOAD MANUAL TABUNGAN:",
-    manualError
-  );
+  tabunganStatus =
+    "Lunas";
 
-  console.error(
-    "TABUNGAN MANUAL DEBUG:",
-    {
-      recapId:
-        meta?.id,
+}
+else if (
+  tabunganTarget > 0 &&
+  tabunganPaid >=
+    tabunganTarget
+) {
 
-      manualError:
-        manualError.message,
-
-      manualRows:
-        manualRows
-    }
-  );
+  tabunganStatus =
+    "Target Tabungan Tercapai";
 
 }
 else {
 
-  console.log(
-    "TABUNGAN MANUAL BERHASIL:",
-    {
-      recapId:
-        meta?.id,
+  tabunganStatus =
+    "Menabung";
 
-      manualRows:
-        manualRows
-    }
-  );
+}
 
-  manualTabungan =
-    (
-      manualRows ||
-      []
-    ).reduce(
-      function(
-        total,
-        row
-      ) {
 
-        return (
-          total +
-          (
-            Number(
-              row.amount
-            ) || 0
-          )
-        );
+/* ========================================
+   PROGRESS
+   ======================================== */
 
-      },
-      0
+if (
+  tabunganTarget > 0
+) {
+
+  tabunganProgress =
+    Math.min(
+      (
+        tabunganPaid /
+        tabunganTarget
+      ) * 100,
+      100
     );
 
 }
-   
-    else {
+else if (
+  price > 0
+) {
 
-      manualTabungan =
-        (
-          manualRows ||
-          []
-        ).reduce(
-          function(
-            total,
-            row
-          ) {
-
-            return (
-              total +
-              (
-                Number(
-                  row.amount
-                ) || 0
-              )
-            );
-
-          },
-          0
-        );
-
-    }
-
-  }
-
-
-  /* ========================================
-     TOTAL TERKUMPUL
-     ======================================== */
-
-  tabunganPaid =
-    confirmedTabunganPaid +
-    manualTabungan;
-
-
-  /*
-   * Jangan sampai total terkumpul
-   * melebihi harga barang.
-   */
-
-  tabunganPaid =
+  tabunganProgress =
     Math.min(
-      tabunganPaid,
-      price
+      (
+        tabunganPaid /
+        price
+      ) * 100,
+      100
     );
 
-
-  /* ========================================
-     SISA HARGA
-     ======================================== */
-
-  tabunganRemaining =
-    Math.max(
-      price -
-      tabunganPaid,
-      0
-    );
-
-
-  /* ========================================
-     STATUS
-     ======================================== */
-
-  if (
-    price > 0 &&
-    tabunganPaid >= price
-  ) {
-
-    tabunganStatus =
-      "Lunas";
-
-  }
-
-  else if (
-    tabunganTarget > 0 &&
-    tabunganPaid >=
-      tabunganTarget
-  ) {
-
-    tabunganStatus =
-      "Target Tabungan Tercapai";
-
-  }
-
-  else {
-
-    tabunganStatus =
-      "Menabung";
-
-  }
-
-
-  /* ========================================
-     PROGRESS
-     ======================================== */
-
-  if (
-    tabunganTarget > 0
-  ) {
-
-    tabunganProgress =
-      Math.min(
-        (
-          tabunganPaid /
-          tabunganTarget
-        ) * 100,
-        100
-      );
-
-  }
-
-  else if (
-    price > 0
-  ) {
-
-    tabunganProgress =
-      Math.min(
-        (
-          tabunganPaid /
-          price
-        ) * 100,
-        100
-      );
-
-  }
-
+}
+ 
 }
 
           return {
