@@ -3227,15 +3227,67 @@ if (
 
 
     if (
-      manualError
-    ) {
+  manualError
+) {
 
-      console.error(
-        "ERROR LOAD MANUAL TABUNGAN:",
-        manualError
-      );
+  console.error(
+    "ERROR LOAD MANUAL TABUNGAN:",
+    manualError
+  );
 
+  console.error(
+    "TABUNGAN MANUAL DEBUG:",
+    {
+      recapId:
+        meta?.id,
+
+      manualError:
+        manualError.message,
+
+      manualRows:
+        manualRows
     }
+  );
+
+}
+else {
+
+  console.log(
+    "TABUNGAN MANUAL BERHASIL:",
+    {
+      recapId:
+        meta?.id,
+
+      manualRows:
+        manualRows
+    }
+  );
+
+  manualTabungan =
+    (
+      manualRows ||
+      []
+    ).reduce(
+      function(
+        total,
+        row
+      ) {
+
+        return (
+          total +
+          (
+            Number(
+              row.amount
+            ) || 0
+          )
+        );
+
+      },
+      0
+    );
+
+}
+   
     else {
 
       manualTabungan =
