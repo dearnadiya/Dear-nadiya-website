@@ -1819,212 +1819,107 @@ const tabunganStatus =
 
   detailContent.innerHTML = `
 
-    <div class="recap-batch-summary">
+  <div class="recap-batch-summary">
 
-      <!-- TRACKING -->
-      <div class="recap-summary-card">
+    ${
+      isTabungan
+        ? `
 
-        <div class="recap-summary-icon">
-          📦
-        </div>
+          <!-- HARGA BARANG -->
+          <div class="recap-summary-card">
 
-        <div class="recap-summary-text">
+            <div class="recap-summary-icon">
+              💰
+            </div>
 
-          <div class="recap-summary-label">
-            Tracking
+            <div class="recap-summary-text">
+
+              <div class="recap-summary-label">
+                Harga Barang
+              </div>
+
+              <div class="recap-summary-value">
+                ${rupiah(price)}
+              </div>
+
+            </div>
+
           </div>
 
-          <div class="recap-summary-value">
-            ${getTrackingDisplay(tracking)}
+
+          <!-- TARGET TABUNGAN -->
+          <div class="recap-summary-card">
+
+            <div class="recap-summary-icon">
+              🎯
+            </div>
+
+            <div class="recap-summary-text">
+
+              <div class="recap-summary-label">
+                Target Tabungan
+              </div>
+
+              <div class="recap-summary-value">
+                ${rupiah(tabunganTarget)}
+              </div>
+
+            </div>
+
           </div>
 
-        </div>
+        `
+        : `
 
-      </div>
+          <!-- HARGA -->
+          <div class="recap-summary-card">
 
+            <div class="recap-summary-icon">
+              💰
+            </div>
 
-            ${
-        isTabungan
-          ? `
-            <!-- HARGA BARANG -->
-            <div class="recap-summary-card">
+            <div class="recap-summary-text">
 
-              <div class="recap-summary-icon">
-                💰
+              <div class="recap-summary-label">
+                Harga
               </div>
 
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  Harga Barang
-                </div>
-
-                <div class="recap-summary-value">
-                  ${rupiah(price)}
-                </div>
-
+              <div class="recap-summary-value">
+                ${rupiah(price)}
               </div>
 
             </div>
-
-
-            <!-- TARGET TABUNGAN -->
-            <div class="recap-summary-card">
-
-              <div class="recap-summary-icon">
-                🎯
-              </div>
-
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  Target Tabungan
-                </div>
-
-                <div class="recap-summary-value">
-                  ${rupiah(tabunganTarget)}
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <!-- TOTAL TERKUMPUL -->
-            <div class="recap-summary-card">
-
-              <div class="recap-summary-icon">
-                💵
-              </div>
-
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  Total Terkumpul
-                </div>
-
-                <div class="recap-summary-value">
-                  ${rupiah(tabunganPaid)}
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <!-- SISA HARGA -->
-            <div class="recap-summary-card">
-
-              <div class="recap-summary-icon">
-                🧾
-              </div>
-
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  Sisa Harga
-                </div>
-
-                <div class="recap-summary-value">
-                  ${rupiah(tabunganRemaining)}
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <!-- PROGRESS -->
-            <div class="recap-summary-card">
-
-              <div class="recap-summary-icon">
-                📊
-              </div>
-
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  Progress Tabungan
-                </div>
-
-                <div class="recap-summary-value">
-                  ${tabunganProgress.toFixed(1)}%
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <!-- STATUS -->
-            <div class="recap-summary-card">
-
-              <div class="recap-summary-icon">
-                📌
-              </div>
-
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  Status Tabungan
-                </div>
-
-                <div class="recap-summary-value">
-                  ${display(tabunganStatus)}
-                </div>
-
-              </div>
-
-            </div>
-          `
-          : `
-            <!-- HARGA -->
-            <div class="recap-summary-card">
-
-              <div class="recap-summary-icon">
-                💰
-              </div>
-
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  Harga
-                </div>
-
-                <div class="recap-summary-value">
-                  ${rupiah(price)}
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <!-- DP -->
-            <div class="recap-summary-card">
-
-              <div class="recap-summary-icon">
-                💳
-              </div>
-
-              <div class="recap-summary-text">
-
-                <div class="recap-summary-label">
-                  DP
-                </div>
-
-                <div class="recap-summary-value">
-                  ${rupiah(dp)}
-                </div>
-
-              </div>
-
-            </div>
-          `
-      }
 
           </div>
-  `;
+
+
+          <!-- DP -->
+          <div class="recap-summary-card">
+
+            <div class="recap-summary-icon">
+              💳
+            </div>
+
+            <div class="recap-summary-text">
+
+              <div class="recap-summary-label">
+                DP
+              </div>
+
+              <div class="recap-summary-value">
+                ${rupiah(dp)}
+              </div>
+
+            </div>
+
+          </div>
+
+        `
+    }
+
+  </div>
+
+`;
 
   /* =========================
      PINDAH KE DETAIL
@@ -2501,35 +2396,113 @@ return (
                 </div>
 
 
-                <div>
-                  <span>Harga</span>
-                  <strong>
-                    ${rupiah(
-                      item.price || 0
-                    )}
-                  </strong>
-                </div>
+               ${
+  String(
+    item.recap_type || ""
+  )
+    .trim()
+    .toLowerCase() ===
+  "tabungan"
+
+    ? `
+
+      <div>
+        <span>Harga Barang</span>
+        <strong>
+          ${rupiah(
+            item.price || 0
+          )}
+        </strong>
+      </div>
 
 
-                <div>
-                  <span>DP</span>
-                  <strong>
-                    ${rupiah(
-                      item.dp || 0
-                    )}
-                  </strong>
-                </div>
+      <div>
+        <span>Target Tabungan</span>
+        <strong>
+          ${rupiah(
+            item.tabungan_target || 0
+          )}
+        </strong>
+      </div>
 
 
-                <div>
-                  <span>Pelunasan</span>
-                  <strong>
-                    ${rupiah(
-                      item.pelunasan || 0
-                    )}
-                  </strong>
-                </div>
+      <div>
+        <span>Total Terkumpul</span>
+        <strong>
+          ${rupiah(
+            item.tabungan_paid || 0
+          )}
+        </strong>
+      </div>
 
+
+      <div>
+        <span>Sisa Harga</span>
+        <strong>
+          ${rupiah(
+            item.tabungan_remaining || 0
+          )}
+        </strong>
+      </div>
+
+
+      <div>
+        <span>Progress Tabungan</span>
+        <strong>
+          ${
+            Number(
+              item.tabungan_progress || 0
+            ).toFixed(1)
+          }%
+        </strong>
+      </div>
+
+
+      <div>
+        <span>Status Tabungan</span>
+        <strong>
+          ${display(
+            item.tabungan_status ||
+            "Menabung"
+          )}
+        </strong>
+      </div>
+
+    `
+
+    : `
+
+      <div>
+        <span>Harga</span>
+        <strong>
+          ${rupiah(
+            item.price || 0
+          )}
+        </strong>
+      </div>
+
+
+      <div>
+        <span>DP</span>
+        <strong>
+          ${rupiah(
+            item.dp || 0
+          )}
+        </strong>
+      </div>
+
+
+      <div>
+        <span>Pelunasan</span>
+        <strong>
+          ${rupiah(
+            item.pelunasan || 0
+          )}
+        </strong>
+      </div>
+
+    `
+}
               </div>
 
 
