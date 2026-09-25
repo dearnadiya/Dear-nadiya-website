@@ -2034,6 +2034,18 @@ function getTrackingDisplay(status) {
 
   switch (status) {
 
+    case "Menabung":
+  return "💰 Menabung";
+
+case "Target Tercapai":
+  return "🎯 Target Tercapai";
+
+case "Target Tabungan Tercapai":
+  return "🎯 Target Tercapai";
+
+case "Order Barang":
+  return "🛒 Order Barang";
+
     case "Co Web / Seller":
       return "🛍️ Co Web / Seller";
 
@@ -2076,6 +2088,84 @@ function getTrackingDisplay(status) {
 ========================= */
 
 function getPaymentStatusDisplay(item) {
+
+  /* =========================
+     KHUSUS TABUNGAN
+     ========================= */
+
+  if (
+    String(
+      item.recap_type ||
+      ""
+    ).trim().toLowerCase() ===
+    "tabungan"
+  ) {
+
+    const tabunganPaid =
+      Number(
+        item.tabungan_paid ||
+        0
+      );
+
+    const tabunganTarget =
+      Number(
+        item.tabungan_target ||
+        0
+      );
+
+    const price =
+      Number(
+        item.price ||
+        0
+      );
+
+    if (
+      price > 0 &&
+      tabunganPaid >= price
+    ) {
+
+      return `
+        <span class="payment-status payment-status-both">
+          🟣 Tabungan Lunas
+        </span>
+      `;
+
+    }
+
+    if (
+      tabunganTarget > 0 &&
+      tabunganPaid >=
+      tabunganTarget
+    ) {
+
+      return `
+        <span class="payment-status payment-status-dp">
+          🎯 Target Tercapai • ${rupiah(tabunganPaid)}
+        </span>
+      `;
+
+    }
+
+    if (
+      tabunganPaid > 0
+    ) {
+
+      return `
+        <span class="payment-status payment-status-dp">
+          💰 Menabung • ${rupiah(tabunganPaid)}
+        </span>
+      `;
+
+    }
+
+    return `
+      <span class="payment-status payment-status-none">
+        ⚪ Belum Ada Tabungan
+      </span>
+    `;
+
+  }
+
 
   const dp =
     Number(
@@ -2629,7 +2719,9 @@ async function loadRecap() {
       dp_status,
       payment_status,
       remaining_amount,
-      customer_status
+      customer_status,
+      tracking_status,
+      batch_tracking_status
     `
   );
     
@@ -3474,6 +3566,43 @@ else {
     meta?.item_name ||
     item.product_name,
 
+    /* =========================
+     TRACKING
+     ========================= */
+
+  tracking_status:
+    meta?.tracking_status ||
+    "",
+
+  batch_tracking_status:
+    meta?.batch_tracking_status ||
+    "",
+
+  item_status:
+    currentRecapType === "tabungan"
+      ? (
+          String(
+            meta?.category ||
+            ""
+          ).trim() ===
+          "Tabungan Album"
+
+            ? (
+                meta?.batch_tracking_status ||
+                "Menabung"
+              )
+
+            : (
+                meta?.tracking_status ||
+                "Menabung"
+              )
+        )
+
+      : (
+          item.item_status ||
+          ""
+        ),
+
   customer_status:
   meta?.customer_status ||
   item.customer_status ||
@@ -3777,32 +3906,63 @@ function setupRecapGlobalSearch() {
 
 
     const belumLunas =
-      items.filter(
-        function(item) {
+  items.filter(
+    function(item) {
 
-          const price =
-            Number(
-              item.price || 0
-            );
+      const price =
+        Number(
+          item.price || 0
+        );
 
-          const dp =
-            Number(
-              item.dp || 0
-            );
+      const isTabungan =
+        String(
+          item.recap_type ||
+          ""
+        ).trim().toLowerCase() ===
+        "tabungan";
 
-          const pelunasan =
-            Number(
-              item.pelunasan || 0
-            );
+      /* =========================
+         TABUNGAN
+         ========================= */
 
+      if (
+        isTabungan
+      ) {
 
-          return (
-            dp + pelunasan <
-            price
+        const tabunganPaid =
+          Number(
+            item.tabungan_paid ||
+            0
           );
 
-        }
-      ).length;
+        return (
+          tabunganPaid <
+          price
+        );
+
+      }
+
+      /* =========================
+         REKAP GO NORMAL
+         ========================= */
+
+      const dp =
+        Number(
+          item.dp || 0
+        );
+
+      const pelunasan =
+        Number(
+          item.pelunasan || 0
+        );
+
+      return (
+        dp + pelunasan <
+        price
+      );
+
+    }
+  ).length;
 
 
     const customerName =
@@ -3976,8 +4136,8 @@ function setupRecapGlobalSearch() {
             </div>
 
             <div>
-              DP
-            </div>
+  DP / Tabungan
+</div>
 
             <div>
               Pembayaran
@@ -4069,17 +4229,30 @@ function setupRecapGlobalSearch() {
 
 
                     <div
-                      class="recap-table-cell recap-table-dp"
-                    >
+  class="recap-table-cell recap-table-dp"
+>
 
-                      <strong>
-                        ${rupiah(
-                          item.dp ||
-                          0
-                        )}
-                      </strong>
+  <strong>
+    ${
+      String(
+        item.recap_type ||
+        ""
+      ).trim().toLowerCase() ===
+      "tabungan"
 
-                    </div>
+        ? rupiah(
+            item.tabungan_paid ||
+            0
+          )
+
+        : rupiah(
+            item.dp ||
+            0
+          )
+    }
+  </strong>
+
+</div>
 
 
                     <div
