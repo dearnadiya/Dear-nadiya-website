@@ -815,6 +815,8 @@ alt="Mascot Dear Nadiya"
   class="panel"
 >
 
+  <div id="recapListView">
+   
   <div class="recap-intro">
 
   <div class="recap-intro-text">
@@ -891,16 +893,14 @@ autocomplete="off"
   class="recap-carousel-hint"
 ></div>
 
-</section>
+</div>
 
 <!-- =========================
  DETAIL REKAP PESANAN
-
 ========================= -->
 
-<section
+<div
   id="rekapDetail"
-  class="panel"
   style="display:none;"
 >
 
@@ -1643,10 +1643,10 @@ function showRecapDetail(productCode) {
       "rekapDetail"
     );
 
-  const dashboardSection =
-    document.getElementById(
-      "rekap"
-    );
+  const recapListView =
+  document.getElementById(
+    "recapListView"
+  );
 
   const detailContent =
     document.getElementById(
@@ -1858,16 +1858,15 @@ function showRecapDetail(productCode) {
      PINDAH KE DETAIL
   ========================= */
 
-  if (dashboardSection) {
+  if (recapListView) {
 
-    dashboardSection.style.display =
-      "none";
+  recapListView.style.display =
+    "none";
 
-  }
+}
 
-  detailSection.style.display =
-    "block";
-
+detailSection.style.display =
+  "block";
 
   detailSection.scrollIntoView({
     behavior: "smooth",
@@ -1887,10 +1886,10 @@ function closeRecapDetail() {
       "rekapDetail"
     );
 
-  const dashboardSection =
-    document.getElementById(
-      "rekap"
-    );
+  const recapListView =
+  document.getElementById(
+    "recapListView"
+  );
 
   const searchInput =
     document.getElementById(
@@ -1906,12 +1905,12 @@ function closeRecapDetail() {
   }
 
 
-  if (dashboardSection) {
+  if (recapListView) {
 
-    dashboardSection.style.display =
-      "block";
+  recapListView.style.display =
+    "block";
 
-  }
+}
 
 
   if (searchInput) {
@@ -1921,9 +1920,14 @@ function closeRecapDetail() {
   }
 
 
-  if (dashboardSection) {
+  const recapSection =
+  document.getElementById(
+    "rekap"
+  );
 
-  dashboardSection.scrollIntoView({
+if (recapSection) {
+
+  recapSection.scrollIntoView({
     behavior: "smooth",
     block: "start"
   });
