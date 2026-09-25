@@ -9678,16 +9678,16 @@ console.log(
       }
 
 
-      /* PO CLAIM LAMA */
+      /* PO CLAIM LAMA
 
-      if (
-        po.order_mode === "claim" &&
-        hasAvailableMember
-      ) {
+   Untuk Customer Portal,
+   daftar "Masih Bisa Claim"
+   mengikuti referensi Rekap GO
+   yang sama dengan Admin.
 
-        poMasihClaim.push(po);
-
-      }
+   PO lama dari po_posts tidak
+   dimasukkan ke daftar ini.
+*/
 
     });
 
@@ -9698,6 +9698,53 @@ console.log(
 
     const recapClaimGroups =
       {};
+
+   /* ==========================================
+   BATCH YANG SUDAH ARRIVED ADMIN
+
+   Jika SATU MEMBER dalam batch sudah
+   Arrived Admin, seluruh batch tidak
+   boleh masuk Masih Bisa Claim.
+========================================== */
+
+const arrivedAdminBatches =
+  new Set(
+    (recapData || [])
+      .filter(function(row) {
+
+        const tracking =
+          String(
+            row.batch_tracking_status || ""
+          )
+            .trim()
+            .toLowerCase();
+
+        return (
+          tracking ===
+          "arrived admin"
+        );
+
+      })
+      .map(function(row) {
+
+        return (
+          String(
+            row.category || ""
+          )
+            .trim()
+            .toLowerCase() +
+          "|" +
+          String(
+            row.batch_code ||
+            row.item_name ||
+            ""
+          )
+            .trim()
+            .toLowerCase()
+        );
+
+      })
+  );
 
 
     (recapData || []).forEach(function (row) {
@@ -9713,6 +9760,10 @@ console.log(
           row.customer_name || ""
         ).trim();
 
+ const customerId =
+  Number(
+    row.customer_id
+  ) || null;
 
       const trackingStatus =
   String(
@@ -9735,9 +9786,12 @@ console.log(
       }
 
 
-      if (customer) {
-        return;
-      }
+      if (
+  customerId ||
+  customer
+) {
+  return;
+}
 
 
       if (
@@ -9767,6 +9821,19 @@ if (
     row.item_name ||
     "Tanpa Batch"
   ).trim();
+
+     const batchKey =
+  category.toLowerCase() +
+  "|" +
+  batchCode.toLowerCase();
+
+if (
+  arrivedAdminBatches.has(
+    batchKey
+  )
+) {
+  return;
+}
 
 
       const groupKey =
@@ -9913,10 +9980,28 @@ if (
        6. MASUKKAN REKAP GO KE LIST CLAIM
        ========================================== */
 
-    const recapClaimPOs =
-      Object.values(
-        recapClaimGroups
+   const recapClaimPOs =
+  Object.values(
+    recapClaimGroups
+  )
+  .sort(
+    function(a, b) {
+
+      return String(
+        a.batch_code || ""
+      ).localeCompare(
+        String(
+          b.batch_code || ""
+        ),
+        undefined,
+        {
+          numeric: true,
+          sensitivity: "base"
+        }
       );
+
+    }
+  );
 
   console.log(
   "TOTAL GROUP REKAP YANG LOLOS CLAIM:",
