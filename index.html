@@ -458,6 +458,27 @@ async function findCustomerPayments(
       max-width: 700px;
     }
 
+   .payment-form {
+  text-align: left;
+}
+
+.payment-form .form-group {
+  text-align: left;
+}
+
+.payment-form .form-group label {
+  text-align: left;
+}
+
+.payment-form .form-group input,
+.payment-form .form-group select {
+  text-align: left;
+}
+
+.payment-form .file-help {
+  text-align: left;
+}
+
 
     .form-group {
       display: flex;
@@ -1201,6 +1222,10 @@ pasti ketahuan loh! 😆
     DP + Pelunasan
   </option>
 
+ <option value="tabungan">
+  Tabungan
+</option>
+
 </select>
 
 </div>
@@ -1238,7 +1263,7 @@ type="text"
 placeholder="Otomatis dari tagihan"
 readonly
 required
-
+>
 
 
 </div>
@@ -1257,8 +1282,8 @@ type="number"
 placeholder="Otomatis dihitung"
 readonly
 required
-
-
+min="1"
+>
 
 </div>
 
@@ -7946,6 +7971,48 @@ const whatsappLast4 = match
 const selectedBills =
   window.selectedPaymentBills || [];
 
+/* ==========================================
+   VALIDASI KHUSUS TABUNGAN
+   ========================================== */
+
+const selectedPaymentType =
+  document.getElementById(
+    "paymentType"
+  ).value;
+
+const selectedAreAllTabungan =
+  selectedBills.length > 0 &&
+  selectedBills.every(
+    function(bill) {
+
+      return (
+        String(
+          bill.recap_type || ""
+        )
+          .trim()
+          .toLowerCase() ===
+        "tabungan"
+      );
+
+    }
+  );
+
+
+if (
+  selectedPaymentType ===
+  "tabungan" &&
+  !selectedAreAllTabungan
+) {
+
+  showPaymentMessage(
+    "Pembayaran Tabungan hanya dapat digunakan untuk tagihan Tabungan.",
+    true
+  );
+
+  return;
+
+}
+
 if (selectedBills.length === 0) {
   showPaymentMessage(
     "Pilih minimal satu tagihan terlebih dahulu.",
@@ -7953,6 +8020,80 @@ if (selectedBills.length === 0) {
   );
 
   return;
+}
+
+       /* ==========================================
+   VALIDASI NOMINAL TABUNGAN
+   ========================================== */
+
+if (
+  selectedPaymentType ===
+  "tabungan"
+) {
+
+  if (
+    !Number.isFinite(
+      paymentAmount
+    ) ||
+    paymentAmount <= 0
+  ) {
+
+    showPaymentMessage(
+      "Masukkan nominal tabungan terlebih dahulu.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  const totalTabunganRemaining =
+  selectedBills.reduce(
+    function(total, bill) {
+
+      return (
+        total +
+        Number(
+          bill.tabungan_remaining ??
+          bill.item_price ??
+          0
+        )
+      );
+
+    },
+    0
+  );
+
+
+if (
+  totalTabunganRemaining <= 0
+) {
+
+  showPaymentMessage(
+    "Tabungan untuk barang yang dipilih sudah lunas.",
+    true
+  );
+
+  return;
+
+}
+
+
+if (
+  paymentAmount >
+  totalTabunganRemaining
+) {
+
+  showPaymentMessage(
+    "Nominal tabungan tidak boleh melebihi sisa harga barang yang belum terkumpul.",
+    true
+  );
+
+  return;
+
+}
+
 }
         
         /* =====================
@@ -8589,20 +8730,328 @@ const matchedCustomers =
                       );
 
 
-                    if (billError) {
-                      throw billError;
-                    }
+                   if (billError) {
+  throw billError;
+}
 
 
-                    /* =========================
-                       SEMUA SUDAH LUNAS
-                    ========================= */
+/* ==========================================
+   HITUNG SALDO TABUNGAN AKTUAL
+   UNTUK FORM PEMBAYARAN
+   ========================================== */
 
-                    if (
-                      !bills ||
-                      bills.length === 0
-                    ) {
+const paymentTabunganBills =
+  (bills || []).filter(
+    function(bill) {
 
+      return (
+        String(
+          bill.recap_type || ""
+        )
+          .trim()
+          .toLowerCase() ===
+        "tabungan"
+      );
+
+    }
+  );
+
+
+if (
+  paymentTabunganBills.length > 0
+) {
+
+  const tabunganIds =
+    paymentTabunganBills
+      .map(
+        function(bill) {
+          return Number(
+            bill.id
+          );
+        }
+      )
+      .filter(
+        function(id) {
+          return Number.isFinite(id);
+        }
+      );
+
+
+  const paymentTabunganMap = {};
+  const manualPaymentTabunganMap = {};
+
+
+  /* ==========================================
+     TABUNGAN MANUAL ADMIN
+     ========================================== */
+
+  const {
+    data: manualPaymentTabunganRows,
+    error: manualPaymentTabunganError
+  } =
+    await supabaseClient
+      .rpc(
+        "get_public_tabungan_totals",
+        {
+          p_recap_ids:
+            tabunganIds
+        }
+      );
+
+
+  if (
+    manualPaymentTabunganError
+  ) {
+
+    console.error(
+      "ERROR LOAD MANUAL TABUNGAN PEMBAYARAN:",
+      manualPaymentTabunganError
+    );
+
+  }
+  else {
+
+    (
+      manualPaymentTabunganRows ||
+      []
+    )
+      .forEach(
+        function(row) {
+
+          const recapId =
+            String(
+              row.recap_id
+            );
+
+          manualPaymentTabunganMap[
+            recapId
+          ] =
+            Number(
+              row.total_amount
+            ) || 0;
+
+        }
+      );
+
+  }
+
+
+  /* ==========================================
+     TABUNGAN DARI PEMBAYARAN CONFIRMED
+     ========================================== */
+
+  const {
+    data: paymentAllocations,
+    error: paymentAllocationError
+  } =
+    await supabaseClient
+      .from(
+        "dn_payment_allocations"
+      )
+      .select(`
+        recap_id,
+        payment_submission_id,
+        allocated_amount
+      `)
+      .in(
+        "recap_id",
+        tabunganIds
+      );
+
+
+  if (
+    paymentAllocationError
+  ) {
+
+    console.error(
+      "ERROR LOAD TABUNGAN ALLOCATION PEMBAYARAN:",
+      paymentAllocationError
+    );
+
+  }
+  else {
+
+    const paymentSubmissionIds =
+      [
+        ...new Set(
+          (
+            paymentAllocations ||
+            []
+          )
+            .map(
+              function(row) {
+                return row.payment_submission_id;
+              }
+            )
+            .filter(Boolean)
+        )
+      ];
+
+
+    let confirmedPaymentIds =
+      new Set();
+
+
+    if (
+      paymentSubmissionIds.length > 0
+    ) {
+
+      const {
+        data: confirmedPaymentRows,
+        error: confirmedPaymentError
+      } =
+        await supabaseClient
+          .from(
+            "dn_payment_submissions"
+          )
+          .select(
+            "id"
+          )
+          .in(
+            "id",
+            paymentSubmissionIds
+          )
+          .eq(
+            "status",
+            "confirmed"
+          );
+
+
+      if (
+        confirmedPaymentError
+      ) {
+
+        console.error(
+          "ERROR LOAD CONFIRMED TABUNGAN PEMBAYARAN:",
+          confirmedPaymentError
+        );
+
+      }
+      else {
+
+        confirmedPaymentIds =
+          new Set(
+            (
+              confirmedPaymentRows ||
+              []
+            )
+              .map(
+                function(row) {
+                  return row.id;
+                }
+              )
+          );
+
+      }
+
+    }
+
+
+    (
+      paymentAllocations ||
+      []
+    )
+      .forEach(
+        function(row) {
+
+          if (
+            !confirmedPaymentIds.has(
+              row.payment_submission_id
+            )
+          ) {
+            return;
+          }
+
+
+          const recapId =
+            String(
+              row.recap_id
+            );
+
+          const amount =
+            Number(
+              row.allocated_amount
+            ) || 0;
+
+
+          paymentTabunganMap[
+            recapId
+          ] =
+            (
+              paymentTabunganMap[
+                recapId
+              ] || 0
+            ) +
+            amount;
+
+        }
+      );
+
+  }
+
+
+  /* ==========================================
+     SIMPAN NILAI AKTUAL KE MASING-MASING BILL
+     ========================================== */
+
+  paymentTabunganBills
+    .forEach(
+      function(bill) {
+
+        const recapId =
+          String(
+            bill.id
+          );
+
+        const confirmedPaid =
+          Number(
+            paymentTabunganMap[
+              recapId
+            ] || 0
+          );
+
+        const manualPaid =
+          Number(
+            manualPaymentTabunganMap[
+              recapId
+            ] || 0
+          );
+
+        const totalPaid =
+          Math.min(
+            confirmedPaid +
+            manualPaid,
+            Number(
+              bill.item_price || 0
+            )
+          );
+
+        bill.tabungan_paid =
+          totalPaid;
+
+        bill.tabungan_remaining =
+          Math.max(
+            Number(
+              bill.item_price || 0
+            ) -
+            totalPaid,
+            0
+          );
+
+      }
+    );
+
+}
+
+
+/* =========================
+   SEMUA SUDAH LUNAS
+========================= */
+
+if (
+  !bills ||
+  bills.length === 0
+) {
                       resultList.innerHTML = `
                         <p>
                           ✅ Semua tagihan kamu
@@ -9691,9 +10140,30 @@ selectWrapper.style.borderTop =
             }
           );
 
+               if (
+  paymentType ===
+  "tabungan"
+) {
 
-        paymentAmountInput.value =
-          totalPayment;
+  paymentAmountInput.readOnly =
+    false;
+
+  paymentAmountInput.placeholder =
+    "Masukkan nominal tabungan";
+
+}
+else {
+
+  paymentAmountInput.readOnly =
+    true;
+
+  paymentAmountInput.placeholder =
+    "Otomatis dihitung";
+
+  paymentAmountInput.value =
+    totalPayment;
+
+}
 
 
         console.log(
@@ -9770,6 +10240,50 @@ selectWrapper.style.borderTop =
                         let totalPayment =
                           0;
 
+                       /* ==========================================
+   MODE PEMBAYARAN TABUNGAN
+   ========================================== */
+
+const paymentAmountInput =
+  document.getElementById(
+    "paymentAmount"
+  );
+
+const isTabunganPayment =
+  paymentType.value ===
+  "tabungan";
+
+
+/*
+ * Tabungan:
+ * customer bebas menentukan nominal.
+ *
+ * Rekap GO:
+ * nominal tetap otomatis.
+ */
+
+paymentAmountInput.readOnly =
+  !isTabunganPayment;
+
+
+if (
+  isTabunganPayment
+) {
+
+  paymentAmountInput.value =
+    "";
+
+  paymentAmountInput.placeholder =
+    "Masukkan nominal tabungan";
+
+}
+else {
+
+  paymentAmountInput.placeholder =
+    "Otomatis dihitung";
+
+}
+
 
                         selectedBills.forEach(
                           function(bill) {
@@ -9838,17 +10352,44 @@ selectWrapper.style.borderTop =
 
 }
 
+                          /* ==========================
+   TABUNGAN
+   ========================== */
+
+if (
+  paymentType.value ===
+  "tabungan"
+) {
+
+  /*
+   * Tabungan tidak menentukan
+   * nominal pembayaran otomatis.
+   *
+   * Customer bebas memasukkan
+   * nominal sendiri.
+   */
+
+  return;
+
+}
+
                           }
                         );
 
 
-                        document
-                          .getElementById(
-                            "paymentAmount"
-                          )
-                          .value =
-                          totalPayment;
+                        if (
+  paymentType.value !==
+  "tabungan"
+) {
 
+  document
+    .getElementById(
+      "paymentAmount"
+    )
+    .value =
+    totalPayment;
+
+}
                       };
 
 
