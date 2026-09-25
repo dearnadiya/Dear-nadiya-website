@@ -2400,7 +2400,6 @@ async function loadRecap() {
       batch_code,
       item_name,
       customer_name,
-      whatsapp_last4,
       product_version,
       quantity,
       item_price,
@@ -2648,29 +2647,6 @@ recapBatchData = [];
       ) {
         return false;
       }
-
-
-      const rowWhatsapp =
-        String(
-          row.whatsapp_last4 || ""
-        )
-          .trim();
-
-      const itemWhatsapp =
-        String(
-          item.whatsapp_last4 || ""
-        )
-          .trim();
-
-      if (
-        rowWhatsapp &&
-        itemWhatsapp &&
-        rowWhatsapp !==
-        itemWhatsapp
-      ) {
-        return false;
-      }
-
 
       const rowVersion =
         String(
