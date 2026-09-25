@@ -895,61 +895,68 @@ autocomplete="off"
 </div>
 
 <!-- =========================
- DETAIL REKAP PESANAN
+     DETAIL REKAP PESANAN
 ========================= -->
 
-<div
+<section
   id="rekapDetail"
+  class="panel"
   style="display:none;"
 >
 
-  <p class="eyebrow">REKAP PESANAN</p>
+  <p class="eyebrow">
+    REKAP PESANAN
+  </p>
 
   <div class="recap-detail-header">
 
-<button
-  type="button"
-  class="recap-back-button"
-  onclick="closeRecapDetail()"
->
-  ← Kembali
-</button>
+    <button
+      type="button"
+      class="recap-back-button"
+      onclick="closeRecapDetail()"
+    >
+      ← Kembali
+    </button>
 
-<div>
-  <h2 id="recapDetailTitle">
-    Detail Rekap Pesanan
-  </h2>
+    <div>
 
-  <p
-    id="recapDetailSubtitle"
-    class="panel-description"
-  >
-    Detail pesanan Dear Nadiya.
-  </p>
-</div>
+      <h2 id="recapDetailTitle">
+        Detail Rekap Pesanan
+      </h2>
+
+      <p
+        id="recapDetailSubtitle"
+        class="panel-description"
+      >
+        Detail pesanan Dear Nadiya.
+      </p>
+
+    </div>
 
   </div>
+
 
   <!-- SEARCH CUSTOMER -->
 
   <div class="recap-search-box">
 
-<input
-  type="text"
-  id="recapCustomerSearch"
-  placeholder="Cari nama customer..."
-  autocomplete="off"
->
+    <input
+      type="text"
+      id="recapCustomerSearch"
+      placeholder="Cari nama customer..."
+      autocomplete="off"
+    >
 
   </div>
+
 
   <!-- DETAIL -->
 
   <div id="recapDetailContent">
 
-<p class="loading">
-  Pilih rekap pesanan.
-</p>
+    <p class="loading">
+      Pilih rekap pesanan.
+    </p>
 
   </div>
 
@@ -1642,10 +1649,10 @@ function showRecapDetail(productCode) {
       "rekapDetail"
     );
 
-  const recapListView =
-  document.getElementById(
-    "recapListView"
-  );
+  const dashboardSection =
+    document.getElementById(
+      "rekap"
+    );
 
   const detailContent =
     document.getElementById(
@@ -1694,17 +1701,12 @@ function showRecapDetail(productCode) {
   if (!items.length) {
 
     detailContent.innerHTML = `
-
       <div class="empty">
-
         Data rekap tidak ditemukan.
-
       </div>
-
     `;
 
     return;
-
   }
 
 
@@ -1742,7 +1744,7 @@ function showRecapDetail(productCode) {
 
 
   /* =========================
-     RESET SEARCH CUSTOMER
+     RESET SEARCH
   ========================= */
 
   if (searchInput) {
@@ -1753,7 +1755,7 @@ function showRecapDetail(productCode) {
 
 
   /* =========================
-     DATA RINGKASAN BARANG
+     TAMPILKAN RINGKASAN
   ========================= */
 
   const tracking =
@@ -1771,17 +1773,11 @@ function showRecapDetail(productCode) {
     );
 
 
-  /* =========================
-     TAMPILKAN RINGKASAN
-  ========================= */
-
   detailContent.innerHTML = `
 
     <div class="recap-batch-summary">
 
-
       <!-- TRACKING -->
-
       <div class="recap-summary-card">
 
         <div class="recap-summary-icon">
@@ -1804,7 +1800,6 @@ function showRecapDetail(productCode) {
 
 
       <!-- HARGA -->
-
       <div class="recap-summary-card">
 
         <div class="recap-summary-icon">
@@ -1827,7 +1822,6 @@ function showRecapDetail(productCode) {
 
 
       <!-- DP -->
-
       <div class="recap-summary-card">
 
         <div class="recap-summary-icon">
@@ -1848,24 +1842,26 @@ function showRecapDetail(productCode) {
 
       </div>
 
-
     </div>
-    
+
   `;
+
 
   /* =========================
      PINDAH KE DETAIL
   ========================= */
 
-  if (recapListView) {
+  if (dashboardSection) {
 
-  recapListView.style.display =
-    "none";
+    dashboardSection.style.display =
+      "none";
 
-}
+  }
 
-detailSection.style.display =
-  "block";
+
+  detailSection.style.display =
+    "block";
+
 
   detailSection.scrollIntoView({
     behavior: "smooth",
@@ -1874,7 +1870,8 @@ detailSection.style.display =
 
 }
 
-  /* =========================
+
+/* =========================
    CLOSE RECAP DETAIL
 ========================= */
 
@@ -1885,10 +1882,10 @@ function closeRecapDetail() {
       "rekapDetail"
     );
 
-  const recapListView =
-  document.getElementById(
-    "recapListView"
-  );
+  const dashboardSection =
+    document.getElementById(
+      "rekap"
+    );
 
   const searchInput =
     document.getElementById(
@@ -1904,12 +1901,12 @@ function closeRecapDetail() {
   }
 
 
-  if (recapListView) {
+  if (dashboardSection) {
 
-  recapListView.style.display =
-    "block";
+    dashboardSection.style.display =
+      "block";
 
-}
+  }
 
 
   if (searchInput) {
@@ -1919,19 +1916,10 @@ function closeRecapDetail() {
   }
 
 
-  const recapSection =
-  document.getElementById(
-    "rekap"
-  );
-
-if (recapSection) {
-
-  recapSection.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
   });
-
-}
 
 }
 
