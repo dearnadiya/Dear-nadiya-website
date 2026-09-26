@@ -10928,13 +10928,15 @@ const {
 } =
   await supabaseClient
     .from("po_posts")
-    .select(`
+        .select(`
       id,
       title,
       image_url,
       po_type,
       order_mode,
       batch_status,
+      price_mode,
+      dp_mode,
       price_text,
       dp_text,
       close_date,
