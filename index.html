@@ -1278,11 +1278,11 @@ required
 
 <input
 id="paymentAmount"
-type="number"
+type="text"
+inputmode="numeric"
 placeholder="Otomatis dihitung"
 readonly
 required
-min="1"
 >
 
 </div>
@@ -7945,14 +7945,25 @@ const whatsappLast4 = match
             .trim();
 
 
-        const paymentAmount =
-          Number(
-            document
-              .getElementById(
-                "paymentAmount"
-              )
-              .value
-          );
+        const paymentAmountInput =
+  document.getElementById(
+    "paymentAmount"
+  );
+
+
+const paymentAmount =
+  Number(
+    paymentAmountInput
+      .value
+      .replace(
+        /\./g,
+        ""
+      )
+      .replace(
+        /\D/g,
+        ""
+      )
+  ) || 0;
 
 
         const paymentDate =
@@ -7997,6 +8008,51 @@ const selectedAreAllTabungan =
     }
   );
 
+       /* ==========================================
+   CEK APAKAH ADA TAGIHAN TABUNGAN
+   ========================================== */
+
+const hasTabunganBill =
+  selectedBills.some(
+    function(bill) {
+
+      return (
+        String(
+          bill.recap_type || ""
+        )
+          .trim()
+          .toLowerCase() ===
+        "tabungan"
+      );
+
+    }
+  );
+
+
+/* ==========================================
+   TABUNGAN TIDAK BOLEH DIGABUNG
+   DENGAN DP / PELUNASAN
+   ========================================== */
+
+if (
+  hasTabunganBill &&
+  selectedPaymentType !==
+  "tabungan"
+) {
+
+  showPaymentMessage(
+    "Pembayaran Tabungan tidak boleh digabung dengan pembayaran DP atau Pelunasan. Silakan pilih tagihan Tabungan saja.",
+    true
+  );
+
+  return;
+
+}
+
+
+/* ==========================================
+   PEMBAYARAN TABUNGAN HARUS KHUSUS TABUNGAN
+   ========================================== */
 
 if (
   selectedPaymentType ===
@@ -9320,10 +9376,66 @@ Object.values(
     ========================= */
 
     const versionCount =
-      batchBills.length;
+  batchBills.length;
 
 
-    const unpaidDp =
+/* ==========================================
+   KHUSUS BATCH TABUNGAN
+   ========================================== */
+
+const isTabunganBatch =
+  batchBills.length > 0 &&
+  batchBills.every(
+    function(bill) {
+
+      return (
+        String(
+          bill.recap_type || ""
+        )
+          .trim()
+          .toLowerCase() ===
+        "tabungan"
+      );
+
+    }
+  );
+
+
+const totalTabunganPaid =
+  batchBills.reduce(
+    function(total, bill) {
+
+      return (
+        total +
+        Number(
+          bill.tabungan_paid || 0
+        )
+      );
+
+    },
+    0
+  );
+
+
+const totalTabunganRemaining =
+  batchBills.reduce(
+    function(total, bill) {
+
+      return (
+        total +
+        Number(
+          bill.tabungan_remaining ||
+          bill.item_price ||
+          0
+        )
+      );
+
+    },
+    0
+  );
+
+
+const unpaidDp =
   batchBills.reduce(
     function(total, bill) {
 
@@ -9381,10 +9493,10 @@ const hasUnpaidDp =
  * Ambil deadline pelunasan
  * dari data batch/customer.
  */
-const paymentDeadline =
+let paymentDeadline =
   batchBills
     .map(function(bill) {
-
+     
       /*
        * Jika DP masih kurang,
        * tampilkan DEADLINE DP.
@@ -9434,6 +9546,15 @@ const paymentDeadline =
       return deadline;
 
     }) || "";
+
+   if (
+  isTabunganBatch
+) {
+
+  paymentDeadline =
+    "";
+
+}
 
 
 /*
@@ -9505,6 +9626,23 @@ if (paymentDeadline) {
 
 let paymentLabel =
   "Pelunasan";
+
+
+/* ==========================================
+   TABUNGAN TIDAK MENGIKUTI LOGIKA DP
+   ========================================== */
+
+if (
+  isTabunganBatch
+) {
+
+  paymentPriority =
+    3;
+
+  paymentLabel =
+    "Tabungan";
+
+}
 
 
 /*
@@ -9734,7 +9872,7 @@ batchBox.style.boxShadow =
     "
   >
 
-    <div
+   <div
   style="
     font-size:12px;
     color:#666;
@@ -9742,9 +9880,11 @@ batchBox.style.boxShadow =
   "
 >
   ${
-    hasUnpaidDp
-      ? "DP belum dibayar"
-      : "Sisa pelunasan"
+    isTabunganBatch
+      ? "Total Tabungan Terkumpul"
+      : hasUnpaidDp
+        ? "DP belum dibayar"
+        : "Sisa pelunasan"
   }
 </div>
 
@@ -9756,9 +9896,11 @@ batchBox.style.boxShadow =
   "
 >
   ${
-    hasUnpaidDp
-      ? rupiah(unpaidDp)
-      : rupiah(remainingTotal)
+    isTabunganBatch
+      ? rupiah(totalTabunganPaid)
+      : hasUnpaidDp
+        ? rupiah(unpaidDp)
+        : rupiah(remainingTotal)
   }
 </div>
 
@@ -10229,6 +10371,60 @@ else {
                         "paymentType"
                       );
 
+                   /* ==========================================
+   FORMAT NOMINAL PEMBAYARAN
+   700000 → 700.000
+   ========================================== */
+
+const paymentAmountInput =
+  document.getElementById(
+    "paymentAmount"
+  );
+
+
+paymentAmountInput.addEventListener(
+  "input",
+  function() {
+
+    if (
+      paymentType.value !==
+      "tabungan"
+    ) {
+
+      return;
+
+    }
+
+
+    const rawValue =
+      this.value
+        .replace(
+          /\D/g,
+          ""
+        );
+
+
+    if (
+      !rawValue
+    ) {
+
+      this.value =
+        "";
+
+      return;
+
+    }
+
+
+    this.value =
+      Number(
+        rawValue
+      ).toLocaleString(
+        "id-ID"
+      );
+
+  }
+);
 
                     paymentType.onchange =
                       function() {
