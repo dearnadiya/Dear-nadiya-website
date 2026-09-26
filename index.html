@@ -11820,6 +11820,82 @@ function showPODetail(index) {
 
   }
 
+   /* =========================
+     RENTANG HARGA & DP
+  ========================= */
+
+  function getPORangeText(
+    rows,
+    field,
+    fallback
+  ) {
+
+    const values =
+      rows
+        .map(function(row) {
+
+          return Number(
+            String(
+              row[field] || ""
+            ).replace(
+              /[^\d]/g,
+              ""
+            )
+          ) || 0;
+
+        })
+        .filter(function(value) {
+          return value > 0;
+        });
+
+    if (!values.length) {
+      return fallback || "";
+    }
+
+    const min =
+      Math.min(...values);
+
+    const max =
+      Math.max(...values);
+
+    if (min === max) {
+      return min.toLocaleString(
+        "id-ID"
+      );
+    }
+
+    return (
+      min.toLocaleString(
+        "id-ID"
+      ) +
+      " - " +
+      max.toLocaleString(
+        "id-ID"
+      )
+    );
+
+  }
+
+
+  const headerPriceText =
+    po.price_mode === "different"
+      ? getPORangeText(
+          rows,
+          "price",
+          po.price_text
+        )
+      : po.price_text;
+
+
+  const headerDPText =
+    po.dp_mode === "different"
+      ? getPORangeText(
+          rows,
+          "dp",
+          po.dp_text
+        )
+      : po.dp_text;
+
 
   /* =========================
      LIST MEMBER / BARANG
@@ -12035,13 +12111,13 @@ const customer =
         </h2>
 
 
-        ${
-          po.price_text
+               ${
+          headerPriceText
             ? `
               <div class="po-info-row">
                 <span>Harga</span>
                 <strong>
-                  ${display(po.price_text)}
+                  ${display(headerPriceText)}
                 </strong>
               </div>
             `
@@ -12049,13 +12125,13 @@ const customer =
         }
 
 
-        ${
-          po.dp_text
+                ${
+          headerDPText
             ? `
               <div class="po-info-row">
                 <span>DP</span>
                 <strong>
-                  ${display(po.dp_text)}
+                  ${display(headerDPText)}
                 </strong>
               </div>
             `
