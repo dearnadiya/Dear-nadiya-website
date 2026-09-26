@@ -4809,6 +4809,8 @@ function setupCheckoutYukSearch() {
       "checkoutYukResults"
     );
 
+   let checkoutSearchRequestId = 0;
+
   if (
     !searchInput ||
     !results
@@ -5146,33 +5148,41 @@ function setupCheckoutYukSearch() {
 
 
     customerButtons.forEach(
-      function(button) {
+  function(button) {
 
-        button.addEventListener(
-          "click",
-          function() {
+    button.addEventListener(
+      "click",
+      function() {
 
-            const index =
-              Number(
-                this.dataset.customerIndex
-              );
+        /*
+          Batalkan semua pencarian lama
+          yang masih berjalan.
+        */
+        checkoutSearchRequestId++;
 
+        const index =
+          Number(
+            this.dataset.customerIndex
+          );
 
-            const selectedCustomer =
-              customers[index];
+        const selectedCustomer =
+          customers[index];
 
+        if (!selectedCustomer) {
+          return;
+        }
 
-            renderCheckoutItems(
-              selectedCustomer.items,
-              selectedCustomer.name,
-              selectedCustomer.whatsapp
-            );
-
-          }
+        renderCheckoutItems(
+          selectedCustomer.items,
+          selectedCustomer.name,
+          selectedCustomer.whatsapp
         );
 
       }
     );
+
+  }
+);
 
   }
 
@@ -6138,13 +6148,16 @@ if (searchInput) {
   ========================= */
 
   searchInput.addEventListener(
-    "input",
-    async function() {
+  "input",
+  async function() {
 
-      const keyword =
-        normalize(
-          this.value
-        );
+    const requestId =
+      ++checkoutSearchRequestId;
+
+    const keyword =
+      normalize(
+        this.value
+      );
 
 
       if (!keyword) {
@@ -6305,6 +6318,13 @@ const whatsapp =
         per customer.
       */
 
+         if (
+        requestId !==
+        checkoutSearchRequestId
+      ) {
+        return;
+      }
+
       const customers =
         Object.values(
           customerGroups
@@ -6388,9 +6408,16 @@ const whatsapp =
           }
         );
         
-              renderCustomerChoices(
-        customers
-      );
+             if (
+  requestId !==
+  checkoutSearchRequestId
+) {
+  return;
+}
+
+renderCustomerChoices(
+  customers
+);
 
     }
   }
