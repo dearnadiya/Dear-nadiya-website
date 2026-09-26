@@ -5802,6 +5802,28 @@ results.innerHTML = `
 
 </div>
 
+ <!-- CATATAN CUSTOMER -->
+
+<div class="checkout-yuk-order-note">
+
+  <label for="checkoutYukOrderNote">
+    Catatan Customer <span style="font-weight:400;">(opsional)</span>
+  </label>
+
+  <textarea
+    id="checkoutYukOrderNote"
+    rows="3"
+    placeholder="Tulis keterangan tambahan jika ada..."
+    autocomplete="off"
+  ></textarea>
+
+  <p>
+    Contoh: Tolong digabung dengan paket sebelumnya,
+    atau keterangan khusus lainnya.
+  </p>
+
+</div>
+
     <!-- BARANG -->
 
     <div class="checkout-yuk-confirmation-title">
@@ -5996,6 +6018,16 @@ if (finalCheckoutButton) {
         orderCodeInput
           ? orderCodeInput.value.trim()
           : "";
+
+     const orderNoteInput =
+  results.querySelector(
+    "#checkoutYukOrderNote"
+  );
+
+const orderNote =
+  orderNoteInput
+    ? orderNoteInput.value.trim()
+    : "";
 
 
       if (!orderCode) {
