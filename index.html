@@ -10919,33 +10919,37 @@ async function loadPOCustomer() {
        1. AMBIL PO DARI po_posts
        ========================================== */
 
-    const {
-      data: poData,
-      error: poError
-    } =
-      await supabaseClient
-        .from("po_posts")
-        .select(`
-          id,
-          title,
-          image_url,
-          po_type,
-          order_mode,
-          batch_status,
-          price_text,
-          dp_text,
-          close_date,
-          last_dp_date,
-          description,
-          list_data,
-          status,
-          created_at
-        `)
-        .eq("status", "active")
-        .order("created_at", {
-          ascending: false
-        });
+    const now =
+  new Date().toISOString();
 
+const {
+  data: poData,
+  error: poError
+} =
+  await supabaseClient
+    .from("po_posts")
+    .select(`
+      id,
+      title,
+      image_url,
+      po_type,
+      order_mode,
+      batch_status,
+      price_text,
+      dp_text,
+      close_date,
+      last_dp_date,
+      description,
+      list_data,
+      status,
+      created_at
+    `)
+    .or(
+      `close_date.is.null,close_date.gte.${now}`
+    )
+    .order("created_at", {
+      ascending: false
+    });
 
     if (poError) {
       throw poError;
@@ -11019,11 +11023,6 @@ console.log(
     const data =
       poData || [];
 
-
-    const now =
-      new Date();
-
-
     const poBerjalan =
       [];
 
@@ -11063,48 +11062,11 @@ console.log(
       }
 
 
-      const isClosed =
-        po.close_date &&
-        new Date(po.close_date) < now;
-
-
-      const hasAvailableMember =
-        rows.some(function (row) {
-
-          const hasMember =
-            row &&
-            row.member &&
-            String(
-              row.member
-            ).trim();
-
-
-          const hasCustomer =
-            row &&
-            row.customer &&
-            String(
-              row.customer
-            ).trim();
-
-
-          return (
-            hasMember &&
-            !hasCustomer
-          );
-
-        });
-
-
       /* PO BERJALAN */
 
-      if (!isClosed) {
+poBerjalan.push(po);
 
-        poBerjalan.push(po);
-
-        return;
-
-      }
-
+return;
 
       /* PO CLAIM LAMA
 
