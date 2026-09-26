@@ -1227,6 +1227,21 @@ pasti ketahuan loh! 😆
 </option>
 
 </select>
+ 
+<small
+  style="
+    display:block;
+    margin-top:6px;
+    color:#777;
+    line-height:1.5;
+  "
+>
+  💡 Jika memilih <strong>Tabungan</strong>, pembayaran hanya dapat digunakan
+  untuk tagihan Tabungan dan tidak dapat digabung dengan tagihan Rekap GO
+  seperti Tr-INA, Tr-CH, dan lainnya.
+</small>
+
+</div>
 
 </div>
 
@@ -10303,7 +10318,11 @@ else {
     "Otomatis dihitung";
 
   paymentAmountInput.value =
-    totalPayment;
+  Number(
+    totalPayment || 0
+  ).toLocaleString(
+    "id-ID"
+  );
 
 }
 
@@ -10583,7 +10602,11 @@ if (
       "paymentAmount"
     )
     .value =
-    totalPayment;
+    Number(
+      totalPayment || 0
+    ).toLocaleString(
+      "id-ID"
+    );
 
 }
                       };
