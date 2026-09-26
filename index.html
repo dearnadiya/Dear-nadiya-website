@@ -9138,17 +9138,40 @@ if (
                        TAMPILKAN TAGIHAN
                     ========================= */
 
-                    resultList.innerHTML = `
-                      <p>
-                        <b>Customer:</b>
-                        ${customer.name}
-                      </p>
+                   resultList.innerHTML = `
+  <p>
+    <b>Customer:</b>
+    ${customer.name}
+  </p>
 
-                      <p>
-                        <b>Tagihan Kamu:</b>
-                      </p>
-                    `;
+  <p>
+    <b>Tagihan Kamu:</b>
+  </p>
 
+  <div
+    style="
+      margin:8px 0 10px;
+    "
+  >
+
+    <input
+      type="text"
+      id="paymentBillSearch"
+      placeholder="🔎 Cari nama barang atau kode batch..."
+      autocomplete="off"
+      style="
+        width:100%;
+        box-sizing:border-box;
+        padding:10px 12px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        font-size:13px;
+        outline:none;
+      "
+    >
+
+  </div>
+`;
 
                     /* =========================
    KELOMPOKKAN TAGIHAN PER BATCH
@@ -9414,6 +9437,112 @@ const isTabunganBatch =
 
     }
   );
+
+   /* =========================
+   PENCARIAN TAGIHAN
+========================= */
+
+const paymentBillSearch =
+  document.getElementById(
+    "paymentBillSearch"
+  );
+
+if (
+  paymentBillSearch
+) {
+
+  paymentBillSearch.addEventListener(
+    "input",
+    function() {
+
+      const keyword =
+        String(
+          this.value || ""
+        )
+          .trim()
+          .toLowerCase();
+
+      const batchBoxes =
+        resultList.querySelectorAll(
+          "div[data-search-text]"
+        );
+
+      let visibleCount =
+        0;
+
+      batchBoxes.forEach(
+        function(batchBox) {
+
+          const searchText =
+            String(
+              batchBox.dataset.searchText ||
+              ""
+            );
+
+          const matched =
+            !keyword ||
+            searchText.includes(
+              keyword
+            );
+
+          batchBox.style.display =
+            matched
+              ? ""
+              : "none";
+
+          if (
+            matched
+          ) {
+            visibleCount++;
+          }
+
+        }
+      );
+
+      let noResult =
+        document.getElementById(
+          "paymentBillSearchEmpty"
+        );
+
+      if (
+        !noResult
+      ) {
+
+        noResult =
+          document.createElement(
+            "div"
+          );
+
+        noResult.id =
+          "paymentBillSearchEmpty";
+
+        noResult.style.cssText =
+          `
+            display:none;
+            padding:14px;
+            text-align:center;
+            color:#888;
+            font-size:13px;
+          `;
+
+        noResult.textContent =
+          "Tidak ada tagihan yang cocok.";
+
+        resultList.appendChild(
+          noResult
+        );
+
+      }
+
+      noResult.style.display =
+        visibleCount === 0
+          ? "block"
+          : "none";
+
+    }
+  );
+
+}
 
 
 const totalTabunganPaid =
@@ -9752,6 +9881,17 @@ const batchBox =
   document.createElement(
     "div"
   );
+
+   batchBox.dataset.searchText =
+  (
+    String(
+      firstBill.item_name || ""
+    ) +
+    " " +
+    String(
+      batchCode || ""
+    )
+  ).toLowerCase();
 
 batchBox.style.border =
   "1px solid #e5e5e5";
