@@ -1193,41 +1193,133 @@ pasti ketahuan loh! 😆
 
 </div>
 
-<!-- JENIS PEMBAYARAN -->
+<!-- =========================
+     MODE JENIS PEMBAYARAN
+========================= -->
 
 <div class="form-group">
+
+  <label>
+    Mode Pembayaran
+  </label>
+
+  <div
+    style="
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:8px;
+    "
+  >
+
+    <label
+      style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        cursor:pointer;
+      "
+    >
+      <input
+        type="radio"
+        name="paymentTypeMode"
+        value="same"
+        checked
+      >
+
+      <span>
+        Pembayaran semua barang sama
+      </span>
+    </label>
+
+
+    <label
+      style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        cursor:pointer;
+      "
+    >
+      <input
+        type="radio"
+        name="paymentTypeMode"
+        value="different"
+      >
+
+      <span>
+        Jenis pembayaran berbeda-beda
+      </span>
+    </label>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     JENIS PEMBAYARAN UMUM
+========================= -->
+
+<div
+  class="form-group"
+  id="samePaymentTypeWrapper"
+>
 
   <label for="paymentType">
     Jenis Pembayaran
   </label>
 
-<select
-  id="paymentType"
-  required
+  <select
+    id="paymentType"
+  >
+
+    <option value="">
+      Pilih jenis pembayaran
+    </option>
+
+    <option value="dp">
+      DP
+    </option>
+
+    <option value="pelunasan">
+      Pelunasan
+    </option>
+
+    <option value="both">
+      Full Payment
+    </option>
+
+    <option value="tabungan">
+      Tabungan
+    </option>
+
+  </select>
+
+</div>
+
+
+<!-- =========================
+     JENIS PEMBAYARAN PER BARANG
+========================= -->
+
+<div
+  class="form-group"
+  id="differentPaymentTypeWrapper"
+  style="display:none;"
 >
 
-  <option value="">
-    Pilih jenis pembayaran
-  </option>
+  <label>
+    Jenis Pembayaran per Barang
+  </label>
 
-  <option value="dp">
-    DP
-  </option>
+  <div
+    id="paymentTypePerItemList"
+  ></div>
 
-  <option value="pelunasan">
-    Pelunasan
-  </option>
+</div>
 
-  <option value="both">
-    Full Payment
-  </option>
 
- <option value="tabungan">
-  Tabungan
-</option>
-
-</select>
- 
 <small
   style="
     display:block;
@@ -1236,11 +1328,12 @@ pasti ketahuan loh! 😆
     line-height:1.5;
   "
 >
-  💡 Jika memilih <strong>Tabungan</strong>, pembayaran hanya dapat digunakan
-  untuk tagihan Tabungan dan tidak dapat digabung dengan tagihan Rekap GO
-  seperti Tr-INA, Tr-CH, dan lainnya.
+  💡 Jika memilih
+  <strong>Tabungan</strong>,
+  pembayaran hanya dapat digunakan
+  untuk tagihan Tabungan dan tidak dapat
+  digabung dengan tagihan Rekap GO.
 </small>
-
 </div>
 
 </div>
@@ -8062,89 +8155,36 @@ const selectedBills =
    ========================================== */
 
 const selectedPaymentType =
-  document.getElementById(
-    "paymentType"
-  ).value;
+  window.paymentTypeMode === "same"
+    ? document.getElementById("paymentType").value
+    : "";
 
 const selectedAreAllTabungan =
   selectedBills.length > 0 &&
   selectedBills.every(
     function(bill) {
-
       return (
-        String(
-          bill.recap_type || ""
-        )
+        String(bill.recap_type || "")
           .trim()
-          .toLowerCase() ===
-        "tabungan"
+          .toLowerCase() === "tabungan"
       );
-
     }
   );
-
-       /* ==========================================
-   CEK APAKAH ADA TAGIHAN TABUNGAN
-   ========================================== */
 
 const hasTabunganBill =
   selectedBills.some(
     function(bill) {
-
       return (
-        String(
-          bill.recap_type || ""
-        )
+        String(bill.recap_type || "")
           .trim()
-          .toLowerCase() ===
-        "tabungan"
+          .toLowerCase() === "tabungan"
       );
-
     }
   );
 
 
-/* ==========================================
-   TABUNGAN TIDAK BOLEH DIGABUNG
-   DENGAN DP / PELUNASAN
-   ========================================== */
-
-if (
-  hasTabunganBill &&
-  selectedPaymentType !==
-  "tabungan"
-) {
-
-  showPaymentMessage(
-    "Pembayaran Tabungan tidak boleh digabung dengan pembayaran DP atau Pelunasan. Silakan pilih tagihan Tabungan saja.",
-    true
-  );
-
-  return;
-
-}
-
-
-/* ==========================================
-   PEMBAYARAN TABUNGAN HARUS KHUSUS TABUNGAN
-   ========================================== */
-
-if (
-  selectedPaymentType ===
-  "tabungan" &&
-  !selectedAreAllTabungan
-) {
-
-  showPaymentMessage(
-    "Pembayaran Tabungan hanya dapat digunakan untuk tagihan Tabungan.",
-    true
-  );
-
-  return;
-
-}
-
 if (selectedBills.length === 0) {
+
   showPaymentMessage(
     "Pilih minimal satu tagihan terlebih dahulu.",
     true
@@ -8153,19 +8193,104 @@ if (selectedBills.length === 0) {
   return;
 }
 
-       /* ==========================================
+
+/* ==========================================
+   VALIDASI JENIS PEMBAYARAN
+========================================== */
+
+if (window.paymentTypeMode === "same") {
+
+  if (!selectedPaymentType) {
+
+    showPaymentMessage(
+      "Pilih jenis pembayaran terlebih dahulu.",
+      true
+    );
+
+    return;
+  }
+
+  if (
+    hasTabunganBill &&
+    selectedPaymentType !== "tabungan"
+  ) {
+
+    showPaymentMessage(
+      "Pembayaran Tabungan tidak boleh digabung dengan pembayaran DP atau Pelunasan. Silakan pilih tagihan Tabungan saja.",
+      true
+    );
+
+    return;
+  }
+
+  if (
+    selectedPaymentType === "tabungan" &&
+    !selectedAreAllTabungan
+  ) {
+
+    showPaymentMessage(
+      "Pembayaran Tabungan hanya dapat digunakan untuk tagihan Tabungan.",
+      true
+    );
+
+    return;
+  }
+
+} else {
+
+  const missingPaymentType =
+    selectedBills.some(
+      function(bill) {
+        return !window.paymentTypeByRecapId[
+          String(bill.id)
+        ];
+      }
+    );
+
+  if (missingPaymentType) {
+
+    showPaymentMessage(
+      "Pilih jenis pembayaran untuk setiap barang terlebih dahulu.",
+      true
+    );
+
+    return;
+  }
+
+  const hasTabunganType =
+    selectedBills.some(
+      function(bill) {
+        return (
+          window.paymentTypeByRecapId[String(bill.id)] ===
+          "tabungan"
+        );
+      }
+    );
+
+  if (hasTabunganBill || hasTabunganType) {
+
+    showPaymentMessage(
+      "Untuk pembayaran Tabungan, gunakan mode Pembayaran semua barang sama. Tabungan tidak dapat digabung atau dibuat berbeda dengan pembayaran Rekap GO.",
+      true
+    );
+
+    return;
+  }
+
+}
+
+
+/* ==========================================
    VALIDASI NOMINAL TABUNGAN
-   ========================================== */
+========================================== */
 
 if (
-  selectedPaymentType ===
-  "tabungan"
+  window.paymentTypeMode === "same" &&
+  selectedPaymentType === "tabungan"
 ) {
 
   if (
-    !Number.isFinite(
-      paymentAmount
-    ) ||
+    !Number.isFinite(paymentAmount) ||
     paymentAmount <= 0
   ) {
 
@@ -8175,59 +8300,86 @@ if (
     );
 
     return;
-
   }
 
-
   const totalTabunganRemaining =
-  selectedBills.reduce(
-    function(total, bill) {
+    selectedBills.reduce(
+      function(total, bill) {
+        return (
+          total +
+          Number(
+            bill.tabungan_remaining ??
+            bill.item_price ??
+            0
+          )
+        );
+      },
+      0
+    );
 
-      return (
-        total +
-        Number(
-          bill.tabungan_remaining ??
-          bill.item_price ??
-          0
-        )
-      );
+  if (totalTabunganRemaining <= 0) {
 
-    },
-    0
-  );
+    showPaymentMessage(
+      "Tabungan untuk barang yang dipilih sudah lunas.",
+      true
+    );
 
+    return;
+  }
+
+  if (paymentAmount > totalTabunganRemaining) {
+
+    showPaymentMessage(
+      "Nominal tabungan tidak boleh melebihi sisa harga barang yang belum terkumpul.",
+      true
+    );
+
+    return;
+  }
+
+}
+
+
+/* ==========================================
+   VALIDASI NOMINAL REKAP GO
+========================================== */
 
 if (
-  totalTabunganRemaining <= 0
+  window.paymentTypeMode === "different"
 ) {
 
-  showPaymentMessage(
-    "Tabungan untuk barang yang dipilih sudah lunas.",
-    true
-  );
+  const expectedPayment =
+    selectedBills.reduce(
+      function(total, bill) {
 
-  return;
+        const type =
+          window.paymentTypeByRecapId[String(bill.id)];
+
+        return (
+          total +
+          getPaymentAmountForBill(
+            bill,
+            type
+          )
+        );
+
+      },
+      0
+    );
+
+  if (paymentAmount !== expectedPayment) {
+
+    showPaymentMessage(
+      "Nominal pembayaran tidak sesuai dengan total tagihan yang dipilih.",
+      true
+    );
+
+    return;
+  }
 
 }
 
-
-if (
-  paymentAmount >
-  totalTabunganRemaining
-) {
-
-  showPaymentMessage(
-    "Nominal tabungan tidak boleh melebihi sisa harga barang yang belum terkumpul.",
-    true
-  );
-
-  return;
-
-}
-
-}
-        
-        /* =====================
+                /* =====================
            VALIDASI FILE
         ===================== */
 
@@ -8397,7 +8549,42 @@ console.log(
              SIMPAN DATA PEMBAYARAN
           ===================== */
 
-          const paymentType = document.getElementById("paymentType").value;
+          let paymentTypeToSave = "";
+
+          if (window.paymentTypeMode === "same") {
+
+            paymentTypeToSave =
+              document.getElementById("paymentType").value;
+
+          } else {
+
+            const paymentBreakdown =
+              window.selectedPaymentBills.map(
+                function(bill) {
+
+                  const recapId = String(bill.id);
+                  const paymentPart =
+                    window.paymentTypeByRecapId[recapId];
+
+                  return {
+                    recap_id: Number(bill.id),
+                    payment_part: paymentPart,
+                    amount: getPaymentAmountForBill(
+                      bill,
+                      paymentPart
+                    )
+                  };
+
+                }
+              );
+
+            paymentTypeToSave =
+              JSON.stringify({
+                mode: "different",
+                items: paymentBreakdown
+              });
+
+          }
           
           const {
             error
@@ -8434,7 +8621,7 @@ console.log(
                 proof_path:
                   filePath,
 
-                payment_type: paymentType,
+                payment_type: paymentTypeToSave,
 
                                 status:
                   "pending"
@@ -8501,6 +8688,20 @@ console.log(
             )
             .reset();
 
+          window.paymentTypeMode = "same";
+          window.paymentTypeByRecapId = {};
+
+          if (samePaymentTypeWrapper) {
+            samePaymentTypeWrapper.style.display = "block";
+          }
+
+          if (differentPaymentTypeWrapper) {
+            differentPaymentTypeWrapper.style.display = "none";
+          }
+
+          if (paymentTypePerItemList) {
+            paymentTypePerItemList.innerHTML = "";
+          }
 
           setToday();
 
@@ -10532,6 +10733,26 @@ else {
           batchCode
         );
 
+               /* ==========================================
+   UPDATE JENIS PEMBAYARAN PER BARANG
+========================================== */
+
+if (
+  window.paymentTypeMode ===
+  "different"
+) {
+
+  renderPaymentTypePerItem();
+
+}
+
+
+/* ==========================================
+   HITUNG ULANG NOMINAL
+========================================== */
+
+recalculateCustomerPayment();
+
         console.log(
           "SEMUA TAGIHAN TERPILIH:",
           window.selectedPaymentBills
@@ -10591,6 +10812,425 @@ else {
                       );
 
                    /* ==========================================
+   MODE PEMBAYARAN
+========================================== */
+
+window.paymentTypeMode =
+  window.paymentTypeMode ||
+  "same";
+
+
+window.paymentTypeByRecapId =
+  window.paymentTypeByRecapId ||
+  {};
+
+
+/* ==========================================
+   RADIO MODE PEMBAYARAN
+========================================== */
+
+const paymentTypeModeRadios =
+  document.querySelectorAll(
+    'input[name="paymentTypeMode"]'
+  );
+
+const samePaymentTypeWrapper =
+  document.getElementById(
+    "samePaymentTypeWrapper"
+  );
+
+const differentPaymentTypeWrapper =
+  document.getElementById(
+    "differentPaymentTypeWrapper"
+  );
+
+const paymentTypePerItemList =
+  document.getElementById(
+    "paymentTypePerItemList"
+  );
+
+
+paymentTypeModeRadios.forEach(
+  function(radio) {
+
+    radio.addEventListener(
+      "change",
+      function() {
+
+        window.paymentTypeMode =
+          this.value;
+
+
+        if (
+          this.value ===
+          "different"
+        ) {
+
+          samePaymentTypeWrapper.style.display =
+            "none";
+
+          differentPaymentTypeWrapper.style.display =
+            "block";
+
+
+          renderPaymentTypePerItem();
+
+        }
+        else {
+
+          samePaymentTypeWrapper.style.display =
+            "block";
+
+          differentPaymentTypeWrapper.style.display =
+            "none";
+
+        }
+
+
+        recalculateCustomerPayment();
+
+      }
+    );
+
+  }
+);
+
+                   /* ==========================================
+   RENDER JENIS PEMBAYARAN PER BARANG
+========================================== */
+
+function renderPaymentTypePerItem() {
+
+  if (
+    !paymentTypePerItemList
+  ) {
+    return;
+  }
+
+
+  const selectedBills =
+    window.selectedPaymentBills ||
+    [];
+
+
+  paymentTypePerItemList.innerHTML =
+    "";
+
+
+  if (
+    selectedBills.length === 0
+  ) {
+
+    paymentTypePerItemList.innerHTML =
+      `
+        <div
+          style="
+            padding:10px;
+            color:#777;
+            background:#f8f8f8;
+            border-radius:8px;
+          "
+        >
+          Pilih barang terlebih dahulu.
+        </div>
+      `;
+
+    return;
+
+  }
+
+
+  selectedBills.forEach(
+    function(bill) {
+
+      const recapId =
+        String(
+          bill.id
+        );
+
+
+      /* ----------------------------------
+         DEFAULT
+      ---------------------------------- */
+
+      if (
+        !window.paymentTypeByRecapId[
+          recapId
+        ]
+      ) {
+
+        window.paymentTypeByRecapId[
+          recapId
+        ] = "";
+
+      }
+
+
+      const wrapper =
+        document.createElement(
+          "div"
+        );
+
+
+      wrapper.style.border =
+        "1px solid #e5e5e5";
+
+      wrapper.style.borderRadius =
+        "10px";
+
+      wrapper.style.padding =
+        "10px";
+
+      wrapper.style.marginTop =
+        "8px";
+
+
+      const title =
+        document.createElement(
+          "div"
+        );
+
+
+      title.style.fontWeight =
+        "600";
+
+      title.style.marginBottom =
+        "7px";
+
+
+      title.textContent =
+        (
+          bill.batch_code ||
+          bill.product_code ||
+          "-"
+        ) +
+        " — " +
+        (
+          bill.version ||
+          bill.item_name ||
+          bill.product_version ||
+          "-"
+        );
+
+
+      const select =
+        document.createElement(
+          "select"
+        );
+
+
+      select.style.width =
+        "100%";
+
+      select.style.padding =
+        "8px";
+
+
+      select.innerHTML = `
+
+        <option value="">
+          Pilih jenis pembayaran
+        </option>
+
+        <option value="dp">
+          DP
+        </option>
+
+        <option value="pelunasan">
+          Pelunasan
+        </option>
+
+        <option value="both">
+          Full Payment
+        </option>
+
+        <option value="tabungan">
+          Tabungan
+        </option>
+
+      `;
+
+
+      select.value =
+        window.paymentTypeByRecapId[
+          recapId
+        ] || "";
+
+
+      select.addEventListener(
+        "change",
+        function() {
+
+          window.paymentTypeByRecapId[
+            recapId
+          ] =
+            this.value;
+
+
+          recalculateCustomerPayment();
+
+        }
+      );
+
+
+      wrapper.appendChild(
+        title
+      );
+
+      wrapper.appendChild(
+        select
+      );
+
+
+      paymentTypePerItemList.appendChild(
+        wrapper
+      );
+
+    }
+  );
+
+}
+
+                   /* ==========================================
+   HITUNG NOMINAL PEMBAYARAN CUSTOMER
+========================================== */
+
+function getPaymentAmountForBill(bill, selectedType) {
+
+  if (selectedType === "dp") {
+
+    if (bill.dp_status !== "unpaid") {
+      return 0;
+    }
+
+    const minimumDp =
+      Number(bill.minimum_dp_amount || 0);
+
+    const actualDp =
+      Number(bill.dp_amount || 0);
+
+    return Math.max(
+      minimumDp - actualDp,
+      0
+    );
+  }
+
+  if (
+    selectedType === "pelunasan" ||
+    selectedType === "both"
+  ) {
+
+    return Number(
+      bill.remaining_amount || 0
+    );
+  }
+
+  return 0;
+}
+
+
+function recalculateCustomerPayment() {
+
+  const selectedBills =
+    window.selectedPaymentBills ||
+    [];
+
+  const paymentAmountInput =
+    document.getElementById(
+      "paymentAmount"
+    );
+
+  if (!paymentAmountInput) {
+    return;
+  }
+
+  let totalPayment = 0;
+  let hasTabungan = false;
+
+  if (
+    window.paymentTypeMode ===
+    "same"
+  ) {
+
+    const selectedType =
+      paymentType.value;
+
+    hasTabungan =
+      selectedType === "tabungan";
+
+    selectedBills.forEach(
+      function(bill) {
+
+        totalPayment +=
+          getPaymentAmountForBill(
+            bill,
+            selectedType
+          );
+
+      }
+    );
+
+  } else {
+
+    selectedBills.forEach(
+      function(bill) {
+
+        const recapId =
+          String(bill.id);
+
+        const selectedType =
+          window.paymentTypeByRecapId[
+            recapId
+          ] || "";
+
+        if (!selectedType) {
+          return;
+        }
+
+        if (selectedType === "tabungan") {
+          hasTabungan = true;
+          return;
+        }
+
+        totalPayment +=
+          getPaymentAmountForBill(
+            bill,
+            selectedType
+          );
+
+      }
+    );
+
+  }
+
+  if (hasTabungan) {
+
+    paymentAmountInput.readOnly =
+      false;
+
+    paymentAmountInput.placeholder =
+      "Masukkan nominal tabungan";
+
+    return;
+
+  }
+
+  paymentAmountInput.readOnly =
+    true;
+
+  paymentAmountInput.placeholder =
+    "Otomatis dihitung";
+
+  paymentAmountInput.value =
+    Number(
+      totalPayment || 0
+    ).toLocaleString(
+      "id-ID"
+    );
+
+}
+
+                   /* ==========================================
    FORMAT NOMINAL PEMBAYARAN
    700000 → 700.000
    ========================================== */
@@ -10605,10 +11245,19 @@ paymentAmountInput.addEventListener(
   "input",
   function() {
 
-    if (
-      paymentType.value !==
-      "tabungan"
-    ) {
+    const isTabunganInput =
+      window.paymentTypeMode === "same"
+        ? paymentType.value === "tabungan"
+        : (window.selectedPaymentBills || []).some(
+            function(bill) {
+              return (
+                window.paymentTypeByRecapId[String(bill.id)] ===
+                "tabungan"
+              );
+            }
+          );
+
+    if (!isTabunganInput) {
 
       return;
 
@@ -10646,170 +11295,11 @@ paymentAmountInput.addEventListener(
 );
 
                     paymentType.onchange =
-                      function() {
+  function() {
 
-                        const selectedBills =
-                          window.selectedPaymentBills ||
-                          [];
+    recalculateCustomerPayment();
 
-                        let totalPayment =
-                          0;
-
-                       /* ==========================================
-   MODE PEMBAYARAN TABUNGAN
-   ========================================== */
-
-const paymentAmountInput =
-  document.getElementById(
-    "paymentAmount"
-  );
-
-const isTabunganPayment =
-  paymentType.value ===
-  "tabungan";
-
-
-/*
- * Tabungan:
- * customer bebas menentukan nominal.
- *
- * Rekap GO:
- * nominal tetap otomatis.
- */
-
-paymentAmountInput.readOnly =
-  !isTabunganPayment;
-
-
-if (
-  isTabunganPayment
-) {
-
-  paymentAmountInput.value =
-    "";
-
-  paymentAmountInput.placeholder =
-    "Masukkan nominal tabungan";
-
-}
-else {
-
-  paymentAmountInput.placeholder =
-    "Otomatis dihitung";
-
-}
-
-
-                        selectedBills.forEach(
-                          function(bill) {
-
-                            if (
-  paymentType.value ===
-  "dp"
-) {
-
-  if (
-    bill.dp_status ===
-    "unpaid"
-  ) {
-
-    const minimumDp =
-      Number(
-        bill.minimum_dp_amount ||
-        0
-      );
-
-    const actualDp =
-      Number(
-        bill.dp_amount ||
-        0
-      );
-
-    const dpOutstanding =
-      Math.max(
-        minimumDp -
-        actualDp,
-        0
-      );
-
-    totalPayment +=
-      dpOutstanding;
-
-  }
-
-}
-
-
-                            if (
-                              paymentType.value ===
-                              "pelunasan"
-                            ) {
-
-                              totalPayment +=
-                                Number(
-                                  bill.remaining_amount ||
-                                  0
-                                );
-
-                            }
-
-
-                            if (
-  paymentType.value ===
-  "both"
-) {
-
-  totalPayment +=
-    Number(
-      bill.remaining_amount ||
-      0
-    );
-
-}
-
-                          /* ==========================
-   TABUNGAN
-   ========================== */
-
-if (
-  paymentType.value ===
-  "tabungan"
-) {
-
-  /*
-   * Tabungan tidak menentukan
-   * nominal pembayaran otomatis.
-   *
-   * Customer bebas memasukkan
-   * nominal sendiri.
-   */
-
-  return;
-
-}
-
-                          }
-                        );
-
-
-                        if (
-  paymentType.value !==
-  "tabungan"
-) {
-
-  document
-    .getElementById(
-      "paymentAmount"
-    )
-    .value =
-    Number(
-      totalPayment || 0
-    ).toLocaleString(
-      "id-ID"
-    );
-
-}
-                      };
+  };
 
 
                   } catch (error) {
