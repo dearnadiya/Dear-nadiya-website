@@ -11123,6 +11123,9 @@ function renderPaymentTypePerItem() {
 
 function getPaymentAmountForBill(bill, selectedType) {
 
+  // =========================
+  // DP
+  // =========================
   if (selectedType === "dp") {
 
     if (bill.dp_status !== "unpaid") {
@@ -11141,19 +11144,31 @@ function getPaymentAmountForBill(bill, selectedType) {
     );
   }
 
-  if (
-    selectedType === "pelunasan" ||
-    selectedType === "both"
-  ) {
+
+  // =========================
+  // PELUNASAN
+  // =========================
+  if (selectedType === "pelunasan") {
 
     return Number(
       bill.remaining_amount || 0
     );
   }
 
+
+  // =========================
+  // FULL PAYMENT
+  // =========================
+  if (selectedType === "both") {
+
+    return Number(
+      bill.item_price || 0
+    );
+  }
+
+
   return 0;
 }
-
 
 function recalculateCustomerPayment() {
 
