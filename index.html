@@ -8539,7 +8539,20 @@ console.log(
             upload.error
           ) {
 
-            throw upload.error;
+            console.error(
+              "RLS / STORAGE UPLOAD ERROR:",
+              upload.error
+            );
+
+            throw new Error(
+              "Gagal upload bukti pembayaran ke Storage: " +
+              (upload.error.message || "Unknown Storage error") +
+              " [code: " +
+              (upload.error.code || "-") +
+              ", status: " +
+              (upload.error.statusCode || "-") +
+              "]"
+            );
 
           }
 
@@ -8635,7 +8648,20 @@ console.log(
 
           if (error) {
 
-            throw error;
+            console.error(
+              "RLS / TABLE INSERT ERROR:",
+              error
+            );
+
+            throw new Error(
+              "Bukti berhasil diupload, tetapi data pembayaran gagal disimpan ke dn_payment_submissions: " +
+              (error.message || "Unknown database error") +
+              " [code: " +
+              (error.code || "-") +
+              ", status: " +
+              (error.status || "-") +
+              "]"
+            );
 
           }
 
