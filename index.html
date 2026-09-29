@@ -9528,29 +9528,28 @@ Object.values(
         function(bill) {
 
           const minimumDp =
-            Number(
-              bill.minimum_dp_amount || 0
-            );
+  Number(
+    bill.minimum_dp_amount || 0
+  );
 
-          const actualDp =
-            Number(
-              bill.dp_amount || 0
-            );
+const actualDp =
+  Number(
+    bill.dp_amount || 0
+  );
 
-          const dpOutstanding =
-            Math.max(
-              minimumDp -
-              actualDp,
-              0
-            );
+const dpOutstanding =
+  bill.dp_status === "paid"
+    ? 0
+    : Math.max(
+        minimumDp -
+        actualDp,
+        0
+      );
 
-          /*
-           * Masih ada DP
-           */
-          if (
-            dpOutstanding > 0
-          ) {
-
+if (
+  dpOutstanding > 0
+) {
+ 
             return bill.dp_deadline
               ? String(
                   bill.dp_deadline
@@ -9880,6 +9879,16 @@ const unpaidDp =
           bill.dp_amount || 0
         );
 
+      /*
+       * DP dianggap masih memiliki tagihan
+       * hanya jika status DP belum paid.
+       */
+      if (
+        bill.dp_status === "paid"
+      ) {
+        return total;
+      }
+
       const dpOutstanding =
         Math.max(
           minimumDp -
@@ -9895,7 +9904,6 @@ const unpaidDp =
     },
     0
   );
-
 
     const remainingTotal =
       batchBills.reduce(
@@ -9933,26 +9941,28 @@ let paymentDeadline =
        * tampilkan DEADLINE DP.
        */
       const minimumDp =
-        Number(
-          bill.minimum_dp_amount || 0
-        );
+  Number(
+    bill.minimum_dp_amount || 0
+  );
 
-      const actualDp =
-        Number(
-          bill.dp_amount || 0
-        );
+const actualDp =
+  Number(
+    bill.dp_amount || 0
+  );
 
-      const dpOutstanding =
-        Math.max(
-          minimumDp -
-          actualDp,
-          0
-        );
+const dpOutstanding =
+  bill.dp_status === "paid"
+    ? 0
+    : Math.max(
+        minimumDp -
+        actualDp,
+        0
+      );
 
-      if (
-        dpOutstanding > 0
-      ) {
-
+if (
+  dpOutstanding > 0
+) {
+ 
         return bill.dp_deadline
           ? String(
               bill.dp_deadline
