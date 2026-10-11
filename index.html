@@ -8356,12 +8356,12 @@ if (
           window.paymentTypeByRecapId[String(bill.id)];
 
         return (
-          total +
-          getPaymentAmountForBill(
-            bill,
-            type
-          )
-        );
+  total +
+  window.getPaymentAmountForBill(
+    bill,
+    type
+  )
+);
 
       },
       0
@@ -8582,10 +8582,10 @@ console.log(
                   return {
                     recap_id: Number(bill.id),
                     payment_part: paymentPart,
-                    amount: getPaymentAmountForBill(
-                      bill,
-                      paymentPart
-                    )
+                    amount: window.getPaymentAmountForBill(
+  bill,
+  paymentPart
+)
                   };
 
                 }
@@ -11131,8 +11131,8 @@ function renderPaymentTypePerItem() {
    HITUNG NOMINAL PEMBAYARAN CUSTOMER
 ========================================== */
 
-function getPaymentAmountForBill(bill, selectedType) {
-
+window.getPaymentAmountForBill = function (bill, selectedType) {
+ 
   // =========================
   // DP
   // =========================
@@ -11177,9 +11177,9 @@ function getPaymentAmountForBill(bill, selectedType) {
   }
 
 
-  return 0;
-}
-
+    return 0;
+};
+                   
 function recalculateCustomerPayment() {
 
   const selectedBills =
@@ -11213,10 +11213,10 @@ function recalculateCustomerPayment() {
       function(bill) {
 
         totalPayment +=
-          getPaymentAmountForBill(
-            bill,
-            selectedType
-          );
+  window.getPaymentAmountForBill(
+    bill,
+    selectedType
+  );
 
       }
     );
@@ -11244,10 +11244,10 @@ function recalculateCustomerPayment() {
         }
 
         totalPayment +=
-          getPaymentAmountForBill(
-            bill,
-            selectedType
-          );
+  window.getPaymentAmountForBill(
+    bill,
+    selectedType
+  );
 
       }
     );
