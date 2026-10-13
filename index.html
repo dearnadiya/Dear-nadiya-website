@@ -9088,8 +9088,109 @@ const matchedCustomers =
                       );
 
 
-                   if (billError) {
+                  if (billError) {
   throw billError;
+}
+
+/* ==========================================
+   SEMBUNYIKAN TAGIHAN REKAP GO
+   YANG TERHUBUNG KE TABUNGAN ALBUM SAJA
+   ========================================== */
+
+if (Array.isArray(bills) && bills.length > 0) {
+  const currentBillIds = bills
+    .map(function (bill) {
+      return Number(bill.id);
+    })
+    .filter(function (id) {
+      return Number.isFinite(id) && id > 0;
+    });
+
+  if (currentBillIds.length > 0) {
+    const {
+      data: customerLinks,
+      error: customerLinksError
+    } = await supabaseClient
+      .from("dn_tabungan_album_customer_links")
+      .select("source_recap_id, target_recap_id")
+      .in("target_recap_id", currentBillIds);
+
+    if (customerLinksError) {
+      throw customerLinksError;
+    }
+
+    const mappings = customerLinks || [];
+
+    const sourceIds = [
+      ...new Set(
+        mappings
+          .map(function (link) {
+            return Number(link.source_recap_id);
+          })
+          .filter(function (id) {
+            return Number.isFinite(id) && id > 0;
+          })
+      )
+    ];
+
+    let albumSourceIds = [];
+
+    if (sourceIds.length > 0) {
+      const {
+        data: sourceRows,
+        error: sourceRowsError
+      } = await supabaseClient
+        .from("purchase_recap")
+        .select("id, category")
+        .in("id", sourceIds);
+
+      if (sourceRowsError) {
+        throw sourceRowsError;
+      }
+
+      albumSourceIds = (sourceRows || [])
+        .filter(function (row) {
+          return String(row.category || "")
+            .trim()
+            .toLowerCase() === "tabungan album";
+        })
+        .map(function (row) {
+          return Number(row.id);
+        });
+    }
+
+    const albumSourceIdSet = new Set(albumSourceIds);
+
+    const linkedTargetIds = new Set(
+      mappings
+        .filter(function (link) {
+          return albumSourceIdSet.has(
+            Number(link.source_recap_id)
+          );
+        })
+        .map(function (link) {
+          return Number(link.target_recap_id);
+        })
+    );
+
+    /* Hapus hanya tagihan Rekap GO yang terhubung.
+       Tagihan Tabungan dan tagihan lain tetap ada. */
+    for (let i = bills.length - 1; i >= 0; i--) {
+      const bill = bills[i];
+
+      if (
+        linkedTargetIds.has(Number(bill.id)) &&
+        String(bill.category || "")
+          .trim()
+          .toLowerCase() !== "tabungan album" &&
+        String(bill.category || "")
+          .trim()
+          .toLowerCase() !== "tabungan lightstick"
+      ) {
+        bills.splice(i, 1);
+      }
+    }
+  }
 }
 
 
