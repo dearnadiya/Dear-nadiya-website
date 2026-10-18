@@ -9076,16 +9076,8 @@ const matchedCustomers =
                       error: billError
                     } = await supabaseClient
                       .from("purchase_recap")
-                      .select("*")
-                      .eq(
-                        "customer_id",
-                        Number(
-                          customer.id
-                        )
-                      )
-                      .or(
-                        "dp_status.eq.unpaid,payment_status.eq.unpaid"
-                      );
+.select("*")
+.eq("customer_id", Number(customer.id));
 
 
                   if (billError) {
@@ -11232,54 +11224,52 @@ function renderPaymentTypePerItem() {
    HITUNG NOMINAL PEMBAYARAN CUSTOMER
 ========================================== */
 
+
 window.getPaymentAmountForBill = function (bill, selectedType) {
- 
-  // =========================
-  // DP
-  // =========================
+
+  const price = Math.max(
+    Number(bill.item_price || 0),
+    0
+  );
+
+  const totalPaid = Math.max(
+    Number(bill.confirmed_total_paid || 0),
+    0
+  );
+
+  const minimumDp = Math.max(
+    Number(bill.minimum_dp_amount || 0),
+    0
+  );
+
+  const dpPaid = Math.max(
+    Number(bill.confirmed_dp_paid || 0),
+    0
+  );
+
+  const remaining = Math.max(
+    price - totalPaid,
+    0
+  );
+
   if (selectedType === "dp") {
-
-    if (bill.dp_status !== "unpaid") {
-      return 0;
-    }
-
-    const minimumDp =
-      Number(bill.minimum_dp_amount || 0);
-
-    const actualDp =
-      Number(bill.dp_amount || 0);
-
     return Math.max(
-      minimumDp - actualDp,
+      minimumDp - dpPaid,
       0
     );
   }
 
-
-  // =========================
-  // PELUNASAN
-  // =========================
   if (selectedType === "pelunasan") {
-
-    return Number(
-      bill.remaining_amount || 0
-    );
+    return remaining;
   }
 
-
-  // =========================
-  // FULL PAYMENT
-  // =========================
   if (selectedType === "both") {
-
-    return Number(
-      bill.item_price || 0
-    );
+    return price;
   }
 
-
-    return 0;
+  return 0;
 };
+
                    
 function recalculateCustomerPayment() {
 
