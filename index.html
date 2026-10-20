@@ -10931,20 +10931,17 @@ selectWrapper.style.borderTop =
           );
 
 
-        /* =========================
-           HITUNG NOMINAL
-        ========================= */
+/* =========================
+   HITUNG NOMINAL
+========================= */
 
-        const paymentAmountInput =
-          document.getElementById(
-            "paymentAmount"
-          );
-
-
-let totalPayment = 0;
+const paymentAmountInput =
+  document.getElementById("paymentAmount");
 
 const paymentType =
   document.getElementById("paymentType").value;
+
+let totalPayment = 0;
 
 (window.selectedPaymentBills || []).forEach(function (selectedBill) {
   totalPayment += window.getPaymentAmountForBill(
@@ -10953,35 +10950,15 @@ const paymentType =
   );
 });
 
-               if (
-  paymentType ===
-  "tabungan"
-) {
-
-  paymentAmountInput.readOnly =
-    false;
-
-  paymentAmountInput.placeholder =
-    "Masukkan nominal tabungan";
-
+if (paymentType === "tabungan") {
+  paymentAmountInput.readOnly = false;
+  paymentAmountInput.placeholder = "Masukkan nominal tabungan";
+} else {
+  paymentAmountInput.readOnly = true;
+  paymentAmountInput.placeholder = "Otomatis dihitung";
+  paymentAmountInput.value = Number(totalPayment || 0)
+    .toLocaleString("id-ID");
 }
-else {
-
-  paymentAmountInput.readOnly =
-    true;
-
-  paymentAmountInput.placeholder =
-    "Otomatis dihitung";
-
-  paymentAmountInput.value =
-  Number(
-    totalPayment || 0
-  ).toLocaleString(
-    "id-ID"
-  );
-
-}
-
 
         console.log(
           "BATCH TERPILIH:",
