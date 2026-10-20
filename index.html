@@ -11418,8 +11418,19 @@ window.getPaymentAmountForBill = function (bill, selectedType) {
 
   // Pelunasan: gunakan sisa aktual jika sudah dihitung.
   if (selectedType === "pelunasan") {
-    return remaining;
-  }
+
+  return Math.max(
+    Number(
+      bill.customer_remaining_amount ??
+      bill.remaining_amount ??
+      (
+        Number(bill.item_price ?? bill.price ?? 0) -
+        Number(bill.customer_dp_paid ?? bill.dp_amount ?? 0)
+      )
+    ) || 0,
+    0
+  );
+}
 
   // Full Payment: kurangi pembayaran yang sudah masuk.
   if (selectedType === "both") {
