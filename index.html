@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
  
 <html lang="id">
@@ -2845,6 +2843,7 @@ async function loadRecap() {
       version,
       quantity,
       item_price,
+      dp_amount,
       minimum_dp_amount,
       dp_status,
       payment_status,
@@ -3433,14 +3432,21 @@ const minimumDp =
     0
   ) || 0;
 
-
 const fixedDp =
   Math.min(
     minimumDp,
     price
   );
 
-
+const actualDp =
+  Math.min(
+    Math.max(
+      Number(meta?.dp_amount ?? fixedDp) || 0,
+      0
+    ),
+    price
+  );
+     
 const dpStatus =
   String(
     meta?.dp_status ||
@@ -3486,26 +3492,12 @@ if (
     0;
 
 }
-else if (
-  dpStatus ===
-  "paid"
-) {
-
-  dpPaid =
-    fixedDp;
-
-  pelunasanPaid =
-    0;
-
-  remainingAmount =
-    Math.max(
-      price -
-      fixedDp,
-      0
-    );
-
+else if (dpStatus === "paid") {
+  dpPaid = actualDp;
+  pelunasanPaid = 0;
+  remainingAmount = Math.max(price - dpPaid, 0);
 }
-
+     
       /* ==========================================
    KHUSUS REKAP TABUNGAN
    HITUNG NILAI AKTUAL
