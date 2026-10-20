@@ -11233,53 +11233,49 @@ function renderPaymentTypePerItem() {
    HITUNG NOMINAL PEMBAYARAN CUSTOMER
 ========================================== */
 
-window.getPaymentAmountForBill = function (bill, selectedType) {
- 
-  // =========================
-  // DP
-  // =========================
-  if (selectedType === "dp") {
 
-    if (bill.dp_status !== "unpaid") {
+window.getPaymentAmountForBill = function (bill, selectedType) {
+  const price = Math.max(
+    Number(bill.item_price ?? bill.price ?? 0),
+    0
+  );
+
+  const dpPaid = Math.min(
+    Math.max(Number(bill.dp_amount ?? 0), 0),
+    price
+  );
+
+  const remaining = Math.min(
+    Math.max(Number(bill.remaining_amount ?? price - dpPaid), 0),
+    price
+  );
+
+  // DP: hanya tagihkan kekurangan dari DP minimum
+  if (selectedType === "dp") {
+    if (bill.dp_status === "paid") {
       return 0;
     }
 
-    const minimumDp =
-      Number(bill.minimum_dp_amount || 0);
-
-    const actualDp =
-      Number(bill.dp_amount || 0);
-
-    return Math.max(
-      minimumDp - actualDp,
+    const minimumDp = Math.max(
+      Number(bill.minimum_dp_amount ?? 0),
       0
     );
+
+    return Math.max(minimumDp - dpPaid, 0);
   }
 
-
-  // =========================
-  // PELUNASAN
-  // =========================
+  // Pelunasan: gunakan sisa tagihan,
+  // bukan total harga barang
   if (selectedType === "pelunasan") {
-
-    return Number(
-      bill.remaining_amount || 0
-    );
+    return remaining;
   }
 
-
-  // =========================
-  // FULL PAYMENT
-  // =========================
+  // Full payment: hanya jika belum ada pembayaran
   if (selectedType === "both") {
-
-    return Number(
-      bill.item_price || 0
-    );
+    return remaining;
   }
 
-
-    return 0;
+  return 0;
 };
                    
 function recalculateCustomerPayment() {
