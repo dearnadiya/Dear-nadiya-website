@@ -10941,84 +10941,17 @@ selectWrapper.style.borderTop =
           );
 
 
-        
 let totalPayment = 0;
 
-const paymentType = document.getElementById("paymentType").value;
+const paymentType =
+  document.getElementById("paymentType").value;
 
-window.selectedPaymentBills.forEach(function (selectedBill) {
+(window.selectedPaymentBills || []).forEach(function (selectedBill) {
   totalPayment += window.getPaymentAmountForBill(
     selectedBill,
     paymentType
   );
 });
-
-              if (
-  paymentType ===
-  "dp"
-) {
-
-  if (
-    selectedBill.dp_status ===
-    "unpaid"
-  ) {
-
-    const minimumDp =
-      Number(
-        selectedBill.minimum_dp_amount ||
-        0
-      );
-
-    const actualDp =
-      Number(
-        selectedBill.dp_amount ||
-        0
-      );
-
-    const dpOutstanding =
-      Math.max(
-        minimumDp -
-        actualDp,
-        0
-      );
-
-    totalPayment +=
-      dpOutstanding;
-
-  }
-
-}
-
-
-              else if (
-                paymentType ===
-                "pelunasan"
-              ) {
-
-                totalPayment +=
-                  Number(
-                    selectedBill.remaining_amount ||
-                    0
-                  );
-
-              }
-
-
-             else if (
-  paymentType ===
-  "both"
-) {
-
-  totalPayment +=
-    Number(
-      selectedBill.remaining_amount ||
-      0
-    );
-
-}
-
-            }
-          );
 
                if (
   paymentType ===
