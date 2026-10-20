@@ -11226,7 +11226,6 @@ function renderPaymentTypePerItem() {
    HITUNG NOMINAL PEMBAYARAN CUSTOMER
 ========================================== */
 
-
 window.getPaymentAmountForBill = function (bill, selectedType) {
   const price = Math.max(
     Number(bill.item_price ?? bill.price ?? 0),
@@ -11238,10 +11237,36 @@ window.getPaymentAmountForBill = function (bill, selectedType) {
     price
   );
 
-  const remaining = Math.min(
-    Math.max(Number(bill.remaining_amount ?? price - dpPaid), 0),
-    price
+  let remaining = 0;
+
+if (
+  String(bill.payment_status || "")
+    .trim()
+    .toLowerCase() === "paid"
+) {
+  remaining = 0;
+}
+else if (
+  String(bill.dp_status || "")
+    .trim()
+    .toLowerCase() === "paid"
+) {
+  remaining = Math.max(
+    price - dpPaid,
+    0
   );
+}
+else {
+  remaining = Math.max(
+    Number(bill.remaining_amount ?? price),
+    0
+  );
+}
+
+remaining = Math.min(
+  remaining,
+  price
+);
 
   // DP: hanya tagihkan kekurangan dari DP minimum
   if (selectedType === "dp") {
