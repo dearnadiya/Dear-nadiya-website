@@ -3464,6 +3464,29 @@ const paymentStatus =
     .trim()
     .toLowerCase();
 
+     if (
+  String(item.customer_name || "")
+    .toLowerCase()
+    .includes("paula") ||
+  String(item.product_code || "")
+    .trim() === "Tr-JP-034"
+) {
+  console.log(
+    "DEBUG TAGIHAN PAULA:",
+    {
+      customer: item.customer_name,
+      batch: item.product_code,
+      recapId: meta?.id,
+      harga: price,
+      dpAktual: meta?.dp_amount,
+      statusDP: meta?.dp_status,
+      statusPembayaran: meta?.payment_status,
+      sisaDatabase: meta?.remaining_amount,
+      dpDihitung: actualDp,
+      sisaDihitung: remainingAmount
+    }
+  );
+}
 
 let dpPaid = 0;
 
