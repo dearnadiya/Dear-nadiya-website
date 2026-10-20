@@ -9194,6 +9194,193 @@ if (Array.isArray(bills) && bills.length > 0) {
   }
 }
 
+                   
+/* ==========================================
+   HITUNG SISA TAGIHAN REKAP GO
+   BERDASARKAN PEMBAYARAN CONFIRMED
+   ========================================== */
+
+const regularPaymentBills = (bills || []).filter(
+  function (bill) {
+    const category = String(bill.category || "")
+      .trim()
+      .toLowerCase();
+
+    return (
+      category !== "tabungan album" &&
+      category !== "tabungan lightstick" &&
+      String(bill.recap_type || "")
+        .trim()
+        .toLowerCase() !== "tabungan"
+    );
+  }
+);
+
+if (regularPaymentBills.length > 0) {
+  const regularRecapIds = regularPaymentBills
+    .map(function (bill) {
+      return Number(bill.id);
+    })
+    .filter(function (id) {
+      return Number.isFinite(id) && id > 0;
+    });
+
+  const {
+    data: regularAllocations,
+    error: regularAllocationError
+  } = await supabaseClient
+    .from("dn_payment_allocations")
+    .select(`
+      recap_id,
+      payment_submission_id,
+      allocated_amount,
+      payment_part
+    `)
+    .in("recap_id", regularRecapIds);
+
+  if (regularAllocationError) {
+    throw regularAllocationError;
+  }
+
+  const paymentIds = [
+    ...new Set(
+      (regularAllocations || [])
+        .map(function (row) {
+          return row.payment_submission_id;
+        })
+        .filter(function (id) {
+          return id !== null && id !== undefined;
+        })
+    )
+  ];
+
+  let confirmedPaymentIds = new Set();
+
+  if (paymentIds.length > 0) {
+    const {
+      data: confirmedPayments,
+      error: confirmedPaymentError
+    } = await supabaseClient
+      .from("dn_payment_submissions")
+      .select("id")
+      .in("id", paymentIds)
+      .eq("status", "confirmed");
+
+    if (confirmedPaymentError) {
+      throw confirmedPaymentError;
+    }
+
+    confirmedPaymentIds = new Set(
+      (confirmedPayments || []).map(function (payment) {
+        return String(payment.id);
+      })
+    );
+  }
+
+  regularPaymentBills.forEach(function (bill) {
+    const recapId = String(bill.id);
+    const price = Math.max(
+      Number(bill.item_price ?? bill.price ?? 0),
+      0
+    );
+    const minimumDp = Math.max(
+      Number(bill.minimum_dp_amount || 0),
+      0
+    );
+
+    const allocations = (regularAllocations || []).filter(
+      function (row) {
+        return (
+          String(row.recap_id) === recapId &&
+          confirmedPaymentIds.has(
+            String(row.payment_submission_id)
+          )
+        );
+      }
+    );
+
+    // Tanpa alokasi pembayaran terkonfirmasi,
+    // pertahankan saldo yang tercatat di rekap.
+    if (allocations.length === 0) {
+      bill.customer_remaining_amount = Math.min(
+        Math.max(
+          Number(
+            bill.remaining_amount ??
+            (price - Number(bill.dp_amount || 0))
+          ),
+          0
+        ),
+        price
+      );
+      return;
+    }
+
+    const hasDpAllocation = allocations.some(
+      function (row) {
+        return (
+          row.payment_part === "dp" ||
+          row.payment_part === "both"
+        );
+      }
+    );
+
+    // Bila alokasi hanya pelunasan, DP manual yang
+    // sudah tersimpan tetap dihitung sebagai pembayaran.
+    let dpPaid = hasDpAllocation
+      ? 0
+      : Math.min(
+          Math.max(Number(bill.dp_amount || 0), 0),
+          price
+        );
+
+    let pelunasanPaid = 0;
+
+    allocations.forEach(function (row) {
+      const amount = Math.max(
+        Number(row.allocated_amount || 0),
+        0
+      );
+
+      if (row.payment_part === "dp") {
+        dpPaid += amount;
+        return;
+      }
+
+      if (row.payment_part === "pelunasan") {
+        pelunasanPaid += amount;
+        return;
+      }
+
+      if (row.payment_part === "both") {
+        const dpOutstanding = Math.max(
+          minimumDp - dpPaid,
+          0
+        );
+
+        const amountForDp = Math.min(
+          amount,
+          dpOutstanding
+        );
+
+        dpPaid += amountForDp;
+        pelunasanPaid += amount - amountForDp;
+      }
+    });
+
+    const totalPaid = Math.min(
+      dpPaid + pelunasanPaid,
+      price
+    );
+
+    bill.customer_remaining_amount = Math.max(
+      price - totalPaid,
+      0
+    );
+
+    // Dipakai oleh fungsi penghitungan nominal pembayaran.
+    bill.customer_dp_paid = Math.min(dpPaid, price);
+  });
+}
 
 /* ==========================================
    HITUNG SALDO TABUNGAN AKTUAL
@@ -10754,20 +10941,17 @@ selectWrapper.style.borderTop =
           );
 
 
-        let totalPayment =
-          0;
+        
+let totalPayment = 0;
 
+const paymentType = document.getElementById("paymentType").value;
 
-        const paymentType =
-          document.getElementById(
-            "paymentType"
-          ).value;
-
-
-        window.selectedPaymentBills
-          .forEach(
-            function(selectedBill) {
-
+window.selectedPaymentBills.forEach(function (selectedBill) {
+  totalPayment += window.getPaymentAmountForBill(
+    selectedBill,
+    paymentType
+  );
+});
 
               if (
   paymentType ===
@@ -11233,44 +11417,51 @@ function renderPaymentTypePerItem() {
    HITUNG NOMINAL PEMBAYARAN CUSTOMER
 ========================================== */
 
-
 window.getPaymentAmountForBill = function (bill, selectedType) {
   const price = Math.max(
     Number(bill.item_price ?? bill.price ?? 0),
     0
   );
 
+  const minimumDp = Math.max(
+    Number(bill.minimum_dp_amount ?? 0),
+    0
+  );
+
   const dpPaid = Math.min(
-    Math.max(Number(bill.dp_amount ?? 0), 0),
-    price
-  );
-
+  Math.max(
+    Number(bill.customer_dp_paid ?? bill.dp_amount ?? 0),
+    0
+  ),
+  price
+);
   const remaining = Math.min(
-    Math.max(Number(bill.remaining_amount ?? price - dpPaid), 0),
+    Math.max(
+      Number(
+        bill.customer_remaining_amount ??
+        bill.remaining_amount ??
+        (price - dpPaid)
+      ),
+      0
+    ),
     price
   );
 
-  // DP: hanya tagihkan kekurangan dari DP minimum
+  // DP: tagih kekurangan dari DP minimum.
   if (selectedType === "dp") {
     if (bill.dp_status === "paid") {
       return 0;
     }
 
-    const minimumDp = Math.max(
-      Number(bill.minimum_dp_amount ?? 0),
-      0
-    );
-
     return Math.max(minimumDp - dpPaid, 0);
   }
 
-  // Pelunasan: gunakan sisa tagihan,
-  // bukan total harga barang
+  // Pelunasan: gunakan sisa aktual jika sudah dihitung.
   if (selectedType === "pelunasan") {
     return remaining;
   }
 
-  // Full payment: hanya jika belum ada pembayaran
+  // Full Payment: kurangi pembayaran yang sudah masuk.
   if (selectedType === "both") {
     return remaining;
   }
