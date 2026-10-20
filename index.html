@@ -9299,22 +9299,46 @@ if (regularPaymentBills.length > 0) {
       }
     );
 
+    
     // Tanpa alokasi pembayaran terkonfirmasi,
-    // pertahankan saldo yang tercatat di rekap.
+    // hitung ulang sisa berdasarkan status DP.
     if (allocations.length === 0) {
-      bill.customer_remaining_amount = Math.min(
-        Math.max(
-          Number(
-            bill.remaining_amount ??
-            (price - Number(bill.dp_amount || 0))
-          ),
-          0
-        ),
+      const dpPaid = Math.min(
+        Math.max(Number(bill.dp_amount || 0), 0),
         price
       );
+
+      if (
+        String(bill.dp_status || "")
+          .trim()
+          .toLowerCase() === "paid"
+      ) {
+        // DP sudah terbayar:
+        // sisa = harga barang - DP yang sudah dibayar.
+        bill.customer_dp_paid = dpPaid;
+        bill.customer_remaining_amount = Math.max(
+          price - dpPaid,
+          0
+        );
+      } else {
+        // Jika DP belum terbayar, pertahankan
+        // saldo yang tercatat sebagai fallback.
+        bill.customer_dp_paid = dpPaid;
+        bill.customer_remaining_amount = Math.min(
+          Math.max(
+            Number(
+              bill.remaining_amount ??
+              (price - dpPaid)
+            ),
+            0
+          ),
+          price
+        );
+      }
+
       return;
     }
-
+   
     const hasDpAllocation = allocations.some(
       function (row) {
         return (
@@ -11338,24 +11362,50 @@ window.getPaymentAmountForBill = function (bill, selectedType) {
     0
   );
 
+  
   const dpPaid = Math.min(
-  Math.max(
-    Number(bill.customer_dp_paid ?? bill.dp_amount ?? 0),
-    0
-  ),
-  price
-);
-  const remaining = Math.min(
     Math.max(
       Number(
-        bill.customer_remaining_amount ??
-        bill.remaining_amount ??
-        (price - dpPaid)
+        bill.customer_dp_paid ??
+        bill.dp_amount ??
+        0
       ),
       0
     ),
     price
   );
+
+  let remaining;
+
+  if (
+    bill.customer_remaining_amount !== null &&
+    bill.customer_remaining_amount !== undefined
+  ) {
+    // Gunakan saldo yang sudah dihitung dari alokasi
+    // atau dari perhitungan ulang status DP di atas.
+    remaining = Math.max(
+      Number(bill.customer_remaining_amount || 0),
+      0
+    );
+  } else if (
+    String(bill.dp_status || "")
+      .trim()
+      .toLowerCase() === "paid"
+  ) {
+    // Jika DP paid tetapi saldo aktual belum tersedia,
+    // hitung langsung dari harga dikurangi DP.
+    remaining = Math.max(price - dpPaid, 0);
+  } else {
+    remaining = Math.max(
+      Number(
+        bill.remaining_amount ??
+        (price - dpPaid)
+      ),
+      0
+    );
+  }
+
+  remaining = Math.min(remaining, price);
 
   // DP: tagih kekurangan dari DP minimum.
   if (selectedType === "dp") {
