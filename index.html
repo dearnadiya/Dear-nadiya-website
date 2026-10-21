@@ -11260,6 +11260,19 @@ window.getPaymentAmountForBill = function (bill, selectedType) {
     price
   );
 
+ console.log("DEBUG HITUNG TAGIHAN:", {
+  id: bill.id,
+  batch: bill.batch_code,
+  item: bill.item_name,
+  price: price,
+  dp_amount: bill.dp_amount,
+  dpPaid: dpPaid,
+  dp_status: bill.dp_status,
+  payment_status: bill.payment_status,
+  remaining_amount_database: bill.remaining_amount,
+  selectedType: selectedType
+});
+
   let remaining = 0;
 
 if (
@@ -11308,8 +11321,15 @@ remaining = Math.min(
   // Pelunasan: gunakan sisa tagihan,
   // bukan total harga barang
   if (selectedType === "pelunasan") {
-    return remaining;
-  }
+  console.log("DEBUG HASIL PELUNASAN:", {
+    batch: bill.batch_code,
+    harga: price,
+    dpDibayar: dpPaid,
+    sisaDariFungsi: remaining
+  });
+
+  return remaining;
+}
 
   // Full payment: hanya jika belum ada pembayaran
   if (selectedType === "both") {
