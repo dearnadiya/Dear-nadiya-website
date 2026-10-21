@@ -10023,20 +10023,72 @@ const unpaidDp =
     0
   );
 
-    const remainingTotal =
-      batchBills.reduce(
-        function(total, bill) {
+   
+const remainingTotal =
+  batchBills.reduce(
+    function(total, bill) {
 
-          return (
-            total +
-            Number(
-              bill.remaining_amount || 0
-            )
-          );
-
-        },
+      const price = Math.max(
+        Number(
+          bill.item_price ??
+          bill.price ??
+          0
+        ),
         0
       );
+
+      const dpPaid = Math.min(
+        Math.max(
+          Number(bill.dp_amount ?? 0),
+          0
+        ),
+        price
+      );
+
+      const paymentStatus =
+        String(
+          bill.payment_status || ""
+        ).trim().toLowerCase();
+
+      const dpStatus =
+        String(
+          bill.dp_status || ""
+        ).trim().toLowerCase();
+
+      let remaining = 0;
+
+      if (paymentStatus === "paid") {
+
+        remaining = 0;
+
+      } else if (dpStatus === "paid") {
+
+        remaining = Math.max(
+          price - dpPaid,
+          0
+        );
+
+      } else {
+
+        remaining = Math.max(
+          Number(
+            bill.remaining_amount ?? price
+          ),
+          0
+        );
+
+        remaining = Math.min(
+          remaining,
+          price
+        );
+
+      }
+
+      return total + remaining;
+
+    },
+    0
+  );
 
     /* =========================
    LOGIKA PRIORITAS TAGIHAN
@@ -11259,20 +11311,7 @@ window.getPaymentAmountForBill = function (bill, selectedType) {
     Math.max(Number(bill.dp_amount ?? 0), 0),
     price
   );
-
- console.log("DEBUG HITUNG TAGIHAN:", {
-  id: bill.id,
-  batch: bill.batch_code,
-  item: bill.item_name,
-  price: price,
-  dp_amount: bill.dp_amount,
-  dpPaid: dpPaid,
-  dp_status: bill.dp_status,
-  payment_status: bill.payment_status,
-  remaining_amount_database: bill.remaining_amount,
-  selectedType: selectedType
-});
-
+ 
   let remaining = 0;
 
 if (
@@ -11321,13 +11360,6 @@ remaining = Math.min(
   // Pelunasan: gunakan sisa tagihan,
   // bukan total harga barang
   if (selectedType === "pelunasan") {
-  console.log("DEBUG HASIL PELUNASAN:", {
-    batch: bill.batch_code,
-    harga: price,
-    dpDibayar: dpPaid,
-    sisaDariFungsi: remaining
-  });
-
   return remaining;
 }
 
