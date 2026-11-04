@@ -10894,10 +10894,16 @@ selectWrapper.style.borderTop =
 ) {
 
   totalPayment +=
-    Number(
-      selectedBill.remaining_amount ||
+    Math.max(
+      Number(
+        selectedBill.item_price ??
+        selectedBill.price ??
+        0
+      ),
       0
     );
+
+}
 
 }
 
@@ -11363,10 +11369,10 @@ remaining = Math.min(
   return remaining;
 }
 
-  // Full payment: hanya jika belum ada pembayaran
-  if (selectedType === "both") {
-    return remaining;
-  }
+  // Full Payment: tagihkan harga barang secara penuh
+if (selectedType === "both") {
+  return price;
+}
 
   return 0;
 };
