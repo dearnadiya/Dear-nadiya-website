@@ -1,3 +1,19 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
  
 <html lang="id">
@@ -10871,38 +10887,43 @@ selectWrapper.style.borderTop =
 
   }
 
+}
+
+
               else if (
                 paymentType ===
                 "pelunasan"
               ) {
 
                 totalPayment +=
-                  Number(
-                    selectedBill.remaining_amount ||
-                    0
-                  );
+    Math.max(
+      Number(
+        selectedBill.item_price ??
+        selectedBill.price ??
+        0
+      ),
+      0
+    );
 
               }
 
-                         else if (
+
+             else if (
   paymentType ===
   "both"
 ) {
 
   totalPayment +=
-    Math.max(
-      Number(
-        selectedBill.item_price ??
-                      selectedBill.price ??
-                      0
-                    ),
-                    0
-                  );
+    Number(
+      selectedBill.remaining_amount ||
+      0
+    );
 
-              }
+}
 
             }
           );
+
                if (
   paymentType ===
   "tabungan"
@@ -11362,10 +11383,10 @@ remaining = Math.min(
   return remaining;
 }
 
-  // Full Payment: tagihkan harga barang secara penuh
-if (selectedType === "both") {
-  return price;
-}
+  // Full payment: hanya jika belum ada pembayaran
+  if (selectedType === "both") {
+    return price;
+  }
 
   return 0;
 };
@@ -13115,3 +13136,5 @@ if (paymentStartBtn && paymentForm) {
 </body>
 
 </html>
+
+
