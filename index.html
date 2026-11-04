@@ -1,19 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
  
 <html lang="id">
@@ -2232,73 +2216,40 @@ case "Order Barang":
 
 function getPaymentStatusDisplay(item) {
 
-  /* =========================
-     KHUSUS TABUNGAN
-     ========================= */
+  const recapType = String(
+    item.recap_type || ""
+  ).trim().toLowerCase();
 
-  if (
-    String(
-      item.recap_type ||
-      ""
-    ).trim().toLowerCase() ===
-    "tabungan"
-  ) {
+  // Status khusus Tabungan yang tidak terhubung
+  // tetap menggunakan tampilan lama.
+  if (recapType === "tabungan") {
 
-    const tabunganPaid =
-      Number(
-        item.tabungan_paid ||
-        0
-      );
+    const tabunganPaid = Number(item.tabungan_paid || 0);
+    const tabunganTarget = Number(item.tabungan_target || 0);
+    const price = Number(item.price || 0);
 
-    const tabunganTarget =
-      Number(
-        item.tabungan_target ||
-        0
-      );
-
-    const price =
-      Number(
-        item.price ||
-        0
-      );
-
-    if (
-      price > 0 &&
-      tabunganPaid >= price
-    ) {
-
+    if (price > 0 && tabunganPaid >= price) {
       return `
         <span class="payment-status payment-status-both">
           🟣 Tabungan Lunas
         </span>
       `;
-
     }
 
-    if (
-      tabunganTarget > 0 &&
-      tabunganPaid >=
-      tabunganTarget
-    ) {
-
+    if (tabunganTarget > 0 && tabunganPaid >= tabunganTarget) {
       return `
         <span class="payment-status payment-status-dp">
           🎯 Target Tercapai • ${rupiah(tabunganPaid)}
         </span>
       `;
-
     }
 
-    if (
-      tabunganPaid > 0
-    ) {
-
+    if (tabunganPaid > 0) {
       return `
         <span class="payment-status payment-status-dp">
           💰 Menabung • ${rupiah(tabunganPaid)}
         </span>
       `;
-
     }
 
     return `
@@ -2306,92 +2257,44 @@ function getPaymentStatusDisplay(item) {
         ⚪ Belum Ada Tabungan
       </span>
     `;
-
   }
 
+  // Status pembayaran barang utama
+  const dpStatus = String(
+    item.dp_status || ""
+  ).trim().toLowerCase();
 
-  const dp =
-    Number(
-      item.dp || 0
-    );
+  const paymentStatus = String(
+    item.payment_status || ""
+  ).trim().toLowerCase();
 
-  const pelunasan =
-    Number(
-      item.pelunasan || 0
-    );
-
-
-  /* =========================
-     BELUM ADA PEMBAYARAN
-  ========================= */
-
-  if (
-    dp <= 0 &&
-    pelunasan <= 0
-  ) {
-
-    return `
-      <span class="payment-status payment-status-none">
-        ⚪ Belum Ada Pembayaran
-      </span>
-    `;
-
-  }
-
-
-  /* =========================
-     DP SAJA
-  ========================= */
-
-  if (
-    dp > 0 &&
-    pelunasan <= 0
-  ) {
-
-    return `
-      <span class="payment-status payment-status-dp">
-        🟠 DP Lunas • Pelunasan Belum
-      </span>
-    `;
-
-  }
-
-
-  /* =========================
-     SUDAH LUNAS
-     
-     Tidak peduli:
-     - langsung bayar penuh
-     - DP lalu pelunasan
-     
-     Keduanya dianggap sama.
-  ========================= */
-
-  if (
-    pelunasan > 0
-  ) {
-
+  // Sudah dikonfirmasi lunas oleh admin
+  if (paymentStatus === "paid") {
     return `
       <span class="payment-status payment-status-both">
-        🟣 Lunas
+        🟣 Lunas Mantap
       </span>
     `;
-
   }
 
+  // DP sudah dikonfirmasi, tetapi belum lunas total
+  if (dpStatus === "paid") {
+    return `
+      <span class="payment-status payment-status-dp">
+        🟠 DP Lunas. Ayo Nabung Lagi
+      </span>
+    `;
+  }
 
-  /* =========================
-     DEFAULT
-  ========================= */
-
+  // DP minimum belum dikonfirmasi
   return `
-    <span class="payment-status payment-status-none">
-      ⚪ Belum Ada Pembayaran
+    <span class="payment-status payment-status-dp">
+      💰 Semangat Menabungnya
     </span>
   `;
 
 }
-
+ 
    /* =========================
    STATUS CHECKOUT DATE
 ========================= */
@@ -3342,6 +3245,46 @@ if (
     }
 
   }
+              /* ==========================================
+   RELASI TABUNGAN ALBUM DENGAN BARANG UTAMA
+========================================== */
+
+const tabunganAlbumLinks = await fetchAllRows(
+  "dn_tabungan_album_customer_links",
+  "source_recap_id, target_recap_id"
+);
+
+// ID Tabungan Album yang sudah terhubung
+const linkedTabunganSourceIds = new Set();
+
+// ID barang utama yang memiliki Tabungan Album
+const linkedMainTargetIds = new Set();
+
+(tabunganAlbumLinks || []).forEach(function(link) {
+
+  const sourceId = String(link.source_recap_id || "");
+  const targetId = String(link.target_recap_id || "");
+
+  if (!sourceId || !targetId) {
+    return;
+  }
+
+  const sourceMeta = (recapMeta || []).find(function(row) {
+    return String(row.id) === sourceId;
+  });
+
+  // Hanya sembunyikan sumber Tabungan Album,
+  // bukan jenis tabungan lainnya.
+  if (
+    sourceMeta &&
+    String(sourceMeta.recap_type || "").trim().toLowerCase() === "tabungan" &&
+    String(sourceMeta.category || "").trim().toLowerCase() === "tabungan album"
+  ) {
+    linkedTabunganSourceIds.add(sourceId);
+    linkedMainTargetIds.add(targetId);
+  }
+
+});
 
     /* =========================
        GABUNGKAN DATA
@@ -3708,13 +3651,16 @@ else {
  
 }
 
-          return {
+  return {
   ...item,
+
+  recap_id:
+    meta?.id || null,
 
   recap_type:
     meta?.recap_type ||
     "Lainnya",
-
+               
   category:
     meta?.category ||
     "Lainnya",
@@ -3841,9 +3787,19 @@ batch_completed:
       );
 
     recapData =
-      await Promise.all(
-        recapData
-      );
+  await Promise.all(
+    recapData
+  );
+
+// Sembunyikan baris Tabungan Album yang sudah
+// terhubung dengan barang utama.
+recapData = recapData.filter(function(item) {
+
+  const recapId = String(item.recap_id || "");
+
+  return !linkedTabunganSourceIds.has(recapId);
+
+});
   
     /* =========================
        TAMPILKAN KATEGORI
