@@ -2220,8 +2220,10 @@ function getPaymentStatusDisplay(item) {
     item.recap_type || ""
   ).trim().toLowerCase();
 
-  // Status khusus Tabungan yang tidak terhubung
-  // tetap menggunakan tampilan lama.
+  /* ==========================================
+     KHUSUS TABUNGAN YANG TIDAK TERSEMBUNYI
+     ========================================== */
+
   if (recapType === "tabungan") {
 
     const tabunganPaid = Number(item.tabungan_paid || 0);
@@ -2259,37 +2261,83 @@ function getPaymentStatusDisplay(item) {
     `;
   }
 
-  // Status pembayaran barang utama
-  const dpStatus = String(
-    item.dp_status || ""
-  ).trim().toLowerCase();
 
-  const paymentStatus = String(
-    item.payment_status || ""
-  ).trim().toLowerCase();
+  /* ==========================================
+     KHUSUS BARANG YANG TERHUBUNG TABUNGAN ALBUM
+     ========================================== */
 
-  // Sudah dikonfirmasi lunas oleh admin
-  if (paymentStatus === "paid") {
-    return `
-      <span class="payment-status payment-status-both">
-        🟣 Lunas Mantap
-      </span>
-    `;
-  }
+  if (item.is_tabungan_album_linked === true) {
 
-  // DP sudah dikonfirmasi, tetapi belum lunas total
-  if (dpStatus === "paid") {
+    const dpStatus = String(
+      item.dp_status || ""
+    ).trim().toLowerCase();
+
+    const paymentStatus = String(
+      item.payment_status || ""
+    ).trim().toLowerCase();
+
+    // Sudah dikonfirmasi lunas
+    if (paymentStatus === "paid") {
+      return `
+        <span class="payment-status payment-status-both">
+          🟣 Nah Josjis Lunas
+        </span>
+      `;
+    }
+
+    // DP minimum sudah dikonfirmasi
+    if (dpStatus === "paid") {
+      return `
+        <span class="payment-status payment-status-dp">
+          🟠 Mantap DP nya. Aduh Pelunasannya
+        </span>
+      `;
+    }
+
+    // DP minimum belum dikonfirmasi
     return `
       <span class="payment-status payment-status-dp">
-        🟠 DP Lunas. Ayo Nabung Lagi
+        💰 Yuk Nabung, Hwaiting!
       </span>
     `;
   }
 
-  // DP minimum belum dikonfirmasi
+
+  /* ==========================================
+     BARANG LAIN:
+     PERTAHANKAN LOGIKA PEMBAYARAN LAMA
+     ========================================== */
+
+  const dp = Number(item.dp || 0);
+  const pelunasan = Number(item.pelunasan || 0);
+
+  if (dp <= 0 && pelunasan <= 0) {
+    return `
+      <span class="payment-status payment-status-none">
+        ⚪ Belum Ada Pembayaran
+      </span>
+    `;
+  }
+
+  if (dp > 0 && pelunasan <= 0) {
+    return `
+      <span class="payment-status payment-status-dp">
+        🟠 DP Lunas • Pelunasan Belum
+      </span>
+    `;
+  }
+
+  if (pelunasan > 0) {
+    return `
+      <span class="payment-status payment-status-both">
+        🟣 Lunas
+      </span>
+    `;
+  }
+
   return `
-    <span class="payment-status payment-status-dp">
-      💰 Semangat Menabungnya
+    <span class="payment-status payment-status-none">
+      ⚪ Belum Ada Pembayaran
     </span>
   `;
 
@@ -2929,9 +2977,12 @@ recapBatchData = [];
 
     recapBatchData.push({
 
-      recap_type:
-        row.recap_type ||
-        "Lainnya",
+  recap_id:
+    row.id || null,
+
+  recap_type:
+    row.recap_type ||
+    "Lainnya",
 
       category:
         row.category ||
@@ -3245,7 +3296,7 @@ if (
     }
 
   }
-              /* ==========================================
+  /* ==========================================
    RELASI TABUNGAN ALBUM DENGAN BARANG UTAMA
 ========================================== */
 
@@ -3254,10 +3305,7 @@ const tabunganAlbumLinks = await fetchAllRows(
   "source_recap_id, target_recap_id"
 );
 
-// ID Tabungan Album yang sudah terhubung
 const linkedTabunganSourceIds = new Set();
-
-// ID barang utama yang memiliki Tabungan Album
 const linkedMainTargetIds = new Set();
 
 (tabunganAlbumLinks || []).forEach(function(link) {
@@ -3265,27 +3313,16 @@ const linkedMainTargetIds = new Set();
   const sourceId = String(link.source_recap_id || "");
   const targetId = String(link.target_recap_id || "");
 
-  if (!sourceId || !targetId) {
-    return;
-  }
+  if (!sourceId || !targetId) return;
 
-  const sourceMeta = (recapMeta || []).find(function(row) {
-    return String(row.id) === sourceId;
-  });
+  // Setiap source_recap_id pada tabel relasi
+  // merupakan Tabungan Album yang terhubung.
+  linkedTabunganSourceIds.add(sourceId);
 
-  // Hanya sembunyikan sumber Tabungan Album,
-  // bukan jenis tabungan lainnya.
-  if (
-    sourceMeta &&
-    String(sourceMeta.recap_type || "").trim().toLowerCase() === "tabungan" &&
-    String(sourceMeta.category || "").trim().toLowerCase() === "tabungan album"
-  ) {
-    linkedTabunganSourceIds.add(sourceId);
-    linkedMainTargetIds.add(targetId);
-  }
+  linkedMainTargetIds.add(targetId);
 
 });
-
+   
     /* =========================
        GABUNGKAN DATA
     ========================= */
@@ -3657,6 +3694,13 @@ else {
   recap_id:
     meta?.id || null,
 
+  // Penanda bahwa barang utama terhubung
+  // dengan Tabungan Album
+  is_tabungan_album_linked:
+    linkedMainTargetIds.has(
+      String(meta?.id || "")
+    ),
+
   recap_type:
     meta?.recap_type ||
     "Lainnya",
@@ -3791,9 +3835,22 @@ batch_completed:
     recapData
   );
 
-// Sembunyikan baris Tabungan Album yang sudah
-// terhubung dengan barang utama.
+/* ==========================================
+   SEMBUNYIKAN TABUNGAN ALBUM YANG TERHUBUNG
+========================================== */
+
+// Filter data utama pelanggan.
 recapData = recapData.filter(function(item) {
+
+  const recapId = String(item.recap_id || "");
+
+  return !linkedTabunganSourceIds.has(recapId);
+
+});
+
+// Filter kategori dan batch pelanggan juga.
+// Tabungan yang tidak memiliki relasi tetap tampil.
+recapBatchData = recapBatchData.filter(function(item) {
 
   const recapId = String(item.recap_id || "");
 
